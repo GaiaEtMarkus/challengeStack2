@@ -4,10 +4,10 @@ namespace App;
 
 
 spl_autoload_register(function ($class) {
-    //Core/View.php
-    $class = str_replace("App\\","", $class);
-    $class = str_replace("\\","/", $class).".php";
-    if(file_exists($class)){
+    $class = str_replace("App\\", "", $class);
+    $class = str_replace("\\", "/", $class) . ".php";
+
+    if (file_exists($class)) {
         include $class;
     }
 });
@@ -19,30 +19,14 @@ spl_autoload_register(function ($class) {
 //S'il y a des paramètres dans l'url il faut les enlever :
 $uriExploded = explode("?",$_SERVER["REQUEST_URI"]);
 $uri = rtrim(strtolower(trim($uriExploded[0])),"/");
-//Dans le cas ou nous sommes à la racine $uri sera vide du coup je remets /
+//Dans le cas ou nous sommes à la racine $uri sera vide du coup je remets /en tout cas
 $uri = (empty($uri))?"/":$uri;
-
-//Créer un fichier yaml contenant le route du type :
-// /login:
-//      controller: Security
-//      action: login
-//Le fichier est dans www et porte le nom de routes.yml
-
-//En fonction de l'uri récupérer le controller et l'action
-//Effectuer toutes les vérifications que vous estimez nécessaires
-//En cas d'erreur effectuer un simple Die avec un message explicite
-//Dans le cas ou tout est bon créer une instance du controller
-//et appeler la methode action
-
-//Exemple :
-// $controller = new Security();
-// $controller->login();
 
 if(!file_exists("routes.yml")) {
     die("Le fichier de routing n'existe pas");
 }
 
-$routes = yaml_parse_file("routes.yml");
+$routes = include 'routes.php';
 
 //Page 404
 if(empty($routes[$uri])) {
@@ -57,15 +41,15 @@ $controller = $routes[$uri]["controller"];
 $action = $routes[$uri]["action"];
 
 //Vérification de l'existance de la classe
-if(!file_exists("Controllers/".$controller.".php")){
+if(!file_exists("Controllers/".$controller."Controller.php")){
     die("Le fichier Controllers/".$controller.".php n'existe pas");
 }
 
-include "Controllers/".$controller.".php";
+include "Controllers/".$controller."Controller.php";
 
 //Le fichier existe mais est-ce qu'il possède la bonne classe
 //bien penser à ajouter le namespace \App\Controllers\Security
-$controller = "\\App\\Controllers\\".$controller;
+$controller = "\\App\\Controllers\\".$controller."Controller";
 if(!class_exists($controller)){
     die("La class ".$controller." n'existe pas");
 }

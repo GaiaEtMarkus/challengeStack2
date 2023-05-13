@@ -2,12 +2,13 @@
 namespace App\Controllers;
 use App\Core\View;
 
-class Main{
+class MainController{
     public function index(){
 
-        $pseudo = "Prof";
+        $pseudo = "user";
         $view = new View("Main/index", "front");
         $view->assign("pseudo", $pseudo);
     }
+
 
 }

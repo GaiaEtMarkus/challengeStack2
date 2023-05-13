@@ -1,3 +1,7 @@
 /:
   controller: Main
   action: index
+
+/userCreateProfile:
+  controller: User
+  action: createUserProfile
