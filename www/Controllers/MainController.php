@@ -9,6 +9,4 @@ class MainController{
         $view = new View("Main/index", "front");
         $view->assign("pseudo", $pseudo);
     }
-
-
 }

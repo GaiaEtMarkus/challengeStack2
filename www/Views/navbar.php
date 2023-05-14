@@ -10,13 +10,13 @@
                         <a class="nav-link text-danger" href="/userCreateProfile">Créer un profil</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-danger" href="#">À propos</a>
+                        <a class="nav-link text-danger" href="/userProfile">Profil user</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-danger" href="#">Services</a>
+                        <a class="nav-link text-danger" href="/userInterface">Interface user</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-danger" href="#">Contact</a>
+                        <a class="nav-link text-danger" href="/contact">Contact</a>
                     </li>
                 </ul>
             </div>
