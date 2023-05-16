@@ -18,16 +18,14 @@ services:
     environment:
       POSTGRES_DB: tournamount
       POSTGRES_USER: tournamount_admin
-      POSTGRES_PASSWORD: 12345
+      POSTGRES_PASSWORD: Admin1234
 
-  phppgadmin:
-    image: dpage/pgadmin4
+  adminer:
+    image: adminer
     restart: always
     ports:
-      - 8080:80
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: secret
+      - 8080:8080
+
 
 volumes:
   pgdata:
