@@ -6,5 +6,6 @@ use App\Models\User;
 use App\Core\Verificator;
 
 class Security{
+
+    }
   
-}
