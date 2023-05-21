@@ -62,11 +62,3 @@ if(!method_exists($objet, $action)){
 }
 
 $objet->$action();
-
-
-
-
-
-
-
-

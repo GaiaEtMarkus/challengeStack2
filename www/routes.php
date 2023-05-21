@@ -11,6 +11,11 @@ return [
         'action' => 'userCreateProfile'
     ],
 
+    '/uservalidprofile' => [
+        'controller' => 'User',
+        'action' => 'userValidProfile'
+    ],
+
     '/userprofile' => [
     'controller' => 'User',
     'action' => 'userProfile'

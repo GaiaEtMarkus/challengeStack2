@@ -1,34 +1,55 @@
 <?php
 namespace App\Models;
 use App\Core\Sql;
+use PDOException;
 
 class User extends Sql {
 
     protected int $id = 0;
-    protected string $nom;
-    protected string $prenom;
+    protected string $name;
+    protected string $surname;
     protected string $email;
     protected string $phone;
     protected string $birth_date;
     protected string $thumbnail;
-    protected string $mdp;
+    protected string $pwd;
+    protected string $country;
     protected bool $vip = false;
 
-    public function hydrate($nom, $prenom, $email, $phone, $birth_date, $thumbnail, $mdp, $vip)
+    public function hydrate($name, $surname, $email, $phone, $birth_date, $thumbnail, $pwd, $country, $vip)
     {
-        $this->setNom($nom);
-        $this->setPrenom($prenom);
+        $this->setNom($name);
+        $this->setPrenom($surname);
         $this->setEmail($email);
         $this->setPhone($phone);
         $this->setBirthDate($birth_date);
         $this->setThumbnail($thumbnail);
+        $this->setPwd($pwd);
+        $this->setCountry($country);
         $this->setVip($vip);
-        $this->setVip($mdp);
     }
 
     // Methods
-    public function createUser() {
-        // To be implemented
+    public function createUser(User $user) {
+
+        try {
+            $req = Sql::getInstance()->prepare("insert into user(name, surname, email, phone, birth_date, thumbnail, pwd, country, vip)
+            values(:name, :surname, :email, :phone, :birth_date, :thumbnail, :pwd, :country)");
+            $req->bindValue(':name', $user->getEmail());
+            $req->bindValue(':surname',  $user->getSurname());
+            $req->bindValue(':email', $user->getEmail());
+            $req->bindValue(':phone', $user->getPhone());
+            $req->bindValue(':birth_date', $user->getBirthDate());
+            $req->bindValue(':thumbnail', $user->getThumbnail());
+            $req->bindValue(':pwd', $user->getPwd());
+            $req->bindValue(':country', $user->getCountry());
+  
+            $req->execute();
+        } catch (PDOException $e) {
+
+            echo $e->getMessage();
+        }
+
     }
 
     public function changePassword() {
@@ -74,12 +95,16 @@ class User extends Sql {
         return $this->id;
     }
 
-    public function getNom(): string {
-        return $this->nom;
+    public function getCountry(): string {
+        return $this->country;
     }
 
-    public function getPrenom(): string {
-        return $this->prenom;
+    public function getName(): string {
+        return $this->name;
+    }
+
+    public function getSurname(): string {
+        return $this->surname;
     }
 
     public function getBirthDate(): string {
@@ -102,23 +127,31 @@ class User extends Sql {
         return $this->email;
     }
 
+    public function getPwd(): string {
+        return $this->pwd;
+    }
+
     ############################# Setters ################################
     ######################################################################    
     
     public function setPhone(int $phone): void {
-        $this->id = $phone;
+        $this->phone = $phone;
+    }
+
+    public function setCountry(int $country): void {
+        $this->country = $country;
     }
 
     public function setId(int $id): void {
         $this->id = $id;
     }
 
-    public function setNom(string $nom): void {
-        $this->nom = $nom;
+    public function setNom(string $name): void {
+        $this->name = $name;
     }
 
-    public function setPrenom(string $prenom): void {
-        $this->prenom = $prenom;
+    public function setPrenom(string $surname): void {
+        $this->surname = $surname;
     }
 
     public function setBirthDate(string $birth_date): void {
@@ -131,6 +164,10 @@ class User extends Sql {
 
     public function setVip(bool $vip): void {
         $this->vip = $vip;
+    }
+
+    public function setPwd(string $pwd): void {
+        $this->pwd = $pwd;
     }
 
     public function setEmail(string $email): void {
