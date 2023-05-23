@@ -40,6 +40,8 @@ class UserController {
                     $_POST['email'], 
                     $_POST['phone'], 
                     $_POST['birth_date'], 
+                    $_POST['country'], 
+                    $_POST['vip'], 
                     'default_thumbnail', // A remplacer par la vraie vignette
                     password_hash($_POST['pwd'], PASSWORD_DEFAULT), // Hashage du mot de passe
                     false // A remplacer par la vraie valeur VIP

@@ -6,8 +6,8 @@ use PDOException;
 class User extends Sql {
 
     protected int $id = 0;
-    protected string $name;
-    protected string $surname;
+    protected string $firstname;
+    protected string $lastname;
     protected string $email;
     protected string $phone;
     protected string $birth_date;
@@ -16,10 +16,10 @@ class User extends Sql {
     protected string $country;
     protected bool $vip = false;
 
-    public function hydrate($name, $surname, $email, $phone, $birth_date, $thumbnail, $pwd, $country, $vip)
+    public function hydrate($firstname, $lastname, $email, $phone, $birth_date, $thumbnail, $pwd, $country, $vip)
     {
-        $this->setNom($name);
-        $this->setPrenom($surname);
+        $this->setNom($firstname);
+        $this->setPrenom($lastname);
         $this->setEmail($email);
         $this->setPhone($phone);
         $this->setBirthDate($birth_date);
@@ -30,27 +30,27 @@ class User extends Sql {
     }
 
     // Methods
-    public function createUser(User $user) {
+    // public function createUser(User $user) {
 
-        try {
-            $req = Sql::getInstance()->prepare("insert into user(name, surname, email, phone, birth_date, thumbnail, pwd, country, vip)
-            values(:name, :surname, :email, :phone, :birth_date, :thumbnail, :pwd, :country)");
-            $req->bindValue(':name', $user->getEmail());
-            $req->bindValue(':surname',  $user->getSurname());
-            $req->bindValue(':email', $user->getEmail());
-            $req->bindValue(':phone', $user->getPhone());
-            $req->bindValue(':birth_date', $user->getBirthDate());
-            $req->bindValue(':thumbnail', $user->getThumbnail());
-            $req->bindValue(':pwd', $user->getPwd());
-            $req->bindValue(':country', $user->getCountry());
+    //     try {
+    //         $req = Sql::getInstance()->prepare("insert into user(firstname, lastname, email, phone, birth_date, thumbnail, pwd, country, vip)
+    //         values(:firstname, :lastname, :email, :phone, :birth_date, :thumbnail, :pwd, :country)");
+    //         $req->bindValue(':firstname', $user->getEmail());
+    //         $req->bindValue(':lastname',  $user->getlastname());
+    //         $req->bindValue(':email', $user->getEmail());
+    //         $req->bindValue(':phone', $user->getPhone());
+    //         $req->bindValue(':birth_date', $user->getBirthDate());
+    //         $req->bindValue(':thumbnail', $user->getThumbnail());
+    //         $req->bindValue(':pwd', $user->getPwd());
+    //         $req->bindValue(':country', $user->getCountry());
   
-            $req->execute();
-        } catch (PDOException $e) {
+    //         $req->execute();
+    //     } catch (PDOException $e) {
 
-            echo $e->getMessage();
-        }
+    //         echo $e->getMessage();
+    //     }
 
-    }
+    // }
 
     public function changePassword() {
         // To be implemented
@@ -100,11 +100,11 @@ class User extends Sql {
     }
 
     public function getName(): string {
-        return $this->name;
+        return $this->firstname;
     }
 
-    public function getSurname(): string {
-        return $this->surname;
+    public function getlastname(): string {
+        return $this->lastname;
     }
 
     public function getBirthDate(): string {
@@ -146,12 +146,12 @@ class User extends Sql {
         $this->id = $id;
     }
 
-    public function setNom(string $name): void {
-        $this->name = $name;
+    public function setNom(string $firstname): void {
+        $this->firstname = $firstname;
     }
 
-    public function setPrenom(string $surname): void {
-        $this->surname = $surname;
+    public function setPrenom(string $lastname): void {
+        $this->lastname = $lastname;
     }
 
     public function setBirthDate(string $birth_date): void {

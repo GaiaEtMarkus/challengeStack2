@@ -62,9 +62,14 @@ class AddUser extends AForm {
                     "type"=>"select",
                     "options"=>["","FR", "US", "EN", "MOR", "ALG", "TUN", "CAM", "SEN"],
                     "error"=>"Pays incorrect"
+                ],
+                "vip" => [
+                    "type" => "checkbox",
+                    "value" => false,
+                    "error" => "Une erreur est survenue avec la valeur VIP",
+                    "placeholder"=>"tamere"
                 ]
             ]
         ];
     }
-
 }
