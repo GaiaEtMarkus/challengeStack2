@@ -2,18 +2,18 @@
 
 return [
     '/' => [
-        'controller' => 'Main',
-        'action' => 'index'
+    'controller' => 'Main',
+    'action' => 'index'
     ],
 
     '/usercreateprofile' => [
-        'controller' => 'User',
-        'action' => 'userCreateProfile'
+    'controller' => 'User',
+    'action' => 'userCreateProfile'
     ],
 
     '/uservalidprofile' => [
-        'controller' => 'User',
-        'action' => 'userValidProfile'
+    'controller' => 'User',
+    'action' => 'userValidProfile'
     ],
 
     '/userprofile' => [
@@ -27,7 +27,7 @@ return [
     ],
 
     '/contact' => [
-        'controller' => 'User',
-        'action' => 'contact'
-        ],
+    'controller' => 'User',
+    'action' => 'contact'
+    ],
 ];

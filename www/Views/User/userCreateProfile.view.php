@@ -1,7 +1,18 @@
 <!DOCTYPE html>
 <div class="container">
-    <h2>Création de profil</h2>
-    <form action="/path/to/your/script" method="post" enctype="multipart/form-data">
+
+
+
+    <h2>S'inscrire</h2>
+
+    <?php print_r($errors??null);
+extension_loaded('pdo_pgsql');
+?>
+
+    <?php $this->form("userCreateProfile", $form );?>
+
+
+    <!-- <form action="/path/to/your/script" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="nom">Nom</label>
             <input type="text" class="form-control" id="name" name="name">
@@ -40,4 +51,4 @@
         </div>
         <a type="submit" href="/uservalidprofile"class="nav-link btn btn-primary">Créer le profil</a>
     </form>
-</div>
+</div> -->

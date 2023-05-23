@@ -1,13 +1,14 @@
 <?php
 namespace App\Controllers;
-use App\Core\View;
 use App\Core\Verificator;
 use App\Models\User;
+use App\Core\View;
+use App\Forms\AddUser;
 
-class UserController{
+class UserController {
     
     protected int $id = 0;
-    protected string $name;
+    protected string $firstname;
     protected string $surname;
     protected string $email;
     protected string $phone;
@@ -17,57 +18,53 @@ class UserController{
     protected string $pwd;
     protected bool $vip = false;
 
-    public function userCreateProfile(){
+    // public function userCreateProfile() {
+    //     $view = new View("User/userCreateProfile", "front");
+    //     // Consider rendering or returning the view here.
+    // }
 
+    public function userCreateProfile(): void {
+    
+        $form = new AddUser();
         $view = new View("User/userCreateProfile", "front");
-    }
-
-    public function userValidProfile(){
-
-        $newUser = new User();
-        $name = filter_var(Verificator::securiser($_POST["name"]), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $surname = filter_var(Verificator::securiser($_POST["surname"]), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $email = filter_var(Verificator::securiser($_POST["email"]), FILTER_SANITIZE_EMAIL);
-        $phone = filter_var(Verificator::securiser($_POST["phone"]), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $country = filter_var(Verificator::securiser($_POST["country"]), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $birth_date = filter_var(Verificator::securiser($_POST["birth_date"]), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $thumbnail = filter_var(Verificator::securiser($_POST["thumbnail"]), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $pwd = filter_var(Verificator::securiser($_POST["pwd"]), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $confirmPwd = filter_var(Verificator::securiser($_POST["confirmPwd"]), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $vip = false;
-
-
-        if ( $pwd == $confirmPwd)  {
-
-            $newUser->hydrate($name, $surname, $email, $phone, $birth_date, $thumbnail, $pwd, $country, $vip);
-            $newUser->createUser($newUser);
-            echo "Votre compte a bien été créé";
-
-        } else {
-
-            echo "Les mots de passe ne correspondent pas";
+        $view->assign('form', $form->getConfig());
+    
+        if($form->isSubmit()){
+            $errors = Verificator::form($form->getConfig(), $_POST);
+            if(empty($errors)){
+                // Création d'un nouvel utilisateur et hydratation avec les valeurs du formulaire
+                $user = new User();
+                $user->hydrate(
+                    $_POST['firstname'], 
+                    $_POST['lastname'], 
+                    $_POST['email'], 
+                    $_POST['phone'], 
+                    $_POST['birth_date'], 
+                    'default_thumbnail', // A remplacer par la vraie vignette
+                    password_hash($_POST['pwd'], PASSWORD_DEFAULT), // Hashage du mot de passe
+                    false // A remplacer par la vraie valeur VIP
+                );
+                // Enregistrement de l'utilisateur dans la base de données
+                $user->save();
+                echo "Insertion en BDD";
+            } else{
+                $view->assign('errors', $errors);
+            }
         }
+    }
+    
+    // public function userProfile() {
+    //     $view = new View("User/userProfile", "front");
+    //     // Consider rendering or returning the view here.
+    // }
 
+    public function userInterface() {
         $view = new View("User/userInterface", "front");
+        // Consider rendering or returning the view here.
     }
 
-    public function userProfile()
-    {
-
-        // appeller 
-        // User::methodeDesirer()
-        $view = new View("User/userProfile", "front");
-    }
-
-    public function userInterface()
-    {
-        $view = new View("User/userInterface", "front");
-    }
-
-    public function contact()
-    {
+    public function contact() {
         $view = new View("User/contact", "front");
+        // Consider rendering or returning the view here.
     }
-
-
 }

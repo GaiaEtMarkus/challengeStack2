@@ -5,30 +5,27 @@ use App\Core\Sql;
 class User extends Sql {
 
     protected int $id = 0;
-    protected string $nom;
-    protected string $prenom;
+    protected String $firstname;
+    protected String $lastname;
+    protected String $country;
     protected string $email;
     protected string $phone;
     protected string $birth_date;
     protected string $thumbnail;
-    protected string $mdp;
+    protected string $password;
     protected bool $vip = false;
+    
 
-    public function hydrate($nom, $prenom, $email, $phone, $birth_date, $thumbnail, $mdp, $vip)
+    public function hydrate($firstname, $lastname, $email, $phone, $birth_date, $thumbnail, $pwd, $vip)
     {
-        $this->setNom($nom);
-        $this->setPrenom($prenom);
+        $this->setNom($firstname);
+        $this->setPrenom($lastname);
         $this->setEmail($email);
         $this->setPhone($phone);
         $this->setBirthDate($birth_date);
         $this->setThumbnail($thumbnail);
         $this->setVip($vip);
-        $this->setVip($mdp);
-    }
-
-    // Methods
-    public function createUser() {
-        // To be implemented
+        $this->setPassword($pwd);
     }
 
     public function changePassword() {
@@ -74,12 +71,12 @@ class User extends Sql {
         return $this->id;
     }
 
-    public function getNom(): string {
-        return $this->nom;
+    public function getFirstName(): string {
+        return $this->firstname;
     }
 
-    public function getPrenom(): string {
-        return $this->prenom;
+    public function getLastname(): string {
+        return $this->lastname;
     }
 
     public function getBirthDate(): string {
@@ -102,6 +99,10 @@ class User extends Sql {
         return $this->email;
     }
 
+    public function getPassword(): bool {
+        return $this->password;
+    }
+
     ############################# Setters ################################
     ######################################################################    
     
@@ -113,12 +114,12 @@ class User extends Sql {
         $this->id = $id;
     }
 
-    public function setNom(string $nom): void {
-        $this->nom = $nom;
+    public function setFirstname(string $firstname): void {
+        $this->firstname = $firstname;
     }
 
-    public function setPrenom(string $prenom): void {
-        $this->prenom = $prenom;
+    public function setLastname(string $lastname): void {
+        $this->lastname = $lastname;
     }
 
     public function setBirthDate(string $birth_date): void {
@@ -135,5 +136,9 @@ class User extends Sql {
 
     public function setEmail(string $email): void {
         $this->email = $email;
+    }
+
+    public function setPassword(string $password): void {
+        $this->password = $password;
     }
 }
