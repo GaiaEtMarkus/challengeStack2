@@ -68,6 +68,11 @@ class AddUser extends AForm {
                     "value" => false,
                     "error" => "Une erreur est survenue avec la valeur VIP",
                     "placeholder"=>"tamere"
+                ],
+                "thumbnail" => [
+                    "type" => "text",
+                    "error" => "Une erreur est survenue avec la valeur thumnbail",
+                    "placeholder"=>"tamere"
                 ]
             ]
         ];

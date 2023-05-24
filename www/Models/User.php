@@ -138,7 +138,7 @@ class User extends Sql {
         $this->phone = $phone;
     }
 
-    public function setCountry(int $country): void {
+    public function setCountry(string $country): void {
         $this->country = $country;
     }
 
