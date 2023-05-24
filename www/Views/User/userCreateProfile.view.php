@@ -5,7 +5,9 @@
 
     <h2>S'inscrire</h2>
 
-    <?php print_r($errors??null);
+    <?php 
+    var_dump($_POST);
+    print_r($errors??null);
 extension_loaded('pdo_pgsql');
 ?>
 

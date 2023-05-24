@@ -32,6 +32,7 @@ class UserController {
         if($form->isSubmit()){
             $errors = Verificator::form($form->getConfig(), $_POST);
             if(empty($errors)){
+                $vip = isset($_POST['vip']) && $_POST['vip'] === 'on' ? "t" : "f";
                 // Création d'un nouvel utilisateur et hydratation avec les valeurs du formulaire
                 $user = new User();
                 $user->hydrate(
@@ -40,11 +41,11 @@ class UserController {
                     $_POST['email'], 
                     $_POST['phone'], 
                     $_POST['birth_date'], 
-                    $_POST['country'], 
-                    $_POST['vip'], 
                     $_POST['thumbnail'], 
                     password_hash($_POST['pwd'], PASSWORD_DEFAULT), // Hashage du mot de passe
-                    false // A remplacer par la vraie valeur VIP
+                    $_POST['country'],
+                    $vip
+                    // A remplacer par la vraie valeur VIP
                 );
                 // Enregistrement de l'utilisateur dans la base de données
                 $user->save();

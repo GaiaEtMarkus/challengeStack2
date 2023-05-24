@@ -18,9 +18,7 @@ abstract class Sql{
         $this->table = $this->table;
     }
 
-    public function __destruct() {
-        Sql::$pdo = null;
-    }
+    
 
     public static function getInstance() {
         if (self::$pdo == null) {
@@ -33,9 +31,12 @@ abstract class Sql{
     public function save(): void
     {
         $columns = get_object_vars($this);
+        //var_dump($columns);
         $columnsToDeleted =get_class_vars(get_class());
+        //var_dump($columnsToDeleted);
         $columns = array_diff_key($columns, $columnsToDeleted);
         unset($columns["id"]);
+        var_dump($columns);
 
         if(is_numeric($this->getId()) && $this->getId()>0)
         {
@@ -47,13 +48,17 @@ abstract class Sql{
             $queryPrepared = $this->pdo->prepare("UPDATE ".$this->table." SET ".implode(",",$columnsUpdate)." WHERE id=".$this->getId());
 
         }else{
-            $queryPrepared = $this->pdo->prepare("INSERT INTO ".$this->table." (".implode(",", array_keys($columns)).") 
+            $queryPrepared = $this->pdo->prepare("INSERT INTO \"".$this->table."\" (".implode(",", array_keys($columns)).") 
                             VALUES (:".implode(",:", array_keys($columns)).")");
+            var_dump($queryPrepared);
         }
 
         $queryPrepared->execute($columns);
+        
     }
 
-    
+    // public function __destruct() {
+    //     Sql::$pdo = null;
+    // }
 
 }
