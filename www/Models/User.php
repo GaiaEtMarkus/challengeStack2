@@ -1,22 +1,22 @@
 <?php
 namespace App\Models;
 use App\Core\Sql;
+use PDOException;
 
 class User extends Sql {
 
     protected int $id = 0;
-    protected String $firstname;
-    protected String $lastname;
-    protected String $country;
+    protected string $firstname;
+    protected string $lastname;
     protected string $email;
     protected string $phone;
     protected string $birth_date;
     protected string $thumbnail;
-    protected string $password;
+    protected string $pwd;
+    protected string $country;
     protected bool $vip = false;
-    
 
-    public function hydrate($firstname, $lastname, $email, $phone, $birth_date, $thumbnail, $pwd, $vip)
+    public function hydrate($firstname, $lastname, $email, $phone, $birth_date, $thumbnail, $pwd, $country, $vip)
     {
         $this->setNom($firstname);
         $this->setPrenom($lastname);
@@ -24,9 +24,33 @@ class User extends Sql {
         $this->setPhone($phone);
         $this->setBirthDate($birth_date);
         $this->setThumbnail($thumbnail);
+        $this->setPwd($pwd);
+        $this->setCountry($country);
         $this->setVip($vip);
-        $this->setPassword($pwd);
     }
+
+    // Methods
+    // public function createUser(User $user) {
+
+    //     try {
+    //         $req = Sql::getInstance()->prepare("insert into user(firstname, lastname, email, phone, birth_date, thumbnail, pwd, country, vip)
+    //         values(:firstname, :lastname, :email, :phone, :birth_date, :thumbnail, :pwd, :country)");
+    //         $req->bindValue(':firstname', $user->getEmail());
+    //         $req->bindValue(':lastname',  $user->getlastname());
+    //         $req->bindValue(':email', $user->getEmail());
+    //         $req->bindValue(':phone', $user->getPhone());
+    //         $req->bindValue(':birth_date', $user->getBirthDate());
+    //         $req->bindValue(':thumbnail', $user->getThumbnail());
+    //         $req->bindValue(':pwd', $user->getPwd());
+    //         $req->bindValue(':country', $user->getCountry());
+  
+    //         $req->execute();
+    //     } catch (PDOException $e) {
+
+    //         echo $e->getMessage();
+    //     }
+
+    // }
 
     public function changePassword() {
         // To be implemented
@@ -71,11 +95,15 @@ class User extends Sql {
         return $this->id;
     }
 
-    public function getFirstName(): string {
+    public function getCountry(): string {
+        return $this->country;
+    }
+
+    public function getName(): string {
         return $this->firstname;
     }
 
-    public function getLastname(): string {
+    public function getlastname(): string {
         return $this->lastname;
     }
 
@@ -99,26 +127,30 @@ class User extends Sql {
         return $this->email;
     }
 
-    public function getPassword(): bool {
-        return $this->password;
+    public function getPwd(): string {
+        return $this->pwd;
     }
 
     ############################# Setters ################################
     ######################################################################    
     
     public function setPhone(int $phone): void {
-        $this->id = $phone;
+        $this->phone = $phone;
+    }
+
+    public function setCountry(string $country): void {
+        $this->country = $country;
     }
 
     public function setId(int $id): void {
         $this->id = $id;
     }
 
-    public function setFirstname(string $firstname): void {
+    public function setNom(string $firstname): void {
         $this->firstname = $firstname;
     }
 
-    public function setLastname(string $lastname): void {
+    public function setPrenom(string $lastname): void {
         $this->lastname = $lastname;
     }
 
@@ -134,11 +166,11 @@ class User extends Sql {
         $this->vip = $vip;
     }
 
-    public function setEmail(string $email): void {
-        $this->email = $email;
+    public function setPwd(string $pwd): void {
+        $this->pwd = $pwd;
     }
 
-    public function setPassword(string $password): void {
-        $this->password = $password;
+    public function setEmail(string $email): void {
+        $this->email = $email;
     }
 }

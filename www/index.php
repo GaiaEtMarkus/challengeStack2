@@ -22,9 +22,9 @@ $uri = rtrim(strtolower(trim($uriExploded[0])),"/");
 //Dans le cas ou nous sommes à la racine $uri sera vide du coup je remets /en tout cas
 $uri = (empty($uri))?"/":$uri;
 
-if(!file_exists("routes.yml")) {
-    die("Le fichier de routing n'existe pas");
-}
+// if(!file_exists("routes.yml")) {
+//     die("Le fichier de routing n'existe pas");
+// }
 
 $routes = include 'routes.php';
 
@@ -62,11 +62,3 @@ if(!method_exists($objet, $action)){
 }
 
 $objet->$action();
-
-
-
-
-
-
-
-

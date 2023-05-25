@@ -34,9 +34,9 @@ class View {
         $this->template = $template;
     }
 
-    public function modal($name, $config):void
+    public function form($name, $config):void
     {
-        include "Views/Modals/".$name.".php";
+        include "Views/Forms/".$name.".php";
     }
 
     public function __destruct(){
