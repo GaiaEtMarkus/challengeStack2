@@ -22,15 +22,22 @@ class AddUser extends AForm {
                         "type"=>"text",
                         "placeholder"=>"Votre prénom",
                         "min"=>2,
-                        "max"=>60,
-                        "error"=>"Votre prénom doit faire entre 2 et 60 caractères"
+                        "max"=>256,
+                        "error"=>"Votre prénom doit faire entre 2 et 25§ caractères"
                     ],
                 "lastname"=>[
                     "type"=>"text",
                     "placeholder"=>"Votre nom",
                     "min"=>2,
-                    "max"=>120,
-                    "error"=>"Votre nom doit faire entre 2 et 120 caractères"
+                    "max"=>256,
+                    "error"=>"Votre nom doit faire entre 2 et 256 caractères"
+                ],
+                "pseudo"=>[
+                    "type"=>"text",
+                    "placeholder"=>"Votre pseudo",
+                    "min"=>2,
+                    "max"=>16,
+                    "error"=>"Votre nom doit faire entre 2 et 16 caractères"
                 ],
                 "email"=>[
                     "type"=>"email",
@@ -58,21 +65,27 @@ class AddUser extends AForm {
                     "confirm"=>"pwd",
                     "error"=>"Les mot de passes ne sont pas identiques"
                 ],
+                "address"=>[
+                    "type"=>"text",
+                    "placeholder"=>"Votre addresse",
+                    "min"=>2,
+                    "max"=>256,
+                ],
+                "zip_code"=>[
+                    "type"=>"number",
+                    "placeholder"=>"Votre code postale",
+                    "min"=>2,
+                    "max"=>5,
+                ],
                 "country"=>[
                     "type"=>"select",
                     "options"=>["","FR", "US", "EN", "MOR", "ALG", "TUN", "CAM", "SEN"],
                     "error"=>"Pays incorrect"
                 ],
-                "vip" => [
-                    "type" => "checkbox",
-                    "value" => false,
-                    "error" => "Une erreur est survenue avec la valeur VIP",
-                    "placeholder"=>"tamere"
-                ],
                 "thumbnail" => [
                     "type" => "text",
                     "error" => "Une erreur est survenue avec la valeur thumnbail",
-                    "placeholder"=>"tamere"
+                    "placeholder"=>"chemin de la photo de profil"
                 ]
             ]
         ];

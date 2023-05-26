@@ -4,6 +4,7 @@ use App\Core\Verificator;
 use App\Models\User;
 use App\Core\View;
 use App\Forms\AddUser;
+use App\Core\Security;
 
 class UserController {
     
@@ -18,10 +19,18 @@ class UserController {
     protected string $pwd;
     protected bool $vip = false;
 
-    // public function userCreateProfile() {
-    //     $view = new View("User/userCreateProfile", "front");
-    //     // Consider rendering or returning the view here.
-    // }
+    public function login() {
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+
+        $isLoggedIn = Security::login($username, $password);
+
+        if ($isLoggedIn) {
+            // Connexion réussie, effectuer les actions appropriées
+        } else {
+            // Identifiants de connexion invalides, gérer l'erreur
+        }
+    }    
 
     public function userCreateProfile(): void {
     
@@ -32,20 +41,24 @@ class UserController {
         if($form->isSubmit()){
             $errors = Verificator::form($form->getConfig(), $_POST);
             if(empty($errors)){
-                $vip = isset($_POST['vip']) && $_POST['vip'] === 'on' ? "t" : "f";
-                // Création d'un nouvel utilisateur et hydratation avec les valeurs du formulaire
+                $is_verified = "f";
+                $id_role = 1;
+                $hashedPassword = Security::hashPassword($_POST['pwd']);
                 $user = new User();
                 $user->hydrate(
+                    $id_role,
                     $_POST['firstname'], 
                     $_POST['lastname'], 
+                    $_POST['pseudo'], 
                     $_POST['email'], 
                     $_POST['phone'], 
                     $_POST['birth_date'], 
-                    $_POST['thumbnail'], 
-                    password_hash($_POST['pwd'], PASSWORD_DEFAULT), // Hashage du mot de passe
+                    $_POST['address'],
+                    $_POST['zip_code'],
                     $_POST['country'],
-                    $vip
-                    // A remplacer par la vraie valeur VIP
+                    $hashedPassword,                    
+                    $_POST['thumbnail'], 
+                    $is_verified
                 );
                 // Enregistrement de l'utilisateur dans la base de données
                 $user->save();

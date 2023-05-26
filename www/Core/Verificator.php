@@ -1,17 +1,17 @@
 <?php
 namespace App\Core;
 
-class Verificator{
+class Verificator {
 
-    public static function form(array $config, array $data): array
+    public static function form(array $config, array $data): array 
     {
         $listOfErrors = [];
         if(count($config["inputs"]) != count($data)-1){
             die("Tentative de Hack");
-        }
+    }
 
-        foreach ($config["inputs"] as $name=>$input){
-
+        foreach ($config["inputs"] as $name=>$input)
+        {
             if(empty($data[$name])){
                 die("Tentative de Hack");
             }

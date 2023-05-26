@@ -27,16 +27,12 @@ abstract class Sql{
         return self::$pdo;
     }
 
-    
     public function save(): void
     {
         $columns = get_object_vars($this);
-        //var_dump($columns);
         $columnsToDeleted =get_class_vars(get_class());
-        //var_dump($columnsToDeleted);
         $columns = array_diff_key($columns, $columnsToDeleted);
         unset($columns["id"]);
-        var_dump($columns);
 
         if(is_numeric($this->getId()) && $this->getId()>0)
         {
@@ -53,6 +49,8 @@ abstract class Sql{
             var_dump($queryPrepared);
         }
 
+        // var_dump($queryPrepared->queryString); // Ajouter cette ligne pour afficher la requête préparée
+        // var_dump($columns); // Affiche les données à lier
         $queryPrepared->execute($columns);
         
     }
