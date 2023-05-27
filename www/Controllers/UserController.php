@@ -27,7 +27,7 @@ class UserController {
         $user = $_SESSION['userConnected'];
 
         $form = new ModifyProfile();
-        $view = new View("User/userForm", "front");
+        $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
         $view->assign('user', $user);
 
@@ -56,7 +56,7 @@ class UserController {
 
     public function showLoginForm() {
         $form = new LoginUser;
-        $view = new View("User/userForm", "front");
+        $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
     
         if($form->isSubmit()){
@@ -85,7 +85,7 @@ class UserController {
     public function userCreateProfile(): void {
     
         $form = new AddUser();
-        $view = new View("User/userForm", "front");
+        $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
     
         if($form->isSubmit()){
