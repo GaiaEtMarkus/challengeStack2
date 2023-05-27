@@ -1,12 +1,11 @@
 <?php
 namespace App\Controllers;
-use App\Core\Verificator;
+
 use App\Models\User;
 use App\Core\View;
 use App\Forms\AddUser;
 use App\Forms\LoginForm;;
 use App\Core\Security;
-use App\Core\Sql;
 
 class UserController {
     
@@ -22,14 +21,31 @@ class UserController {
     protected bool $vip = false;
 
     public function showLoginForm() {
-
         $form = new LoginForm();
         $view = new View("User/userLogin", "front");
         $view->assign('form', $form->getConfig());
-
-        // Vous pouvez maintenant utiliser $config pour générer le formulaire en HTML
-        // Cette partie dépend de la manière dont vous générez votre HTML
-        // Par exemple, vous pouvez passer $config à une vue, qui se chargera de générer le HTML
+    
+        if($form->isSubmit()){
+            $errors = Security::form($form->getConfig(), $_POST);
+            if(empty($errors)){
+                $email = Security::securiser($_POST['email']); 
+                $password = Security::securiser($_POST['pwd']); 
+                $userConnected = new User();
+    
+                $isLoggedIn = $userConnected->login($email, $password);
+    
+                if ($isLoggedIn) {
+                    var_dump($userConnected);
+                    echo "Connecté avec succès";
+                    // Redirection vers la page d'accueil ou le tableau de bord de l'utilisateur
+                    // header('Location: /');
+                } else {
+                    echo "Échec de la connexion";
+                }
+            } else{
+                $view->assign('errors', $errors);
+            }
+        }
     }
 
     public function userCreateProfile(): void {
@@ -39,7 +55,7 @@ class UserController {
         $view->assign('form', $form->getConfig());
     
         if($form->isSubmit()){
-            $errors = Verificator::form($form->getConfig(), $_POST);
+            $errors = Security::form($form->getConfig(), $_POST);
             if(empty($errors)){
                 $is_verified = "f";
                 $id_role = 1;
@@ -47,17 +63,17 @@ class UserController {
                 $user = new User();
                 $user->hydrate(
                     $id_role,
-                    $_POST['firstname'], 
-                    $_POST['lastname'], 
-                    $_POST['pseudo'], 
-                    $_POST['email'], 
-                    $_POST['phone'], 
-                    $_POST['birth_date'], 
-                    $_POST['address'],
-                    $_POST['zip_code'],
-                    $_POST['country'],
+                    Security::securiser($_POST['firstname']), 
+                    Security::securiser($_POST['lastname']), 
+                    Security::securiser($_POST['pseudo']), 
+                    Security::securiser($_POST['email']), 
+                    Security::securiser($_POST['phone']), 
+                    Security::securiser($_POST['birth_date']), 
+                    Security::securiser($_POST['address']),
+                    Security::securiser($_POST['zip_code']),
+                    Security::securiser($_POST['country']),
+                    Security::securiser($_POST['thumbnail']), 
                     $hashedPassword,                    
-                    $_POST['thumbnail'], 
                     $is_verified
                 );
                 // Enregistrement de l'utilisateur dans la base de données

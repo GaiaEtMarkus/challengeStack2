@@ -46,7 +46,7 @@ CREATE TABLE "Sale" (
 CREATE TABLE "User" (
     id           SERIAL         NOT NULL,
     id_role      INTEGER        NOT NULL,
-    is_verified   BOOLEAN        NOT NULL DEFAULT FALSE, 
+    is_verified   BOOLEAN       NOT NULL DEFAULT FALSE, 
     firstname    VARCHAR(256)   NOT NULL, 
     lastname     VARCHAR(64)    NOT NULL,
     pseudo       VARCHAR(64)    NOT NULL, 
@@ -59,7 +59,7 @@ CREATE TABLE "User" (
     address      VARCHAR(256)   DEFAULT NULL,
     pwd          VARCHAR(256)   NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (id_role) REFERENCES "Role"(id),
+    FOREIGN KEY (id_role) REFERENCES "Role"(id)
 );
 
 CREATE TABLE "Comment" (

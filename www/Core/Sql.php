@@ -1,5 +1,6 @@
 <?php
 namespace App\Core;
+use App\Models\User;
 
 abstract class Sql{
 
@@ -54,26 +55,40 @@ abstract class Sql{
         $queryPrepared->execute($columns);
     }
 
-    // public function __destruct() {
-    //     Sql::$pdo = null;
-    // }
-
     public function login($email, $password)
     {
-        $query = $this->pdo->prepare('SELECT * FROM User WHERE email = :email');
+        $query = $this->pdo->prepare('SELECT * FROM "User" WHERE email = :email');
         $query->execute([':email' => $email]);
-        $user = $query->fetch(\PDO::FETCH_ASSOC);
-        var_dump($user);
+        $userData = $query->fetch(\PDO::FETCH_ASSOC);
 
-        if($user === false) {
+        var_dump($userData);
+
+        if($userData === false) {
             // Pas d'utilisateur avec cet email trouvé
             return false;
         }
 
         // Utilisez password_verify pour comparer le mot de passe fourni avec le mot de passe hashé de l'utilisateur
-        if (password_verify($password, $user['pwd'])) {
+        if (password_verify($password, $userData['pwd'])) {
             // Les mots de passe correspondent
-            $_SESSION['user'] = $user;
+            $user = new User();
+            $user->hydrate(
+                $userData['id_role'],
+                $userData['firstname'], 
+                $userData['lastname'], 
+                $userData['pseudo'], 
+                $userData['email'], 
+                $userData['phone'], 
+                $userData['birth_date'], 
+                $userData['address'],
+                $userData['zip_code'],
+                $userData['country'],
+                $userData['pwd'],                    
+                $userData['thumbnail'], 
+                $userData['is_verified']
+            );            
+            $_SESSION['userConnected'] = $user;
+            var_dump($_SESSION['userConnected']);
             return true;
         } else {
             // Les mots de passe ne correspondent pas
