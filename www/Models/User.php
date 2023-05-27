@@ -1,9 +1,9 @@
 <?php
 namespace App\Models;
-use App\Core\Sql;
-use PDOException;
 
-class User extends Sql {
+use App\Core\Sql;
+
+class User extends Sql{
 
     protected int $id = 0;
     protected int $id_role = 1;
@@ -35,6 +35,12 @@ class User extends Sql {
         $this->setPwd($pwd);
         $this->setThumbnail($thumbnail);
         $this->setIsVerified($is_verified);
+    }
+
+    public function __sleep()
+    {
+    // Sérialiser toutes les propriétés sauf le PDO
+    return array_diff(array_keys(get_object_vars($this)), ['pdo']);
     }
 
     public function changePassword() {
@@ -115,9 +121,7 @@ class User extends Sql {
         return $this->thumbnail;
     }
 
-    public function getVip(): bool {
-        return $this->vip;
-    }
+
 
     public function getPhone(): bool {
         return $this->phone;
@@ -180,10 +184,6 @@ class User extends Sql {
 
     public function setThumbnail(string $thumbnail): void {
         $this->thumbnail = $thumbnail;
-    }
-
-    public function setVip(bool $vip): void {
-        $this->vip = $vip;
     }
 
     public function setPwd(string $pwd): void {

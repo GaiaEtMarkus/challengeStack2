@@ -2,6 +2,7 @@
 namespace App;
 //Contrainte : utilisation des Namespace
 
+session_start();
 
 spl_autoload_register(function ($class) {
     $class = str_replace("App\\", "", $class);

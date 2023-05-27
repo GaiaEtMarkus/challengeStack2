@@ -1,18 +1,15 @@
 <?php
 namespace App\Core;
 
-class Security 
+use App\Core\Sql;
+
+class Security extends Sql
 {
     public static function hashPassword($password)
     {
         return password_hash($password, PASSWORD_DEFAULT);
     }
 
-    public static function login($username, $password)
-    {
-        // Vérification des informations de connexion
-        // ...
-    }
 
     public static function form(array $config, array $data): array 
     {
