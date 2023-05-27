@@ -26,6 +26,11 @@ return [
     'action' => 'userInterface'
     ],
 
+    '/login' => [
+        'controller' => 'User',
+        'action' => 'showLoginForm'
+    ],
+
     '/contact' => [
     'controller' => 'User',
     'action' => 'contact'

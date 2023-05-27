@@ -4,7 +4,9 @@ use App\Core\Verificator;
 use App\Models\User;
 use App\Core\View;
 use App\Forms\AddUser;
+use App\Forms\LoginForm;;
 use App\Core\Security;
+use App\Core\Sql;
 
 class UserController {
     
@@ -19,18 +21,16 @@ class UserController {
     protected string $pwd;
     protected bool $vip = false;
 
-    public function login() {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
+    public function showLoginForm() {
 
-        $isLoggedIn = Security::login($username, $password);
+        $form = new LoginForm();
+        $view = new View("User/userLogin", "front");
+        $view->assign('form', $form->getConfig());
 
-        if ($isLoggedIn) {
-            // Connexion réussie, effectuer les actions appropriées
-        } else {
-            // Identifiants de connexion invalides, gérer l'erreur
-        }
-    }    
+        // Vous pouvez maintenant utiliser $config pour générer le formulaire en HTML
+        // Cette partie dépend de la manière dont vous générez votre HTML
+        // Par exemple, vous pouvez passer $config à une vue, qui se chargera de générer le HTML
+    }
 
     public function userCreateProfile(): void {
     

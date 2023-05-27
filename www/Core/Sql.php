@@ -52,11 +52,33 @@ abstract class Sql{
         // var_dump($queryPrepared->queryString); // Ajouter cette ligne pour afficher la requête préparée
         // var_dump($columns); // Affiche les données à lier
         $queryPrepared->execute($columns);
-        
     }
 
     // public function __destruct() {
     //     Sql::$pdo = null;
     // }
+
+    public function login($email, $password)
+    {
+        $query = $this->pdo->prepare('SELECT * FROM User WHERE email = :email');
+        $query->execute([':email' => $email]);
+        $user = $query->fetch(\PDO::FETCH_ASSOC);
+        var_dump($user);
+
+        if($user === false) {
+            // Pas d'utilisateur avec cet email trouvé
+            return false;
+        }
+
+        // Utilisez password_verify pour comparer le mot de passe fourni avec le mot de passe hashé de l'utilisateur
+        if (password_verify($password, $user['pwd'])) {
+            // Les mots de passe correspondent
+            $_SESSION['user'] = $user;
+            return true;
+        } else {
+            // Les mots de passe ne correspondent pas
+            return false;
+        }
+    }
 
 }

@@ -18,8 +18,8 @@ class User extends Sql {
 
     public function hydrate($firstname, $lastname, $email, $phone, $birth_date, $thumbnail, $pwd, $vip)
     {
-        $this->setNom($firstname);
-        $this->setPrenom($lastname);
+        $this->setFirstname($firstname);
+        $this->setLastname($lastname);
         $this->setEmail($email);
         $this->setPhone($phone);
         $this->setBirthDate($birth_date);
@@ -91,15 +91,15 @@ class User extends Sql {
         return $this->vip;
     }
 
-    public function getPhone(): bool {
+    public function getPhone(): string {
         return $this->phone;
     }
 
-    public function getEmail(): bool {
+    public function getEmail(): string {
         return $this->email;
     }
 
-    public function getPassword(): bool {
+    public function getPassword(): string {
         return $this->password;
     }
 
@@ -107,7 +107,7 @@ class User extends Sql {
     ######################################################################    
     
     public function setPhone(int $phone): void {
-        $this->id = $phone;
+        $this->phone = $phone;
     }
 
     public function setId(int $id): void {
