@@ -1,5 +1,6 @@
 <?php
 namespace App\Core;
+use App\Models\User;
 
 abstract class Sql{
 
@@ -27,16 +28,12 @@ abstract class Sql{
         return self::$pdo;
     }
 
-    
     public function save(): void
     {
         $columns = get_object_vars($this);
-        //var_dump($columns);
         $columnsToDeleted =get_class_vars(get_class());
-        //var_dump($columnsToDeleted);
         $columns = array_diff_key($columns, $columnsToDeleted);
         unset($columns["id"]);
-        var_dump($columns);
 
         if(is_numeric($this->getId()) && $this->getId()>0)
         {
@@ -53,12 +50,50 @@ abstract class Sql{
             var_dump($queryPrepared);
         }
 
+        // var_dump($queryPrepared->queryString); // Ajouter cette ligne pour afficher la requête préparée
+        // var_dump($columns); // Affiche les données à lier
         $queryPrepared->execute($columns);
-        
     }
 
-    // public function __destruct() {
-    //     Sql::$pdo = null;
-    // }
+    public function login($email, $password)
+    {
+        $query = $this->pdo->prepare('SELECT * FROM "User" WHERE email = :email');
+        $query->execute([':email' => $email]);
+        $userData = $query->fetch(\PDO::FETCH_ASSOC);
+
+        var_dump($userData);
+
+        if($userData === false) {
+            // Pas d'utilisateur avec cet email trouvé
+            return false;
+        }
+
+        // Utilisez password_verify pour comparer le mot de passe fourni avec le mot de passe hashé de l'utilisateur
+        if (password_verify($password, $userData['pwd'])) {
+            // Les mots de passe correspondent
+            $user = new User();
+            $user->hydrate(
+                $userData['id_role'],
+                $userData['firstname'], 
+                $userData['lastname'], 
+                $userData['pseudo'], 
+                $userData['email'], 
+                $userData['phone'], 
+                $userData['birth_date'], 
+                $userData['address'],
+                $userData['zip_code'],
+                $userData['country'],
+                $userData['pwd'],                    
+                $userData['thumbnail'], 
+                $userData['is_verified']
+            );            
+            $_SESSION['userConnected'] = $user;
+            var_dump($_SESSION['userConnected']);
+            return true;
+        } else {
+            // Les mots de passe ne correspondent pas
+            return false;
+        }
+    }
 
 }

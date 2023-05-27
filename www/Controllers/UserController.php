@@ -1,9 +1,11 @@
 <?php
 namespace App\Controllers;
-use App\Core\Verificator;
+
 use App\Models\User;
 use App\Core\View;
 use App\Forms\AddUser;
+use App\Forms\LoginForm;;
+use App\Core\Security;
 
 class UserController {
     
@@ -18,10 +20,33 @@ class UserController {
     protected string $pwd;
     protected bool $vip = false;
 
-    // public function userCreateProfile() {
-    //     $view = new View("User/userCreateProfile", "front");
-    //     // Consider rendering or returning the view here.
-    // }
+    public function showLoginForm() {
+        $form = new LoginForm();
+        $view = new View("User/userLogin", "front");
+        $view->assign('form', $form->getConfig());
+    
+        if($form->isSubmit()){
+            $errors = Security::form($form->getConfig(), $_POST);
+            if(empty($errors)){
+                $email = Security::securiser($_POST['email']); 
+                $password = Security::securiser($_POST['pwd']); 
+                $userConnected = new User();
+    
+                $isLoggedIn = $userConnected->login($email, $password);
+    
+                if ($isLoggedIn) {
+                    var_dump($userConnected);
+                    echo "Connecté avec succès";
+                    // Redirection vers la page d'accueil ou le tableau de bord de l'utilisateur
+                    // header('Location: /');
+                } else {
+                    echo "Échec de la connexion";
+                }
+            } else{
+                $view->assign('errors', $errors);
+            }
+        }
+    }
 
     public function userCreateProfile(): void {
     
@@ -30,22 +55,26 @@ class UserController {
         $view->assign('form', $form->getConfig());
     
         if($form->isSubmit()){
-            $errors = Verificator::form($form->getConfig(), $_POST);
+            $errors = Security::form($form->getConfig(), $_POST);
             if(empty($errors)){
-                $vip = isset($_POST['vip']) && $_POST['vip'] === 'on' ? "t" : "f";
-                // Création d'un nouvel utilisateur et hydratation avec les valeurs du formulaire
+                $is_verified = "f";
+                $id_role = 1;
+                $hashedPassword = Security::hashPassword($_POST['pwd']);
                 $user = new User();
                 $user->hydrate(
-                    $_POST['firstname'], 
-                    $_POST['lastname'], 
-                    $_POST['email'], 
-                    $_POST['phone'], 
-                    $_POST['birth_date'], 
-                    $_POST['thumbnail'], 
-                    password_hash($_POST['pwd'], PASSWORD_DEFAULT), // Hashage du mot de passe
-                    $_POST['country'],
-                    $vip
-                    // A remplacer par la vraie valeur VIP
+                    $id_role,
+                    Security::securiser($_POST['firstname']), 
+                    Security::securiser($_POST['lastname']), 
+                    Security::securiser($_POST['pseudo']), 
+                    Security::securiser($_POST['email']), 
+                    Security::securiser($_POST['phone']), 
+                    Security::securiser($_POST['birth_date']), 
+                    Security::securiser($_POST['address']),
+                    Security::securiser($_POST['zip_code']),
+                    Security::securiser($_POST['country']),
+                    Security::securiser($_POST['thumbnail']), 
+                    $hashedPassword,                    
+                    $is_verified
                 );
                 // Enregistrement de l'utilisateur dans la base de données
                 $user->save();
