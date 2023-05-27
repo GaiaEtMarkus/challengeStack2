@@ -35,4 +35,9 @@ return [
     'controller' => 'User',
     'action' => 'contact'
     ],
+
+    '/usermodifyprofile' => [
+        'controller' => 'User',
+        'action' => 'userModifyProfile'
+    ],
 ];

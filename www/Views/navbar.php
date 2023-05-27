@@ -21,13 +21,10 @@
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="/login">Se connecter</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="/usermodifyprofile">Modifier ses infos</a>
+                </li>
             </ul>
-            <!-- <form class="form-inline my-2 my-lg-0 d-flex" action="/login" method="post">
-                <input class="form-control mr-sm-2 h-50" name="email" type="email" placeholder="Email" aria-label="Email" autocomplete="email">
-                <input class="form-control mr-sm-2 h-50" name="pwd" type="password" placeholder="Mot de passe" aria-label="Mot de passe" autocomplete="current-password">
-                <button class="btn btn-danger col-2 my-2 my-sm-0 w-25" type="submit">Se connecter</button>
-            </form> -->
-
         </div>
     </div>
 </nav>

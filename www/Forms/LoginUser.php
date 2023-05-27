@@ -3,7 +3,7 @@ namespace App\Forms;
 
 use App\Forms\Abstract\AForm;
 
-class LoginForm extends AForm {
+class LoginUser extends AForm {
     
     protected $method = "POST";
     

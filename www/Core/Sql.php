@@ -19,8 +19,6 @@ abstract class Sql{
         $this->table = $this->table;
     }
 
-    
-
     public static function getInstance() {
         if (self::$pdo == null) {
             self::$pdo = new Sql();
@@ -61,16 +59,13 @@ abstract class Sql{
         $query->execute([':email' => $email]);
         $userData = $query->fetch(\PDO::FETCH_ASSOC);
 
-        var_dump($userData);
+        // var_dump($userData);
 
         if($userData === false) {
-            // Pas d'utilisateur avec cet email trouvé
             return false;
         }
 
-        // Utilisez password_verify pour comparer le mot de passe fourni avec le mot de passe hashé de l'utilisateur
         if (password_verify($password, $userData['pwd'])) {
-            // Les mots de passe correspondent
             $user = new User();
             $user->hydrate(
                 $userData['id_role'],
@@ -87,8 +82,9 @@ abstract class Sql{
                 $userData['thumbnail'], 
                 $userData['is_verified']
             );            
+            var_dump($user);
             $_SESSION['userConnected'] = $user;
-            var_dump($_SESSION['userConnected']);
+            // var_dump($_SESSION['userConnected']);
             return true;
         } else {
             // Les mots de passe ne correspondent pas

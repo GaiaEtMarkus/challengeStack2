@@ -4,8 +4,10 @@ namespace App\Controllers;
 use App\Models\User;
 use App\Core\View;
 use App\Forms\AddUser;
-use App\Forms\LoginForm;;
 use App\Core\Security;
+use App\Forms\LoginUser;
+use App\Forms\ModifyProfile;
+use App\Core\Sql;
 
 class UserController {
     
@@ -20,9 +22,41 @@ class UserController {
     protected string $pwd;
     protected bool $vip = false;
 
+    public function userModifyProfile() {
+
+        $user = $_SESSION['userConnected'];
+
+        $form = new ModifyProfile();
+        $view = new View("User/userForm", "front");
+        $view->assign('form', $form->getConfig());
+        $view->assign('user', $user);
+
+        if ($form->isSubmit()) {
+            $errors = Security::form($form->getConfig(), $_POST);
+            if (empty($errors)) {
+                // Récupérer les nouvelles valeurs des attributs depuis le formulaire
+                $newUsername = Security::securiser($_POST['username']);
+                $newEmail = Security::securiser($_POST['email']);
+                // ... récupérer les autres attributs
+
+                // Construire et exécuter la requête SQL pour mettre à jour les attributs de l'utilisateur
+                $user->setUsername($newUsername);
+                $user->setEmail($newEmail);
+                // ... mettre à jour les autres attributs
+
+                $user->save(); // Appeler la méthode save() pour enregistrer les modifications dans la base de données
+
+                echo "Mise à jour réussie";
+                // Redirection ou affichage d'un message de succès
+            } else {
+                $view->assign('errors', $errors);
+            }
+        }
+    }
+
     public function showLoginForm() {
-        $form = new LoginForm();
-        $view = new View("User/userLogin", "front");
+        $form = new LoginUser;
+        $view = new View("User/userForm", "front");
         $view->assign('form', $form->getConfig());
     
         if($form->isSubmit()){
@@ -51,7 +85,7 @@ class UserController {
     public function userCreateProfile(): void {
     
         $form = new AddUser();
-        $view = new View("User/userCreateProfile", "front");
+        $view = new View("User/userForm", "front");
         $view->assign('form', $form->getConfig());
     
         if($form->isSubmit()){
