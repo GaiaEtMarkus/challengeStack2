@@ -39,9 +39,14 @@ class User extends Sql{
 
     public function __sleep()
     {
-    // Sérialiser toutes les propriétés sauf le PDO
-    return array_diff(array_keys(get_object_vars($this)), ['pdo']);
+        return array_diff(array_keys(get_object_vars($this)), ['pdo']);
     }
+    
+    public function __wakeup()
+    {
+        $this->__construct(); // Rétablissez la connexion à la base de données après la désérialisation
+    }
+    
 
     public function changePassword() {
         // To be implemented

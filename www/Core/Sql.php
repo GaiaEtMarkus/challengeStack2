@@ -4,7 +4,7 @@ use App\Models\User;
 
 abstract class Sql{
 
-    private  $pdo;
+    protected  $pdo;
     private $table;
 
     public function __construct(){
@@ -59,37 +59,20 @@ abstract class Sql{
         $query->execute([':email' => $email]);
         $userData = $query->fetch(\PDO::FETCH_ASSOC);
 
-        // var_dump($userData);
 
         if($userData === false) {
             return false;
         }
 
         if (password_verify($password, $userData['pwd'])) {
-            $user = new User();
-            $user->hydrate(
-                $userData['id_role'],
-                $userData['firstname'], 
-                $userData['lastname'], 
-                $userData['pseudo'], 
-                $userData['email'], 
-                $userData['phone'], 
-                $userData['birth_date'], 
-                $userData['address'],
-                $userData['zip_code'],
-                $userData['country'],
-                $userData['pwd'],                    
-                $userData['thumbnail'], 
-                $userData['is_verified']
-            );            
-            var_dump($user);
-            $_SESSION['userConnected'] = $user;
-            // var_dump($_SESSION['userConnected']);
+                  
+            $_SESSION['userData'] = $userData;
+            // $test = (object) $userData;
+            // var_dump($test); 
             return true;
         } else {
             // Les mots de passe ne correspondent pas
             return false;
         }
     }
-
 }

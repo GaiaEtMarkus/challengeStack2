@@ -7,7 +7,6 @@ use App\Forms\AddUser;
 use App\Core\Security;
 use App\Forms\LoginUser;
 use App\Forms\ModifyProfile;
-use App\Core\Sql;
 
 class UserController {
     
@@ -23,13 +22,11 @@ class UserController {
     protected bool $vip = false;
 
     public function userModifyProfile() {
-
-        $user = $_SESSION['userConnected'];
-
-        $form = new ModifyProfile();
+        var_dump($_SESSION['userData']['firstname']);
+        $form = new ModifyProfile;
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
-        $view->assign('user', $user);
+        
 
         if ($form->isSubmit()) {
             $errors = Security::form($form->getConfig(), $_POST);
@@ -40,11 +37,11 @@ class UserController {
                 // ... récupérer les autres attributs
 
                 // Construire et exécuter la requête SQL pour mettre à jour les attributs de l'utilisateur
-                $user->setUsername($newUsername);
-                $user->setEmail($newEmail);
-                // ... mettre à jour les autres attributs
+                // $user->setUsername($newUsername);
+                // $user->setEmail($newEmail);
+                // // ... mettre à jour les autres attributs
 
-                $user->save(); // Appeler la méthode save() pour enregistrer les modifications dans la base de données
+                // $user->save(); // Appeler la méthode save() pour enregistrer les modifications dans la base de données
 
                 echo "Mise à jour réussie";
                 // Redirection ou affichage d'un message de succès
@@ -55,10 +52,10 @@ class UserController {
     }
 
     public function showLoginForm() {
+
         $form = new LoginUser;
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
-    
         if($form->isSubmit()){
             $errors = Security::form($form->getConfig(), $_POST);
             if(empty($errors)){

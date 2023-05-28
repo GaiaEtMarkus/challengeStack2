@@ -11,7 +11,7 @@ class LoginUser extends AForm {
         return [
             "config" => [
                 "method" => $this->getMethod(),
-                "action" => "/login", // URL de la page qui traitera la soumission du formulaire
+                "action" => "/login",
                 "submit" => "Se connecter"
             ],
             "inputs" => [
