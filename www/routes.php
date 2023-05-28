@@ -40,4 +40,9 @@ return [
         'controller' => 'User',
         'action' => 'userModifyProfile'
     ],
+
+    '/userdeleteprofile' => [
+        'controller' => 'User',
+        'action' => 'userDeleteProfile'
+    ],
 ];

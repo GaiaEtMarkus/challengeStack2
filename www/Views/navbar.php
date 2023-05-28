@@ -24,6 +24,9 @@
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="/usermodifyprofile">Modifier ses infos</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="/userdeleteprofile">Supprimer son profil</a>
+                </li>
             </ul>
         </div>
     </div>

@@ -21,7 +21,6 @@
 
     <?php endforeach; ?>
 
-
     <input type="submit" name="submit" value="<?= $config["config"]["submit"] ?>">
 </form>
 

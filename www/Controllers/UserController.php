@@ -7,6 +7,7 @@ use App\Forms\AddUser;
 use App\Core\Security;
 use App\Forms\LoginUser;
 use App\Forms\ModifyProfile;
+use App\Forms\DeleteProfile;
 
 class UserController {
     
@@ -20,6 +21,32 @@ class UserController {
     protected string $thumbnail;
     protected string $pwd;
     protected bool $vip = false;
+
+    public function userDeleteProfile()
+    {
+        $form = new DeleteProfile();
+        $view = new View("Forms/form", "front");
+        $view->assign('form', $form->getConfig()); 
+    
+        if ($form->isSubmit()) {
+            $errors = Security::form($form->getConfig(), $_POST);
+            if (empty($errors)) {
+                // Vérifier si la confirmation de suppression a été renseignée
+                if (isset($_POST['deleteThisProfile']) && $_POST['deleteThisProfile'] === 'deleteThisProfile') {
+                    $user = new User();
+                    $user->delete($_SESSION['userData']['id']);
+                    echo "Votre profil a été supprimé";
+                    // Effectuer une redirection ou afficher un message de succès
+                } else {
+                    echo "Veuillez confirmer la suppression en saisissant 'deleteThisProfile'";
+                    // Afficher un message d'erreur ou rediriger vers la page de suppression du profil
+                }
+            } else {
+                $view->assign('errors', $errors);
+            }
+        }
+    }
+    
 
     public function userModifyProfile()
     {
@@ -51,11 +78,9 @@ class UserController {
                     $userData['is_verified']
                 );
     
-                // Enregistrer les modifications dans la base de données
                 $user->save();
-    
                 echo "Mise à jour réussie";
-                // Redirection ou affichage d'un message de succès
+                // Redirection 
             } else {
                 $view->assign('errors', $errors);
             }
