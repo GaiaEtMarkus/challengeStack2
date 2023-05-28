@@ -10,9 +10,7 @@ class ModifyProfile extends AForm {
     protected $method = "POST";
 
     public function getConfig(): array
-    {
-        $user = $_SESSION['userConnected'];
-        
+    {        
 
         return [
             "config" => [
