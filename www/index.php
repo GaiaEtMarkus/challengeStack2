@@ -8,10 +8,13 @@ spl_autoload_register(function ($class) {
     $class = str_replace("App\\", "", $class);
     $class = str_replace("\\", "/", $class) . ".php";
 
-    if (file_exists($class)) {
-        include $class;
+    $filePath = __DIR__ . "/" . $class; // Chemin absolu vers le fichier de classe
+
+    if (file_exists($filePath)) {
+        include $filePath;
     }
 });
+
 
 
 
