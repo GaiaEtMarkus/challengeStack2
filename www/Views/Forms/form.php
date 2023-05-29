@@ -12,7 +12,6 @@
             </select>
         <?php else: ?>
             <input
-                    value="<?= $input["value"] ?? "" ?>"
                     name="<?= $name;?>"
                     type="<?= $input["type"]?>"
                     placeholder=" <?= $input["placeholder"]?>"
@@ -21,6 +20,7 @@
 
     <?php endforeach; ?>
 
+
+
     <input type="submit" name="submit" value="<?= $config["config"]["submit"] ?>">
 </form>
-

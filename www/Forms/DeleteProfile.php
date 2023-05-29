@@ -11,15 +11,18 @@ class DeleteProfile extends AForm {
         return [
             "config" => [
                 "method" => $this->getMethod(),
-                "action" => "/login",
-                "submit" => "Supprimer son compte"
+                "submit" => "Supprimer son compte",
+                "action" => "",
+                "enctype" => ""
             ],
-            "deleteThisProfile" => [
-                "type" => "text",
-                "placeholder" => "Entrez 'deleteThisProfile' pour confirmer",
-                "required" => true,
-                "error" => "Veuillez entrer la confirmation de suppression"
-            ],
+            "inputs" => [
+                "deleteThisProfile" => [
+                    "type" => "text",
+                    "placeholder" => "Entrez 'deleteThisProfile' pour confirmer",
+                    "required" => true,
+                    "error" => "Veuillez entrer la confirmation de suppression"
+                ],
+            ]
         ];
     }
 }

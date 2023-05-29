@@ -34,6 +34,7 @@ class UserController {
                 // Vérifier si la confirmation de suppression a été renseignée
                 if (isset($_POST['deleteThisProfile']) && $_POST['deleteThisProfile'] === 'deleteThisProfile') {
                     $user = new User();
+                    var_dump($_SESSION['userData']['id']);
                     $user->delete($_SESSION['userData']['id']);
                     echo "Votre profil a été supprimé";
                     // Effectuer une redirection ou afficher un message de succès
@@ -86,7 +87,6 @@ class UserController {
             }
         }
     }
-    
 
     public function showLoginForm() {
 
@@ -103,7 +103,6 @@ class UserController {
                 $isLoggedIn = $userConnected->login($email, $password);
     
                 if ($isLoggedIn) {
-                    var_dump($userConnected);
                     echo "Connecté avec succès";
                     // Redirection vers la page d'accueil ou le tableau de bord de l'utilisateur
                     // header('Location: /');
@@ -140,8 +139,8 @@ class UserController {
                     Security::securiser($_POST['address']),
                     Security::securiser($_POST['zip_code']),
                     Security::securiser($_POST['country']),
-                    Security::securiser($_POST['thumbnail']), 
                     $hashedPassword,                    
+                    Security::securiser($_POST['thumbnail']), 
                     $is_verified
                 );
                 // Enregistrement de l'utilisateur dans la base de données
@@ -152,11 +151,6 @@ class UserController {
             }
         }
     }
-    
-    // public function userProfile() {
-    //     $view = new View("User/userProfile", "front");
-    //     // Consider rendering or returning the view here.
-    // }
 
     public function userInterface() {
         $view = new View("User/userInterface", "front");
