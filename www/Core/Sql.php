@@ -68,7 +68,6 @@ abstract class Sql{
                   
             $_SESSION['userData'] = $userData;
             // $test = (object) $userData;
-            // var_dump($test); 
             return true;
         } else {
             // Les mots de passe ne correspondent pas
@@ -78,7 +77,10 @@ abstract class Sql{
 
     public function delete($id): void
     {
-        $queryPrepared = $this->pdo->prepare("DELETE FROM " . $this->table . " WHERE id = :id");
+        $queryPrepared = $this->pdo->prepare('DELETE FROM "' . $this->table . '" WHERE id = :id');
         $queryPrepared->execute([':id' => $id]);
+        var_dump($queryPrepared->queryString);
     }
+    
+    
 }

@@ -11,8 +11,9 @@ class LoginUser extends AForm {
         return [
             "config" => [
                 "method" => $this->getMethod(),
-                "action" => "/login",
-                "submit" => "Se connecter"
+                "submit" => "Se connecter",
+                "action" => "",
+                "enctype" => "",
             ],
             "inputs" => [
                 "email" => [
