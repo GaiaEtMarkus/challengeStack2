@@ -37,15 +37,15 @@ class User extends Sql{
         $this->setIsVerified($is_verified);
     }
 
-    public function __sleep()
-    {
-        return array_diff(array_keys(get_object_vars($this)), ['pdo']);
-    }
+    // public function __sleep()
+    // {
+    //     return array_diff(array_keys(get_object_vars($this)), ['pdo']);
+    // }
     
-    public function __wakeup()
-    {
-        $this->__construct(); // Rétablissez la connexion à la base de données après la désérialisation
-    }
+    // public function __wakeup()
+    // {
+    //     $this->__construct(); // Rétablissez la connexion à la base de données après la désérialisation
+    // }
     
 
     public function changePassword() {

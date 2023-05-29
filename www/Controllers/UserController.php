@@ -7,6 +7,7 @@ use App\Forms\AddUser;
 use App\Core\Security;
 use App\Forms\LoginUser;
 use App\Forms\ModifyProfile;
+use App\Forms\DeleteProfile;
 
 class UserController {
     
@@ -21,30 +22,66 @@ class UserController {
     protected string $pwd;
     protected bool $vip = false;
 
-    public function userModifyProfile() {
-        var_dump($_SESSION['userData']['firstname']);
-        $form = new ModifyProfile;
+    public function userDeleteProfile()
+    {
+        $form = new DeleteProfile();
         $view = new View("Forms/form", "front");
-        $view->assign('form', $form->getConfig());
-        
-
+        $view->assign('form', $form->getConfig()); 
+    
         if ($form->isSubmit()) {
             $errors = Security::form($form->getConfig(), $_POST);
             if (empty($errors)) {
-                // Récupérer les nouvelles valeurs des attributs depuis le formulaire
-                $newUsername = Security::securiser($_POST['username']);
-                $newEmail = Security::securiser($_POST['email']);
-                // ... récupérer les autres attributs
+                // Vérifier si la confirmation de suppression a été renseignée
+                if (isset($_POST['deleteThisProfile']) && $_POST['deleteThisProfile'] === 'deleteThisProfile') {
+                    $user = new User();
+                    var_dump($_SESSION['userData']['id']);
+                    $user->delete($_SESSION['userData']['id']);
+                    echo "Votre profil a été supprimé";
+                    // Effectuer une redirection ou afficher un message de succès
+                } else {
+                    echo "Veuillez confirmer la suppression en saisissant 'deleteThisProfile'";
+                    // Afficher un message d'erreur ou rediriger vers la page de suppression du profil
+                }
+            } else {
+                $view->assign('errors', $errors);
+            }
+        }
+    }
+    
 
-                // Construire et exécuter la requête SQL pour mettre à jour les attributs de l'utilisateur
-                // $user->setUsername($newUsername);
-                // $user->setEmail($newEmail);
-                // // ... mettre à jour les autres attributs
-
-                // $user->save(); // Appeler la méthode save() pour enregistrer les modifications dans la base de données
-
+    public function userModifyProfile()
+    {
+        $userData = $_SESSION['userData'];
+        $form = new ModifyProfile;
+        $view = new View("Forms/form", "front");
+        $view->assign('form', $form->getConfig());
+    
+        if ($form->isSubmit()) {
+            $errors = Security::form($form->getConfig(), $_POST);
+            if (empty($errors)) {
+                // Instancier un nouvel objet User
+                $user = new User();
+    
+                // Mettre à jour les attributs de l'utilisateur avec les nouvelles valeurs
+                $user->hydrate(
+                    $userData['id_role'],
+                    Security::securiser($_POST['firstname']),
+                    Security::securiser($_POST['lastname']),
+                    Security::securiser($_POST['pseudo']),
+                    Security::securiser($_POST['email']),
+                    Security::securiser($_POST['phone']),
+                    Security::securiser($_POST['birth_date']),
+                    Security::securiser($_POST['address']),
+                    Security::securiser($_POST['zip_code']),
+                    Security::securiser($_POST['country']),
+                    Security::securiser($_POST['thumbnail']),
+                    $userData['pwd'],
+                    $userData['is_verified']
+                );
+    
+                $user->save();
                 echo "Mise à jour réussie";
-                // Redirection ou affichage d'un message de succès
+                // Redirection 
             } else {
                 $view->assign('errors', $errors);
             }
@@ -66,7 +103,6 @@ class UserController {
                 $isLoggedIn = $userConnected->login($email, $password);
     
                 if ($isLoggedIn) {
-                    var_dump($userConnected);
                     echo "Connecté avec succès";
                     // Redirection vers la page d'accueil ou le tableau de bord de l'utilisateur
                     // header('Location: /');
@@ -103,8 +139,8 @@ class UserController {
                     Security::securiser($_POST['address']),
                     Security::securiser($_POST['zip_code']),
                     Security::securiser($_POST['country']),
-                    Security::securiser($_POST['thumbnail']), 
                     $hashedPassword,                    
+                    Security::securiser($_POST['thumbnail']), 
                     $is_verified
                 );
                 // Enregistrement de l'utilisateur dans la base de données
@@ -115,11 +151,6 @@ class UserController {
             }
         }
     }
-    
-    // public function userProfile() {
-    //     $view = new View("User/userProfile", "front");
-    //     // Consider rendering or returning the view here.
-    // }
 
     public function userInterface() {
         $view = new View("User/userInterface", "front");
