@@ -66,7 +66,7 @@ id_categorie    INTEGER        NOT NULL,
 
 );
 
-CREATE TABLE ProductImages (
+CREATE TABLE "ProductImages" (
     id              SERIAL         PRIMARY KEY,
     product_id      INTEGER        NOT NULL,
     image_path      VARCHAR(255)   NOT NULL,
