@@ -6,26 +6,24 @@ use App\Core\Sql;
 class Product extends Sql{
 
     protected int $id = 0;
-    protected int $id_categorie = 1;
+    protected int $id_category = 1;
     protected int $id_seller = 1;
     protected string $titre;
     protected string $description;
-    protected string $thumbnail;
     protected string $trokos;
 
 
     protected bool $is_verified = false;
 
-    public function hydrate($id = null, $id_categorie, $id_seller, $titre, $description, $thumbnail, $trokos) 
+    public function hydrate($id = null, $id_category, $id_seller, $titre, $description, $trokos) 
     {
         if ($id !== null) {
             $this->setId($id);
         }
-        $this->setId_categorie($id_categorie);
+        $this->setId_category($id_category);
         $this->setId_Seller($id_seller);
         $this->setTitre($titre);
         $this->setDescription($description);
-        $this->setThumbnail($thumbnail);
         $this->setTrokos($trokos);
     }
 
@@ -55,9 +53,9 @@ class Product extends Sql{
     /**
      * Get the value of id_categorie
      */ 
-    public function getId_categorie()
+    public function getId_category()
     {
-        return $this->id_categorie;
+        return $this->id_category;
     }
 
     /**
@@ -65,9 +63,9 @@ class Product extends Sql{
      *
      * @return  self
      */ 
-    public function setId_categorie($id_categorie)
+    public function setId_category($id_categorie)
     {
-        $this->id_categorie = $id_categorie;
+        $this->id_category = $id_categorie;
 
         return $this;
     }
@@ -128,26 +126,6 @@ class Product extends Sql{
     public function setDescription($description)
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of thumbnail
-     */ 
-    public function getThumbnail()
-    {
-        return $this->thumbnail;
-    }
-
-    /**
-     * Set the value of thumbnail
-     *
-     * @return  self
-     */ 
-    public function setThumbnail($thumbnail)
-    {
-        $this->thumbnail = $thumbnail;
 
         return $this;
     }

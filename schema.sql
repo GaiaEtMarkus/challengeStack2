@@ -54,16 +54,17 @@ CREATE TABLE "User" (
     FOREIGN KEY (id_role) REFERENCES "Role"(id)
 );
 
-CREATE TABLE Product (
+CREATE TABLE "Product" (
     id              SERIAL         PRIMARY KEY,
-    name            VARCHAR(255)   NOT NULL,
+id_categorie    INTEGER        NOT NULL,
+    id_seller       INTEGER        NOT NULL,
+    titre           VARCHAR(255)   NOT NULL,
     description     TEXT           NOT NULL,
-    trokilol        INTEGER        NOT NULL,
-    user_id         INTEGER        NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES "User"(id)
-);
+    trokos          INTEGER        NOT NULL,
+    FOREIGN KEY (id_seller) REFERENCES "User"(id),
+    FOREIGN KEY (id_categorie) REFERENCES "Category"(id)
 
-SELECT pg_sleep(5);
+);
 
 CREATE TABLE ProductImages (
     id              SERIAL         PRIMARY KEY,
