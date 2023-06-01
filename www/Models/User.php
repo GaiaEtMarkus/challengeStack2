@@ -20,8 +20,11 @@ class User extends Sql{
     protected string $country;
     protected bool $is_verified = false;
 
-    public function hydrate($id_role, $firstname, $lastname, $pseudo, $email, $phone, $birth_date, $address, $zip_code, $country, $pwd, $thumbnail, $is_verified) 
+    public function hydrate($id = null, $id_role, $firstname, $lastname, $pseudo, $email, $phone, $birth_date, $address, $zip_code, $country, $pwd, $thumbnail, $is_verified) 
     {
+        if ($id !== null) {
+            $this->setId($id);
+        }
         $this->setIdRole($id_role);
         $this->setFirstname($firstname);
         $this->setLastname($lastname);
@@ -126,8 +129,6 @@ class User extends Sql{
         return $this->thumbnail;
     }
 
-
-
     public function getPhone(): bool {
         return $this->phone;
     }
@@ -202,4 +203,6 @@ class User extends Sql{
     public function setIsVerified(bool $is_verified): void {
         $this->is_verified = $is_verified;
     }
+
+    
 }

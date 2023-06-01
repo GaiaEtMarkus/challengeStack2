@@ -32,7 +32,7 @@ abstract class Sql{
         $columnsToDeleted =get_class_vars(get_class());
         $columns = array_diff_key($columns, $columnsToDeleted);
         unset($columns["id"]);
-
+    
         if(is_numeric($this->getId()) && $this->getId()>0)
         {
             $columnsUpdate = [];
@@ -40,25 +40,25 @@ abstract class Sql{
             {
                 $columnsUpdate[]= $key."=:".$key;
             }
-            $queryPrepared = $this->pdo->prepare("UPDATE ".$this->table." SET ".implode(",",$columnsUpdate)." WHERE id=".$this->getId());
-
+            $queryPrepared = $this->pdo->prepare("UPDATE \"".$this->table."\" SET ".implode(",",$columnsUpdate)." WHERE id=".$this->getId());
+    
         }else{
             $queryPrepared = $this->pdo->prepare("INSERT INTO \"".$this->table."\" (".implode(",", array_keys($columns)).") 
                             VALUES (:".implode(",:", array_keys($columns)).")");
             var_dump($queryPrepared);
         }
-
-        // var_dump($queryPrepared->queryString); // Ajouter cette ligne pour afficher la requête préparée
+    
+        var_dump($queryPrepared->queryString); // Ajouter cette ligne pour afficher la requête préparée
         // var_dump($columns); // Affiche les données à lier
         $queryPrepared->execute($columns);
     }
+    
 
     public function login($email, $password)
     {
         $query = $this->pdo->prepare('SELECT * FROM "User" WHERE email = :email');
         $query->execute([':email' => $email]);
         $userData = $query->fetch(\PDO::FETCH_ASSOC);
-
 
         if($userData === false) {
             return false;
@@ -67,6 +67,7 @@ abstract class Sql{
         if (password_verify($password, $userData['pwd'])) {
                   
             $_SESSION['userData'] = $userData;
+            var_dump($_SESSION['userData']);
             // $test = (object) $userData;
             return true;
         } else {
@@ -81,6 +82,5 @@ abstract class Sql{
         $queryPrepared->execute([':id' => $id]);
         var_dump($queryPrepared->queryString);
     }
-    
-    
+
 }

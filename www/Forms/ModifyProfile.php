@@ -2,7 +2,7 @@
 namespace App\Forms;
 
 use App\Forms\Abstract\AForm;
-use App\Models\User;
+use App\Core\View;
 
 class ModifyProfile extends AForm {
     
@@ -10,7 +10,9 @@ class ModifyProfile extends AForm {
     protected $method = "POST";
 
     public function getConfig(): array
+    
     {        
+        $countries = getCountryOptions();
 
         return [
             "config" => [
@@ -66,12 +68,14 @@ class ModifyProfile extends AForm {
                 "pwd" => [
                     "type" => "password",
                     "placeholder" => "Votre mot de passe",
-                    "error" => "Votre mot de passe est incorrect"
+                    "error" => "Votre mot de passe est incorrect",
+                    "value" => "",
                 ],
                 "pwdConfirm" => [
                     "type" => "password",
                     "placeholder" => "Confirmation",
-                    "error" => "Les mots de passe ne sont pas identiques"
+                    "error" => "Les mots de passe ne sont pas identiques",
+                    "value" => "",
                 ],
                 "address" => [
                     "type" => "text",
@@ -89,8 +93,7 @@ class ModifyProfile extends AForm {
                 ],
                 "country" => [
                     "type" => "select",
-                    "options" => ["", "FR", "US", "EN", "MOR", "ALG", "TUN", "CAM", "SEN"],
-                    "value" => $_SESSION['userData']['country'],
+                    "options" => View::buildCountryOptions(),
                     "error" => "Pays incorrect"
                 ],
                 "thumbnail" => [
@@ -102,4 +105,20 @@ class ModifyProfile extends AForm {
             ]
         ];
     }
+}
+
+function getCountryOptions(): array
+{
+    $countryList = ["FR", "US", "EN", "MOR", "ALG", "TUN", "CAM", "SEN"];
+    $userCountry = $_SESSION['userData']['country'];
+
+    $countries = [];
+    foreach ($countryList as $country) {
+        $countries[] = [
+            "value" => $country,
+            "selected" => $country === $userCountry
+        ];
+    }
+
+    return $countries;
 }
