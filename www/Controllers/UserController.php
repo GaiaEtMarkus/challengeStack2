@@ -5,7 +5,6 @@ use App\Models\User;
 use App\Core\View;
 use App\Forms\AddUser;
 use App\Core\Security;
-use App\Forms\LoginUser;
 use App\Forms\ModifyProfile;
 use App\Forms\DeleteProfile;
 
@@ -102,75 +101,77 @@ class UserController {
         }
     }
 
-    public function showLoginForm() {
+    // public function showLoginForm() {
 
-        $form = new LoginUser;
-        $view = new View("Forms/form", "front");
-        $view->assign('form', $form->getConfig());
-        $isModifyForm = false; 
-        $view->assign('isModifyForm', $isModifyForm);
-        if($form->isSubmit()){
-            $errors = Security::form($form->getConfig(), $_POST);
-            if(empty($errors)){
-                $email = Security::securiser($_POST['email']); 
-                $password = Security::securiser($_POST['pwd']); 
-                $userConnected = new User();
+    //     $form = new LoginUser;
+    //     $view = new View("Forms/form", "front");
+    //     $view->assign('form', $form->getConfig());
+    //     $isModifyForm = false; 
+    //     $view->assign('isModifyForm', $isModifyForm);
+    //     if($form->isSubmit()){
+    //         $errors = Security::form($form->getConfig(), $_POST);
+    //         if(empty($errors)){
+    //             $email = Security::securiser($_POST['email']); 
+    //             $password = Security::securiser($_POST['pwd']); 
+    //             $userConnected = new User();
     
-                $isLoggedIn = $userConnected->login($email, $password);
+    //             $isLoggedIn = $userConnected->login($email, $password);
     
-                if ($isLoggedIn) {
-                    echo "Connecté avec succès";
-                    // Redirection vers la page d'accueil ou le tableau de bord de l'utilisateur
-                    // header('Location: /');
-                } else {
-                    echo "Échec de la connexion";
-                }
-            } else{
-                $view->assign('errors', $errors);
-            }
-        }
-    }
+    //             if ($isLoggedIn) {
+    //                 echo "Connecté avec succès";
+    //                 // Redirection vers la page d'accueil ou le tableau de bord de l'utilisateur
+    //                 // header('Location: /');
+    //             } else {
+    //                 echo "Échec de la connexion";
+    //             }
+    //         } else{
+    //             $view->assign('errors', $errors);
+    //         }
+    //     }
+    // }
 
     public function userCreateProfile(): void {
-    
         $form = new AddUser();
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
-        $isModifyForm = false; 
+        $isModifyForm = false;
         $view->assign('isModifyForm', $isModifyForm);
-
-        if($form->isSubmit()){
+    
+        if ($form->isSubmit()) {
             $errors = Security::form($form->getConfig(), $_POST);
-            if(empty($errors)){
-                $is_verified = "f";
+            if (empty($errors)) {
                 $id_role = 1;
                 $id = null;
                 $hashedPassword = Security::hashPassword($_POST['pwd']);
+                $completeToken = Security::generateCompleteToken(); // Génère le jeton complet
+                $truncatedToken = Security::staticgenerateTruncatedToken($completeToken); // Génère le jeton tronqué
                 $user = new User();
                 $user->hydrate(
                     $id,
                     $id_role,
-                    Security::securiser($_POST['firstname']), 
-                    Security::securiser($_POST['lastname']), 
-                    Security::securiser($_POST['pseudo']), 
-                    Security::securiser($_POST['email']), 
-                    Security::securiser($_POST['phone']), 
-                    Security::securiser($_POST['birth_date']), 
+                    Security::securiser($_POST['firstname']),
+                    Security::securiser($_POST['lastname']),
+                    Security::securiser($_POST['pseudo']),
+                    Security::securiser($_POST['email']),
+                    Security::securiser($_POST['phone']),
+                    Security::securiser($_POST['birth_date']),
                     Security::securiser($_POST['address']),
                     Security::securiser($_POST['zip_code']),
                     Security::securiser($_POST['country']),
-                    $hashedPassword,                    
-                    Security::securiser($_POST['thumbnail']), 
-                    $is_verified
+                    $hashedPassword,
+                    Security::securiser($_POST['thumbnail']),
+                    $truncatedToken // Assignez le jeton tronqué à la propriété correspondante dans la classe User
                 );
+    
                 // Enregistrement de l'utilisateur dans la base de données
                 $user->save();
                 echo "Insertion en BDD";
-            } else{
+            } else {
                 $view->assign('errors', $errors);
             }
         }
     }
+    
 
     public function userInterface() {
         $view = new View("User/userInterface", "front");

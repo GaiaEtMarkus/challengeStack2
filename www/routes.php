@@ -28,7 +28,7 @@ return [
 
     '/login' => [
         'controller' => 'User',
-        'action' => 'showLoginForm'
+        'action' => 'userCreateProfile'
     ],
 
     '/deconnexion' => [

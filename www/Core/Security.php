@@ -5,6 +5,20 @@ use App\Core\Sql;
 
 class Security extends Sql
 {
+    public static function generateCompleteToken($length = 32)
+    {
+        $token = bin2hex(random_bytes($length));
+        return $token;
+    }
+    
+    public static function staticgenerateTruncatedToken($token)
+    {
+    // Générer le jeton tronqué en utilisant une fonction de hachage cryptographique (par exemple, sha256)
+    $truncatedToken = substr(hash('sha256', $token), 0, 16); // Tronquer le jeton à 16 caractères
+    
+    return $truncatedToken;
+    }
+
     public static function hashPassword($password)
     {
         return password_hash($password, PASSWORD_DEFAULT);
