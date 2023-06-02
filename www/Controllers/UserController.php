@@ -7,6 +7,7 @@ use App\Forms\AddUser;
 use App\Core\Security;
 use App\Forms\ModifyProfile;
 use App\Forms\DeleteProfile;
+use App\Forms\LoginUser;
 
 class UserController {
     
@@ -58,22 +59,22 @@ class UserController {
         }
     }
 
-    public function userModifyProfile()
-    {
+    public function userModifyProfile() {
         $userData = $_SESSION['userData'];
         $form = new ModifyProfile;
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
         $isModifyForm = true;
         $view->assign('isModifyForm', $isModifyForm);
-        var_dump($_SESSION);
-        $hashedPassword = Security::hashPassword($_POST['pwd']);
-
     
         if ($form->isSubmit()) {
             $errors = Security::form($form->getConfig(), $_POST);
             if (empty($errors)) {
                 $user = new User();
+    
+                // Génération d'un nouveau token tronqué
+                $newCompleteToken = Security::generateCompleteToken();
+                $newTruncatedToken = Security::staticgenerateTruncatedToken($newCompleteToken);
     
                 $user->hydrate(
                     $userData['id'],
@@ -87,48 +88,64 @@ class UserController {
                     Security::securiser($_POST['address']),
                     Security::securiser($_POST['zip_code']),
                     Security::securiser($_POST['country']),
-                    $hashedPassword,                    
+                    Security::hashPassword($_POST['pwd']),
                     Security::securiser($_POST['thumbnail']),
-                    $userData['is_verified']
+                    $newTruncatedToken // Assignez le nouveau token tronqué à la propriété correspondante dans la classe User
                 );
+    
+                // Stockage du nouveau token tronqué dans la session de l'utilisateur
+                $_SESSION['userData']['token_hash'] = $newTruncatedToken;
+
+                // Stockage du nouveau token tronqué dans un cookie côté client
+                setcookie('user_token', $newTruncatedToken, time() + (86400 * 30), '/'); // Expire dans 30 jours
     
                 $user->save();
                 echo "Mise à jour réussie";
-                // Redirection 
+                // Redirection
             } else {
                 $view->assign('errors', $errors);
             }
         }
     }
 
-    // public function showLoginForm() {
-
-    //     $form = new LoginUser;
-    //     $view = new View("Forms/form", "front");
-    //     $view->assign('form', $form->getConfig());
-    //     $isModifyForm = false; 
-    //     $view->assign('isModifyForm', $isModifyForm);
-    //     if($form->isSubmit()){
-    //         $errors = Security::form($form->getConfig(), $_POST);
-    //         if(empty($errors)){
-    //             $email = Security::securiser($_POST['email']); 
-    //             $password = Security::securiser($_POST['pwd']); 
-    //             $userConnected = new User();
+    public function showLoginForm() {
+        $form = new LoginUser;
+        $view = new View("Forms/form", "front");
+        $view->assign('form', $form->getConfig());
+        $isModifyForm = false; 
+        $view->assign('isModifyForm', $isModifyForm);
     
-    //             $isLoggedIn = $userConnected->login($email, $password);
+        if ($form->isSubmit()) {
+            $errors = Security::form($form->getConfig(), $_POST);
+            if (empty($errors)) {
+                $email = Security::securiser($_POST['email']); 
+                $password = Security::securiser($_POST['pwd']); 
+                $userConnected = new User();
     
-    //             if ($isLoggedIn) {
-    //                 echo "Connecté avec succès";
-    //                 // Redirection vers la page d'accueil ou le tableau de bord de l'utilisateur
-    //                 // header('Location: /');
-    //             } else {
-    //                 echo "Échec de la connexion";
-    //             }
-    //         } else{
-    //             $view->assign('errors', $errors);
-    //         }
-    //     }
-    // }
+                $isLoggedIn = $userConnected->login($email, $password);
+    
+                if ($isLoggedIn) {
+                    // Génération d'un nouveau token tronqué
+                    $newCompleteToken = Security::generateCompleteToken();
+                    $newTruncatedToken = Security::staticgenerateTruncatedToken($newCompleteToken);
+    
+                    // Stockage du nouveau token tronqué dans la session de l'utilisateur
+                    $_SESSION['userData']['token_hash'] = $newTruncatedToken;
+    
+                    // Stockage du nouveau token tronqué dans un cookie côté client
+                    setcookie('user_token', $newTruncatedToken, time() + (86400 * 30), '/'); // Expire dans 30 jours
+    
+                    echo "Connecté avec succès";
+                    // Redirection vers la page d'accueil ou le tableau de bord de l'utilisateur
+                    // header('Location: /');
+                } else {
+                    echo "Échec de la connexion";
+                }
+            } else {
+                $view->assign('errors', $errors);
+            }
+        }
+    }
 
     public function userCreateProfile(): void {
         $form = new AddUser();
