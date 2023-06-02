@@ -12,7 +12,7 @@ class ModifyProfile extends AForm {
     public function getConfig(): array
     
     {        
-        $countries = getCountryOptions();
+        $countries = View::buildCountryOptions();
 
         return [
             "config" => [
@@ -93,7 +93,7 @@ class ModifyProfile extends AForm {
                 ],
                 "country" => [
                     "type" => "select",
-                    "options" => View::buildCountryOptions(),
+                    "options" => $countries,
                     "error" => "Pays incorrect"
                 ],
                 "thumbnail" => [
@@ -105,20 +105,4 @@ class ModifyProfile extends AForm {
             ]
         ];
     }
-}
-
-function getCountryOptions(): array
-{
-    $countryList = ["FR", "US", "EN", "MOR", "ALG", "TUN", "CAM", "SEN"];
-    $userCountry = $_SESSION['userData']['country'];
-
-    $countries = [];
-    foreach ($countryList as $country) {
-        $countries[] = [
-            "value" => $country,
-            "selected" => $country === $userCountry
-        ];
-    }
-
-    return $countries;
 }
