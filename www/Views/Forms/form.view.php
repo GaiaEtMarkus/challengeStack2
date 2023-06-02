@@ -4,8 +4,7 @@
     <h2>Formulaire User</h2>
 
     <?php 
-    var_dump($_POST);
     print_r($errors??null);
     ?>
 
-    <?php $this->form("form", $form );?>
+    <?php $this->form("form", $form, $isModifyForm);?>

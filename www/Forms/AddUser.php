@@ -2,6 +2,7 @@
 namespace App\Forms;
 
 use App\Forms\Abstract\AForm;
+use App\Core\View;
 
 class AddUser extends AForm {
 
@@ -77,10 +78,10 @@ class AddUser extends AForm {
                     "min"=>2,
                     "max"=>5,
                 ],
-                "country"=>[
-                    "type"=>"select",
-                    "options"=>["","FR", "US", "EN", "MOR", "ALG", "TUN", "CAM", "SEN"],
-                    "error"=>"Pays incorrect"
+                "country" => [
+                    "type" => "select",
+                    "options" => View::buildCountryOptions(),
+                    "error" => "Pays incorrect"
                 ],
                 "thumbnail" => [
                     "type" => "text",

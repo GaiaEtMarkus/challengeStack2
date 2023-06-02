@@ -35,14 +35,31 @@ class View {
         $this->template = $template;
     }
 
-    public function form($name, $config):void
+    public function form($name, $config, $isModifyForm = false): void
     {
         include "Views/Forms/".$name.".php";
     }
 
-    public function __destruct(){
+    public function __destruct()
+    {
         extract($this->data);
         include $this->template;
     }
+
+    public static function buildCountryOptions(): array
+    {
+        $countries = [" ", "FR", "US", "EN", "MOR", "ALG", "TUN", "CAM", "SEN"];
+        $options = [];
+    
+        $userCountry = isset($_SESSION['userData']['country']) ? $_SESSION['userData']['country'] : "";
+    
+        foreach ($countries as $country) {
+            $selected = ($country === $userCountry);
+            $options[] = ['value' => $country, 'selected' => $selected];
+        }
+    
+        return $options;
+    }
+    
 
 }

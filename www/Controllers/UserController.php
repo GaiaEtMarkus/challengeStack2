@@ -55,15 +55,19 @@ class UserController {
         $form = new ModifyProfile;
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
+        $isModifyForm = true;
+        $view->assign('isModifyForm', $isModifyForm);
+        var_dump($_SESSION);
+        $hashedPassword = Security::hashPassword($_POST['pwd']);
+
     
         if ($form->isSubmit()) {
             $errors = Security::form($form->getConfig(), $_POST);
             if (empty($errors)) {
-                // Instancier un nouvel objet User
                 $user = new User();
     
-                // Mettre à jour les attributs de l'utilisateur avec les nouvelles valeurs
                 $user->hydrate(
+                    $userData['id'],
                     $userData['id_role'],
                     Security::securiser($_POST['firstname']),
                     Security::securiser($_POST['lastname']),
@@ -74,8 +78,8 @@ class UserController {
                     Security::securiser($_POST['address']),
                     Security::securiser($_POST['zip_code']),
                     Security::securiser($_POST['country']),
+                    $hashedPassword,                    
                     Security::securiser($_POST['thumbnail']),
-                    $userData['pwd'],
                     $userData['is_verified']
                 );
     
@@ -93,6 +97,8 @@ class UserController {
         $form = new LoginUser;
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
+        $isModifyForm = false; 
+        $view->assign('isModifyForm', $isModifyForm);
         if($form->isSubmit()){
             $errors = Security::form($form->getConfig(), $_POST);
             if(empty($errors)){
@@ -120,15 +126,19 @@ class UserController {
         $form = new AddUser();
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
-    
+        $isModifyForm = false; 
+        $view->assign('isModifyForm', $isModifyForm);
+
         if($form->isSubmit()){
             $errors = Security::form($form->getConfig(), $_POST);
             if(empty($errors)){
                 $is_verified = "f";
                 $id_role = 1;
+                $id = null;
                 $hashedPassword = Security::hashPassword($_POST['pwd']);
                 $user = new User();
                 $user->hydrate(
+                    $id,
                     $id_role,
                     Security::securiser($_POST['firstname']), 
                     Security::securiser($_POST['lastname']), 
