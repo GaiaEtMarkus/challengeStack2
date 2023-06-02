@@ -31,6 +31,11 @@ return [
         'action' => 'showLoginForm'
     ],
 
+    '/deconnexion' => [
+        'controller' => 'User',
+        'action' => 'deconnexion'
+    ],
+
     '/contact' => [
     'controller' => 'User',
     'action' => 'contact'

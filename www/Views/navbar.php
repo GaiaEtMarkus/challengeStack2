@@ -22,6 +22,9 @@
                     <a class="nav-link text-danger" href="/login">Se connecter</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link text-danger" href="/deconnexion">Se deconnecter</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-danger" href="/usermodifyprofile">Modifier ses infos</a>
                 </li>
                 <li class="nav-item">
