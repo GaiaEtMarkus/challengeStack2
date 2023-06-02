@@ -22,6 +22,17 @@ class UserController {
     protected string $pwd;
     protected bool $vip = false;
 
+    public function deconnexion()
+    {
+        if (isset($_SESSION['userData'])) {
+            session_unset();
+            session_destroy();
+            echo "Déconnexion réussie";
+        } else {
+        }
+    }
+    
+
     public function userDeleteProfile()
     {
         $form = new DeleteProfile();
@@ -47,7 +58,6 @@ class UserController {
             }
         }
     }
-    
 
     public function userModifyProfile()
     {
