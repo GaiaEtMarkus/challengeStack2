@@ -30,6 +30,9 @@
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="/userdeleteprofile">Supprimer son profil</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="/createproduct">Créer un produit</a>
+                </li>
             </ul>
         </div>
     </div>
