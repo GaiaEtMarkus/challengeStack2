@@ -52,6 +52,7 @@ CREATE TABLE "User" (
     zip_code     VARCHAR(6)     DEFAULT NULL,
     address      VARCHAR(256)   DEFAULT NULL,
     pwd          VARCHAR(256)   NOT NULL,
+    token_hash   VARCHAR(256)   DEFAULT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (id_role) REFERENCES "Role"(id)
 );
