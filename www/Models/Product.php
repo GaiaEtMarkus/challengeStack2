@@ -11,11 +11,9 @@ class Product extends Sql{
     protected string $titre;
     protected string $description;
     protected string $trokos;
-
-
     protected bool $is_verified = false;
 
-    public function hydrate($id = null, $id_category, $id_seller, $titre, $description, $trokos) 
+    public function hydrate($id = null, $id_category, $id_seller, $titre, $description, $trokos, $is_verified) 
     {
         if ($id !== null) {
             $this->setId($id);
@@ -25,6 +23,7 @@ class Product extends Sql{
         $this->setTitre($titre);
         $this->setDescription($description);
         $this->setTrokos($trokos);
+        $this->setIs_verified($is_verified); 
     }
 
 ############################# Getters & Setters ###############################
@@ -146,6 +145,26 @@ class Product extends Sql{
     public function setTrokos($trokos)
     {
         $this->trokos = $trokos;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of is_verified
+     */ 
+    public function getIs_verified()
+    {
+        return $this->is_verified;
+    }
+
+    /**
+     * Set the value of is_verified
+     *
+     * @return  self
+     */ 
+    public function setIs_verified($is_verified)
+    {
+        $this->is_verified = $is_verified;
 
         return $this;
     }

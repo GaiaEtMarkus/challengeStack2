@@ -49,7 +49,7 @@ abstract class Sql{
         }
     
         var_dump($queryPrepared->queryString); // Ajouter cette ligne pour afficher la requête préparée
-        // var_dump($columns); // Affiche les données à lier
+        var_dump($columns); // Affiche les données à lier
         $queryPrepared->execute($columns);
     }
     

@@ -8,6 +8,7 @@ use App\Forms\AddProduct;
 use App\Forms\LoginUser;
 use App\Forms\ModifyProfile;
 use App\Forms\DeleteProfile;
+use App\Models\Product;
 
 class ProductController {
     
@@ -28,35 +29,23 @@ class ProductController {
         $form = new AddProduct();
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
-        $isModifyForm = false; 
-        $view->assign('isModifyForm', $isModifyForm);
+        $id = null;
 
         if($form->isSubmit()){
             $errors = Security::form($form->getConfig(), $_POST);
             if(empty($errors)){
-                $is_verified = "f";
-                $id_role = 1;
-                $id = null;
-                $hashedPassword = Security::hashPassword($_POST['pwd']);
-                $user = new User();
-                $user->hydrate(
+                $product = new Product();
+                $product->hydrate(
                     $id,
-                    $id_role,
-                    Security::securiser($_POST['firstname']), 
-                    Security::securiser($_POST['lastname']), 
-                    Security::securiser($_POST['pseudo']), 
-                    Security::securiser($_POST['email']), 
-                    Security::securiser($_POST['phone']), 
-                    Security::securiser($_POST['birth_date']), 
-                    Security::securiser($_POST['address']),
-                    Security::securiser($_POST['zip_code']),
-                    Security::securiser($_POST['country']),
-                    $hashedPassword,                    
+                    Security::securiser($_POST['id_category']), 
+                    Security::securiser($_POST['id_seller']), 
+                    Security::securiser($_POST['titre']), 
+                    Security::securiser($_POST['description']), 
+                    Security::securiser($_POST['trokos']), 
                     Security::securiser($_POST['thumbnail']), 
-                    $is_verified
                 );
                 // Enregistrement de l'utilisateur dans la base de données
-                $user->save();
+                $product->save();
                 echo "Insertion en BDD";
             } else{
                 $view->assign('errors', $errors);
