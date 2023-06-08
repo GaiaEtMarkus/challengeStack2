@@ -26,6 +26,12 @@ class Product extends Sql{
         $this->setIs_verified($is_verified); 
     }
 
+    public function getCategories(): array
+    {
+        return $this->getAllFromTable('Category');
+    }
+
+
 ############################# Getters & Setters ###############################
 ###############################################################################
  

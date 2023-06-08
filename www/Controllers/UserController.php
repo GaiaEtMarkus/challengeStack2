@@ -136,8 +136,7 @@ class UserController {
         $form = new AddUser();
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
-        $isModifyForm = false; 
-        $view->assign('isModifyForm', $isModifyForm);
+
 
         if($form->isSubmit()){
             $errors = Security::form($form->getConfig(), $_POST);

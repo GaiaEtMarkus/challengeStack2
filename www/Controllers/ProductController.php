@@ -25,26 +25,34 @@ class ProductController {
 
 
     public function createProduct(): void {
-    
+
         $form = new AddProduct();
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
         $id = null;
+        $isModifyForm = false; 
+        $view->assign('isModifyForm', $isModifyForm);
+
 
         if($form->isSubmit()){
+
+            $product = new Product();
+            $categoryName = Security::securiser($_POST['id_category']);
+            $categoryOptions = $_SESSION['categoryOptions'];
+            $categoryId = array_search($categoryName, array_column($categoryOptions, 'value'));
             $errors = Security::form($form->getConfig(), $_POST);
+
             if(empty($errors)){
                 $product = new Product();
                 $product->hydrate(
                     $id,
-                    Security::securiser($_POST['id_category']), 
+                    $categoryId, 
                     Security::securiser($_POST['id_seller']), 
                     Security::securiser($_POST['titre']), 
                     Security::securiser($_POST['description']), 
                     Security::securiser($_POST['trokos']), 
                     Security::securiser($_POST['thumbnail']), 
                 );
-                // Enregistrement de l'utilisateur dans la base de données
                 $product->save();
                 echo "Insertion en BDD";
             } else{

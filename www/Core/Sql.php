@@ -82,5 +82,15 @@ abstract class Sql{
         $queryPrepared->execute([':id' => $id]);
         var_dump($queryPrepared->queryString);
     }
-
+    
+    public function getAllFromTable($tableName)
+    {
+        $queryPrepared = $this->pdo->prepare("SELECT * FROM \"$tableName\"");
+        $queryPrepared->execute();
+        $result = $queryPrepared->fetchAll(\PDO::FETCH_ASSOC);
+        
+        var_dump($result); // Ajoutez var_dump ici pour afficher le résultat
+    
+        return $result;
+    }
 }

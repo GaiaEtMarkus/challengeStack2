@@ -60,7 +60,7 @@ CREATE TABLE "Product" (
     id              SERIAL         PRIMARY KEY,
     id_categorie    INTEGER        NOT NULL,
     id_seller       INTEGER        NOT NULL,
-    is_verified  BOOLEAN           NOT NULL DEFAULT FALSE, 
+    is_verified     BOOLEAN           NOT NULL DEFAULT FALSE, 
     titre           VARCHAR(255)   NOT NULL,
     description     TEXT           NOT NULL,
     trokos          INTEGER        NOT NULL,

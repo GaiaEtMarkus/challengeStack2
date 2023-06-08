@@ -3,6 +3,7 @@ namespace App\Forms;
 
 use App\Forms\Abstract\AForm;
 use App\Core\View;
+use App\Models\Product;
 
 class AddProduct extends AForm {
 
@@ -10,6 +11,20 @@ class AddProduct extends AForm {
 
     public function getConfig(): array
     {
+        $product = new Product();
+        $categories = $product->getCategories(); // Récupérez toutes les catégories
+        var_dump($categories); // Ajoutez var_dump ici pour afficher les catégories
+        $categoryOptions = [];
+
+        if (is_array($categories) && !empty($categories)) {
+            foreach ($categories as $category) {
+                $categoryOptions[] = ['value' => $category['name'], 'selected' => false];
+            }
+            $_SESSION['categoryOptions'] = $categoryOptions;
+        }
+
+        var_dump($categoryOptions);
+
         return [
             "config"=>[
                 "method"=>$this->getMethod(),
@@ -20,11 +35,10 @@ class AddProduct extends AForm {
             ],
             "inputs" =>[
                 "id_category"=>[
-                    "type"=>"number",
-                    "placeholder"=>"ID de catégorie",
-                    "min"=>1,
+                    "type"=>"select",
+                    "options" => $categoryOptions, // Ajoutez les options ici
                     "required"=>true,
-                    "error"=>"L'ID de catégorie est incorrect"
+                    "error"=>"La catégorie est requise"
                 ],
                 "id_seller"=>[
                     "type"=>"number",
@@ -61,5 +75,6 @@ class AddProduct extends AForm {
                 ]
             ]
         ];
+        var_dump($categoryOptions);
     }
 }
