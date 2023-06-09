@@ -6,7 +6,7 @@ use App\Core\Sql;
 class User extends Sql{
 
     protected int $id = 0;
-    protected int $id_role = 1;
+    protected int $id_role = 3;
     protected string $firstname;
     protected string $lastname;
     protected string $pseudo;
@@ -18,9 +18,10 @@ class User extends Sql{
     protected string $zip_code;
     protected string $pwd;
     protected string $country;
+    protected bool $is_verified = false;
     protected string $token_hash;
-
-    public function hydrate($id = null, $id_role, $firstname, $lastname, $pseudo, $email, $phone, $birth_date, $address, $zip_code, $country, $pwd, $thumbnail, $token_hash) 
+  
+     public function hydrate($id = null, $id_role, $firstname, $lastname, $pseudo, $email, $phone, $birth_date, $address, $zip_code, $country, $pwd, $thumbnail, $token_hash) 
     {
         if ($id !== null) {
             $this->setId($id);

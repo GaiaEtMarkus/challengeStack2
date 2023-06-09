@@ -50,4 +50,9 @@ return [
         'controller' => 'User',
         'action' => 'userDeleteProfile'
     ],
+
+    '/createproduct' => [
+        'controller' => 'Product',
+        'action' => 'createProduct'
+    ],
 ];

@@ -10,22 +10,25 @@ class Product extends Sql{
     protected int $id_seller = 1;
     protected string $titre;
     protected string $description;
-    protected string $trokos;
+    protected string $thumbnail;
+    protected int $trokos;
 
-
-    protected bool $is_verified = false;
-
-    public function hydrate($id = null, $id_category, $id_seller, $titre, $description, $trokos) 
+    public function hydrate( $id_category, $id_seller, $titre, $description, $trokos, $thumbnail) 
     {
-        if ($id !== null) {
-            $this->setId($id);
-        }
+
         $this->setId_category($id_category);
         $this->setId_Seller($id_seller);
         $this->setTitre($titre);
         $this->setDescription($description);
         $this->setTrokos($trokos);
+        $this->setThumbnail($thumbnail);
     }
+
+    public function getCategories(): array
+    {
+        return $this->getAllFromTable('Category');
+    }
+
 
 ############################# Getters & Setters ###############################
 ###############################################################################
@@ -146,6 +149,27 @@ class Product extends Sql{
     public function setTrokos($trokos)
     {
         $this->trokos = $trokos;
+
+        return $this;
+    }
+
+
+    /**
+     * Get the value of thumbnail
+     */ 
+    public function getThumbnail()
+    {
+        return $this->thumbnail;
+    }
+
+    /**
+     * Set the value of thumbnail
+     *
+     * @return  self
+     */ 
+    public function setThumbnail($thumbnail)
+    {
+        $this->thumbnail = $thumbnail;
 
         return $this;
     }

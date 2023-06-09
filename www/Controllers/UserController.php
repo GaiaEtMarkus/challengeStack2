@@ -153,7 +153,7 @@ class UserController {
         $view->assign('form', $form->getConfig());
         $isModifyForm = false;
         $view->assign('isModifyForm', $isModifyForm);
-    
+
         if ($form->isSubmit()) {
             $errors = Security::form($form->getConfig(), $_POST);
             if (empty($errors)) {

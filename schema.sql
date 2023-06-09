@@ -59,14 +59,14 @@ CREATE TABLE "User" (
 
 CREATE TABLE "Product" (
     id              SERIAL         PRIMARY KEY,
-id_categorie    INTEGER        NOT NULL,
+    id_categorie    INTEGER        NOT NULL,
     id_seller       INTEGER        NOT NULL,
     titre           VARCHAR(255)   NOT NULL,
     description     TEXT           NOT NULL,
+    thumbnail       VARCHAR(64)    DEFAULT NULL, 
     trokos          INTEGER        NOT NULL,
     FOREIGN KEY (id_seller) REFERENCES "User"(id),
     FOREIGN KEY (id_categorie) REFERENCES "Category"(id)
-
 );
 
 CREATE TABLE "ProductImages" (
