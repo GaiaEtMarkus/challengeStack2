@@ -2,7 +2,6 @@
 namespace App\Forms;
 
 use App\Forms\Abstract\AForm;
-use App\Core\View;
 use App\Models\Product;
 
 class AddProduct extends AForm {
@@ -13,7 +12,7 @@ class AddProduct extends AForm {
     {
         $product = new Product();
         $categories = $product->getCategories(); // Récupérez toutes les catégories
-        var_dump($categories); // Ajoutez var_dump ici pour afficher les catégories
+        // var_dump($categories); // Ajoutez var_dump ici pour afficher les catégories
         $categoryOptions = [];
 
         if (is_array($categories) && !empty($categories)) {
@@ -23,7 +22,7 @@ class AddProduct extends AForm {
             $_SESSION['categoryOptions'] = $categoryOptions;
         }
 
-        var_dump($categoryOptions);
+        // var_dump($categoryOptions);
 
         return [
             "config"=>[
@@ -40,13 +39,13 @@ class AddProduct extends AForm {
                     "required"=>true,
                     "error"=>"La catégorie est requise"
                 ],
-                "id_seller"=>[
-                    "type"=>"number",
-                    "placeholder"=>"ID du vendeur",
-                    "min"=>1,
-                    "required"=>true,
-                    "error"=>"L'ID du vendeur est incorrect"
-                ],
+                // "id_seller"=>[
+                //     "type"=>"number",
+                //     "placeholder"=>"ID du vendeur",
+                //     "min"=>1,
+                //     "required"=>true,
+                //     "error"=>"L'ID du vendeur est incorrect"
+                // ],
                 "titre"=>[
                     "type"=>"text",
                     "placeholder"=>"Titre du produit",
@@ -62,7 +61,7 @@ class AddProduct extends AForm {
                     "error"=>"La description du produit est requise"
                 ],
                 "trokos"=>[
-                    "type"=>"text",
+                    "type"=>"number",
                     "placeholder"=>"Valeur en trokos",
                     "required"=>true,
                     "error"=>"La valeur en trokos est incorrecte"
@@ -75,6 +74,6 @@ class AddProduct extends AForm {
                 ]
             ]
         ];
-        var_dump($categoryOptions);
+        // var_dump($categoryOptions);
     }
 }

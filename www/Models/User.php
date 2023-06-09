@@ -6,7 +6,7 @@ use App\Core\Sql;
 class User extends Sql{
 
     protected int $id = 0;
-    protected int $id_role = 1;
+    protected int $id_role = 3;
     protected string $firstname;
     protected string $lastname;
     protected string $pseudo;
@@ -19,8 +19,10 @@ class User extends Sql{
     protected string $pwd;
     protected string $country;
     protected bool $is_verified = false;
+    protected string $token_hash;
 
-    public function hydrate($id = null, $id_role, $firstname, $lastname, $pseudo, $email, $phone, $birth_date, $address, $zip_code, $country, $pwd, $thumbnail, $is_verified) 
+
+    public function hydrate($id = null, $id_role, $firstname, $lastname, $pseudo, $email, $phone, $birth_date, $address, $zip_code, $country, $pwd, $thumbnail, $is_verified = false, $token_hash) 
     {
         if ($id !== null) {
             $this->setId($id);
@@ -37,7 +39,8 @@ class User extends Sql{
         $this->setCountry($country);
         $this->setPwd($pwd);
         $this->setThumbnail($thumbnail);
-        $this->setIsVerified($is_verified);
+        $this->setIsVerified($is_verified ?? $this->is_verified);
+        $this->setToken_hash($token_hash);
     }
 
     // public function __sleep()
@@ -129,11 +132,11 @@ class User extends Sql{
         return $this->thumbnail;
     }
 
-    public function getPhone(): bool {
+    public function getPhone(): string {
         return $this->phone;
     }
 
-    public function getEmail(): bool {
+    public function getEmail(): string {
         return $this->email;
     }
 
@@ -148,7 +151,7 @@ class User extends Sql{
     ############################# Setters ################################
     ######################################################################    
     
-    public function setPhone(int $phone): void {
+    public function setPhone(string $phone): void {
         $this->phone = $phone;
     }
 
@@ -201,8 +204,28 @@ class User extends Sql{
     }
 
     public function setIsVerified(bool $is_verified): void {
-        $this->is_verified = $is_verified;
+        $this->is_verified = $is_verified ? 't' : 'f';
     }
 
     
+
+    /**
+     * Get the value of token_hash
+     */ 
+    public function getToken_hash()
+    {
+        return $this->token_hash;
+    }
+
+    /**
+     * Set the value of token_hash
+     *
+     * @return  self
+     */ 
+    public function setToken_hash($token_hash)
+    {
+        $this->token_hash = $token_hash;
+
+        return $this;
+    }
 }

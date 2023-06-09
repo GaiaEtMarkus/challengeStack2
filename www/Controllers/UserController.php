@@ -136,12 +136,16 @@ class UserController {
         $form = new AddUser();
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
+        $isModifyForm = false; 
+        $view->assign('isModifyForm', $isModifyForm);
 
 
         if($form->isSubmit()){
             $errors = Security::form($form->getConfig(), $_POST);
             if(empty($errors)){
-                $is_verified = "f";
+                $newCompleteToken = Security::generateCompleteToken();
+                $newTruncatedToken = Security::staticgenerateTruncatedToken($newCompleteToken);
+                $is_verified = false;
                 $id_role = 1;
                 $id = null;
                 $hashedPassword = Security::hashPassword($_POST['pwd']);
@@ -160,7 +164,8 @@ class UserController {
                     Security::securiser($_POST['country']),
                     $hashedPassword,                    
                     Security::securiser($_POST['thumbnail']), 
-                    $is_verified
+                    $is_verified, 
+                    $newTruncatedToken
                 );
                 // Enregistrement de l'utilisateur dans la base de données
                 $user->save();

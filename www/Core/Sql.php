@@ -45,7 +45,7 @@ abstract class Sql{
         }else{
             $queryPrepared = $this->pdo->prepare("INSERT INTO \"".$this->table."\" (".implode(",", array_keys($columns)).") 
                             VALUES (:".implode(",:", array_keys($columns)).")");
-            var_dump($queryPrepared);
+            // var_dump($queryPrepared);
         }
     
         var_dump($queryPrepared->queryString); // Ajouter cette ligne pour afficher la requête préparée
@@ -89,7 +89,7 @@ abstract class Sql{
         $queryPrepared->execute();
         $result = $queryPrepared->fetchAll(\PDO::FETCH_ASSOC);
         
-        var_dump($result); // Ajoutez var_dump ici pour afficher le résultat
+        // var_dump($result); // Ajoutez var_dump ici pour afficher le résultat
     
         return $result;
     }

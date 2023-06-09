@@ -4,6 +4,7 @@ namespace App\Forms;
 use App\Forms\Abstract\AForm;
 use App\Core\View;
 
+
 class AddUser extends AForm {
 
     protected $method = "POST";
