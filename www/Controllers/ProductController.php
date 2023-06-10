@@ -29,18 +29,19 @@ class ProductController {
         $form = new AddProduct();
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
-        $id = 1;
         $isModifyForm = false; 
         $view->assign('isModifyForm', $isModifyForm);
 
 
         if($form->isSubmit()){
 
+            $id = null ;
             $product = new Product();
             $categoryName = Security::securiser($_POST['id_category']);
             $categoryOptions = $_SESSION['categoryOptions'];
             $id_category = array_search($categoryName, array_column($categoryOptions, 'value'));
             $errors = Security::form($form->getConfig(), $_POST);
+            $trokos = 0;
 
             if(empty($errors)){
                 $product = new Product();
@@ -50,7 +51,7 @@ class ProductController {
                     $_SESSION['userData']['id'], 
                     Security::securiser($_POST['titre']), 
                     Security::securiser($_POST['description']), 
-                    Security::securiser($_POST['trokos']), 
+                    $trokos, 
                     Security::securiser($_POST['thumbnail']), 
                 );
                 $product->save();

@@ -60,12 +60,12 @@ class AddProduct extends AForm {
                     "required"=>true,
                     "error"=>"La description du produit est requise"
                 ],
-                "trokos"=>[
-                    "type"=>"number",
-                    "placeholder"=>"Valeur en trokos",
-                    "required"=>true,
-                    "error"=>"La valeur en trokos est incorrecte"
-                ],
+                // "trokos"=>[
+                //     "type"=>"number",
+                //     "placeholder"=>"Valeur en trokos",
+                //     "required"=>true,
+                //     "error"=>"La valeur en trokos est incorrecte"
+                // ],
                 "thumbnail" => [
                     "type" => "text",
                     "placeholder"=>"Chemin de la photo de profil",

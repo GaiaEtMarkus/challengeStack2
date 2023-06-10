@@ -13,9 +13,11 @@ class Product extends Sql{
     protected string $thumbnail;
     protected int $trokos;
 
-    public function hydrate( $id_category, $id_seller, $titre, $description, $trokos, $thumbnail) 
+    public function hydrate($id = null,  $id_category, $id_seller, $titre, $description, $trokos, $thumbnail) 
     {
-
+        if ($id !== null) {
+            $this->setId($id);
+        }
         $this->setId_category($id_category);
         $this->setId_Seller($id_seller);
         $this->setTitre($titre);
