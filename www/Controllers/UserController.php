@@ -161,40 +161,59 @@ class UserController {
         $view->assign('form', $form->getConfig());
         $isModifyForm = false;
         $view->assign('isModifyForm', $isModifyForm);
-
+    
         if ($form->isSubmit()) {
             $errors = Security::form($form->getConfig(), $_POST);
             if (empty($errors)) {
-                $id_role = 1;
-                $id = null;
-                $hashedPassword = Security::hashPassword($_POST['pwd']);
-                $completeToken = Security::generateCompleteToken(); // Génère le jeton complet
-                $truncatedToken = Security::staticgenerateTruncatedToken($completeToken); // Génère le jeton tronqué
-                $user = new User();
-                $user->hydrate(
-                    $id,
-                    $id_role,
-                    Security::securiser($_POST['firstname']),
-                    Security::securiser($_POST['lastname']),
-                    Security::securiser($_POST['pseudo']),
-                    Security::securiser($_POST['email']),
-                    Security::securiser($_POST['phone']),
-                    Security::securiser($_POST['birth_date']),
-                    Security::securiser($_POST['address']),
-                    Security::securiser($_POST['zip_code']),
-                    Security::securiser($_POST['country']),
-                    $hashedPassword,
-                    Security::securiser($_POST['thumbnail']),
-                    $truncatedToken 
-                );
+                // Vérification des mots de passe
+                if ($_POST['pwd'] !== $_POST['pwdConfirm']) {
+                    $errors['pwdConfirm'] = "Les mots de passe ne sont pas identiques";
+                } else {
+                    $id_role = 1;
+                    $id = null;
+                    $hashedPassword = Security::hashPassword($_POST['pwd']);
+                    $completeToken = Security::generateCompleteToken(); // Génère le jeton complet
+                    $truncatedToken = Security::staticgenerateTruncatedToken($completeToken); // Génère le jeton tronqué
     
-                $user->save();
-                echo "Insertion en BDD";
+                    // Gestion du téléchargement de la photo de profil
+                    $thumbnail = $_FILES['thumbnail'] ?? null;
+                    if ($thumbnail && $thumbnail['error'] === UPLOAD_ERR_OK) {
+                        $thumbnailPath = './assets/userProfile/' . $thumbnail['name'];
+                        var_dump($thumbnailPath); // Ajout du var_dump pour déboguer la valeur de $thumbnail
+                        move_uploaded_file($thumbnail['tmp_name'], $thumbnailPath);
+                    } else {
+                        $thumbnailPath = null; // Pas de fichier téléchargé
+                    }
+
+                    var_dump($thumbnail); // Ajout du var_dump pour déboguer la valeur de $thumbnail
+    
+                    $user = new User();
+                    $user->hydrate(
+                        $id,
+                        $id_role,
+                        Security::securiser($_POST['firstname']),
+                        Security::securiser($_POST['lastname']),
+                        Security::securiser($_POST['pseudo']),
+                        Security::securiser($_POST['email']),
+                        Security::securiser($_POST['phone']),
+                        Security::securiser($_POST['birth_date']),
+                        Security::securiser($_POST['address']),
+                        Security::securiser($_POST['zip_code']),
+                        Security::securiser($_POST['country']),
+                        $hashedPassword,
+                        $thumbnailPath, // Utilisez le chemin du fichier de la photo de profil
+                        $truncatedToken 
+                    );
+    
+                    $user->save();
+                    echo "Insertion en BDD";
+                }
             } else {
                 $view->assign('errors', $errors);
             }
         }
     }
+    
     
 
     public function userInterface() {
