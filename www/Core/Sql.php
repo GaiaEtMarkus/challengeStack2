@@ -45,11 +45,11 @@ abstract class Sql{
         }else{
             $queryPrepared = $this->pdo->prepare("INSERT INTO \"".$this->table."\" (".implode(",", array_keys($columns)).") 
                             VALUES (:".implode(",:", array_keys($columns)).")");
-            var_dump($queryPrepared);
+            // var_dump($queryPrepared);
         }
     
         var_dump($queryPrepared->queryString); // Ajouter cette ligne pour afficher la requête préparée
-        // var_dump($columns); // Affiche les données à lier
+        var_dump($columns); // Affiche les données à lier
         $queryPrepared->execute($columns);
     }
     
@@ -82,5 +82,15 @@ abstract class Sql{
         $queryPrepared->execute([':id' => $id]);
         var_dump($queryPrepared->queryString);
     }
-
+    
+    public function getAllFromTable($tableName)
+    {
+        $queryPrepared = $this->pdo->prepare("SELECT * FROM \"$tableName\"");
+        $queryPrepared->execute();
+        $result = $queryPrepared->fetchAll(\PDO::FETCH_ASSOC);
+        
+        // var_dump($result); // Ajoutez var_dump ici pour afficher le résultat
+    
+        return $result;
+    }
 }
