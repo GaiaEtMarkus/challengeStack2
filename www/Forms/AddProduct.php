@@ -67,10 +67,10 @@ class AddProduct extends AForm {
                 //     "error"=>"La valeur en trokos est incorrecte"
                 // ],
                 "thumbnail" => [
-                    "type" => "text",
-                    "placeholder"=>"Chemin de la photo de profil",
+                    "type" => "file",
+                    "placeholder"=>"Photo du produit",
                     "required"=>true,
-                    "error" => "Une erreur est survenue avec la valeur thumbnail"
+                    "error" => "Une erreur est survenue lors du téléchargement du fichier"
                 ]
             ]
         ];

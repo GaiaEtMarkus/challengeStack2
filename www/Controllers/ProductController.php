@@ -46,6 +46,16 @@ class ProductController {
                 $trokos = 0;
 
                 if(empty($errors)){
+
+                    $thumbnail = $_FILES['thumbnail'] ?? null;
+                    if ($thumbnail && $thumbnail['error'] === UPLOAD_ERR_OK) {
+                        $thumbnailPath = './assets/userProfile/' . $thumbnail['name'];
+                        var_dump($thumbnailPath); // Ajout du var_dump pour déboguer la valeur de $thumbnail
+                        move_uploaded_file($thumbnail['tmp_name'], $thumbnailPath);
+                    } else {
+                        $thumbnailPath = null; // Pas de fichier téléchargé
+                    }
+
                     $product = new Product();
                     $product->hydrate(
                         $id,
@@ -54,7 +64,7 @@ class ProductController {
                         Security::securiser($_POST['titre']), 
                         Security::securiser($_POST['description']), 
                         $trokos, 
-                        Security::securiser($_POST['thumbnail']), 
+                        $thumbnailPath, 
                     );
                     $product->save();
                     echo "Insertion en BDD";
