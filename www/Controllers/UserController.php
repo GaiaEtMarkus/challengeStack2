@@ -27,88 +27,97 @@ class UserController {
         if (isset($_SESSION['userData'])) {
             session_unset();
             session_destroy();
-            echo "Déconnexion réussie";
-        } else {
+            $message = "Déconnexion réussie !";
+            header('Location: /?message=' . urlencode($message));     
         }
     }
     
 
     public function userDeleteProfile()
     {
-        $form = new DeleteProfile();
-        $view = new View("Forms/form", "front");
-        $view->assign('form', $form->getConfig()); 
-    
-        if ($form->isSubmit()) {
-            $errors = Security::form($form->getConfig(), $_POST);
-            if (empty($errors)) {
-                // Vérifier si la confirmation de suppression a été renseignée
-                if (isset($_POST['deleteThisProfile']) && $_POST['deleteThisProfile'] === 'deleteThisProfile') {
-                    $user = new User();
-                    var_dump($_SESSION['userData']['id']);
-                    $user->delete($_SESSION['userData']['id']);
-                    echo "Votre profil a été supprimé";
-                    // Effectuer une redirection ou afficher un message de succès
+        
+            $form = new DeleteProfile();
+            $view = new View("Forms/form", "front");
+            $view->assign('form', $form->getConfig()); 
+        
+            if ($form->isSubmit()) {
+                $errors = Security::form($form->getConfig(), $_POST);
+                if (empty($errors)) {
+                    // Vérifier si la confirmation de suppression a été renseignée
+                    if (isset($_POST['deleteThisProfile']) && $_POST['deleteThisProfile'] === 'deleteThisProfile') {
+                        $user = new User();
+                        var_dump($_SESSION['userData']['id']);
+                        $user->delete($_SESSION['userData']['id']);
+                        echo "Votre profil a été supprimé";
+                        // Effectuer une redirection ou afficher un message de succès
+                    } else {
+                        echo "Veuillez confirmer la suppression en saisissant 'deleteThisProfile'";
+                        // Afficher un message d'erreur ou rediriger vers la page de suppression du profil
+                    }
                 } else {
-                    echo "Veuillez confirmer la suppression en saisissant 'deleteThisProfile'";
-                    // Afficher un message d'erreur ou rediriger vers la page de suppression du profil
+                    $view->assign('errors', $errors);
+                }
+            }
+        }
+
+        public function userModifyProfile() {
+
+            if (isset($_SESSION['userData'])) {
+
+                $userData = $_SESSION['userData'];
+                $form = new ModifyProfile;
+                $view = new View("Forms/form", "front");
+                $view->assign('form', $form->getConfig());
+                $isModifyForm = true;
+                $view->assign('isModifyForm', $isModifyForm);
+            
+                if ($form->isSubmit()) {
+                    $errors = Security::form($form->getConfig(), $_POST);
+                    if (empty($errors)) {
+                        $user = new User();
+            
+                        // Génération d'un nouveau token tronqué
+                        $newCompleteToken = Security::generateCompleteToken();
+                        $newTruncatedToken = Security::staticgenerateTruncatedToken($newCompleteToken);
+            
+                        $user->hydrate(
+                            $userData['id'],
+                            $userData['id_role'],
+                            Security::securiser($_POST['firstname']),
+                            Security::securiser($_POST['lastname']),
+                            Security::securiser($_POST['pseudo']),
+                            Security::securiser($_POST['email']),
+                            Security::securiser($_POST['phone']),
+                            Security::securiser($_POST['birth_date']),
+                            Security::securiser($_POST['address']),
+                            Security::securiser($_POST['zip_code']),
+                            Security::securiser($_POST['country']),
+                            Security::hashPassword($_POST['pwd']),
+                            Security::securiser($_POST['thumbnail']),
+                            $newTruncatedToken // Assignez le nouveau token tronqué à la propriété correspondante dans la classe User
+                        );
+            
+                        // Stockage du nouveau token tronqué dans la session de l'utilisateur
+                        $_SESSION['userData']['token_hash'] = $newTruncatedToken;
+
+                        // Stockage du nouveau token tronqué dans un cookie côté client
+                        setcookie('user_token', $newTruncatedToken, time() + (86400 * 30), '/'); // Expire dans 30 jours
+            
+                        $user->save();
+                        echo "Mise à jour réussie";
+                        // Redirection
+                    } else {
+                        $view->assign('errors', $errors);
+                    }
                 }
             } else {
-                $view->assign('errors', $errors);
+                $message = "Veuillez vous connecter afin de pouvoir modifier votre profil !";
+                header('Location: /?message=' . urlencode($message));
             }
-        }
-    }
-
-    public function userModifyProfile() {
-        $userData = $_SESSION['userData'];
-        $form = new ModifyProfile;
-        $view = new View("Forms/form", "front");
-        $view->assign('form', $form->getConfig());
-        $isModifyForm = true;
-        $view->assign('isModifyForm', $isModifyForm);
-    
-        if ($form->isSubmit()) {
-            $errors = Security::form($form->getConfig(), $_POST);
-            if (empty($errors)) {
-                $user = new User();
-    
-                // Génération d'un nouveau token tronqué
-                $newCompleteToken = Security::generateCompleteToken();
-                $newTruncatedToken = Security::staticgenerateTruncatedToken($newCompleteToken);
-    
-                $user->hydrate(
-                    $userData['id'],
-                    $userData['id_role'],
-                    Security::securiser($_POST['firstname']),
-                    Security::securiser($_POST['lastname']),
-                    Security::securiser($_POST['pseudo']),
-                    Security::securiser($_POST['email']),
-                    Security::securiser($_POST['phone']),
-                    Security::securiser($_POST['birth_date']),
-                    Security::securiser($_POST['address']),
-                    Security::securiser($_POST['zip_code']),
-                    Security::securiser($_POST['country']),
-                    Security::hashPassword($_POST['pwd']),
-                    Security::securiser($_POST['thumbnail']),
-                    $newTruncatedToken // Assignez le nouveau token tronqué à la propriété correspondante dans la classe User
-                );
-    
-                // Stockage du nouveau token tronqué dans la session de l'utilisateur
-                $_SESSION['userData']['token_hash'] = $newTruncatedToken;
-
-                // Stockage du nouveau token tronqué dans un cookie côté client
-                setcookie('user_token', $newTruncatedToken, time() + (86400 * 30), '/'); // Expire dans 30 jours
-    
-                $user->save();
-                echo "Mise à jour réussie";
-                // Redirection
-            } else {
-                $view->assign('errors', $errors);
-            }
-        }
     }
 
     public function showLoginForm() {
+        
         $form = new LoginUser;
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
@@ -136,8 +145,7 @@ class UserController {
                     setcookie('user_token', $newTruncatedToken, time() + (86400 * 30), '/'); // Expire dans 30 jours
     
                     echo "Connecté avec succès";
-                    // Redirection vers la page d'accueil ou le tableau de bord de l'utilisateur
-                    // header('Location: /');
+                    header('Location: /userinterface');
                 } else {
                     echo "Échec de la connexion";
                 }
@@ -177,10 +185,9 @@ class UserController {
                     Security::securiser($_POST['country']),
                     $hashedPassword,
                     Security::securiser($_POST['thumbnail']),
-                    $truncatedToken // Assignez le jeton tronqué à la propriété correspondante dans la classe User
+                    $truncatedToken 
                 );
     
-                // Enregistrement de l'utilisateur dans la base de données
                 $user->save();
                 echo "Insertion en BDD";
             } else {
@@ -191,12 +198,17 @@ class UserController {
     
 
     public function userInterface() {
+
+        if ($_SESSION['userData']['id_role'] == 1) {
         $view = new View("User/userInterface", "front");
-        // Consider rendering or returning the view here.
+        } else {
+            $message = "Veuillez vous connecter afin de pouvoir accèder à votre interface.";
+            header('Location: /?message=' . urlencode($message));
+        }
     }
 
     public function contact() {
         $view = new View("User/contact", "front");
-        // Consider rendering or returning the view here.
     }
 }
+

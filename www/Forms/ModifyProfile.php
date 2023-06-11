@@ -28,7 +28,7 @@ class ModifyProfile extends AForm {
                     "placeholder" => "Votre prénom",
                     "min" => 2,
                     "max" => 256,
-                    "value" => $_SESSION['userData']['firstname'],
+                    "value" => ['userData']['firstname'],
                     "error" => "Votre prénom doit faire entre 2 et 256 caractères"
                 ],
                 "lastname" => [
