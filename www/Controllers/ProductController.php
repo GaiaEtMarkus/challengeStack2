@@ -26,40 +26,46 @@ class ProductController {
 
     public function createProduct(): void {
 
-        $form = new AddProduct();
-        $view = new View("Forms/form", "front");
-        $view->assign('form', $form->getConfig());
-        $isModifyForm = false; 
-        $view->assign('isModifyForm', $isModifyForm);
+        if (isset($_SESSION['userData'])) {
+
+            $form = new AddProduct();
+            $view = new View("Forms/form", "front");
+            $view->assign('form', $form->getConfig());
+            $isModifyForm = false; 
+            $view->assign('isModifyForm', $isModifyForm);
 
 
-        if($form->isSubmit()){
+            if($form->isSubmit()){
 
-            $id = null ;
-            $product = new Product();
-            $categoryName = Security::securiser($_POST['id_category']);
-            $categoryOptions = $_SESSION['categoryOptions'];
-            $id_category = array_search($categoryName, array_column($categoryOptions, 'value'));
-            $errors = Security::form($form->getConfig(), $_POST);
-            $trokos = 0;
-
-            if(empty($errors)){
+                $id = null ;
                 $product = new Product();
-                $product->hydrate(
-                    $id,
-                    $id_category, 
-                    $_SESSION['userData']['id'], 
-                    Security::securiser($_POST['titre']), 
-                    Security::securiser($_POST['description']), 
-                    $trokos, 
-                    Security::securiser($_POST['thumbnail']), 
-                );
-                $product->save();
-                echo "Insertion en BDD";
-            } else{
-                $view->assign('errors', $errors);
-            }
-        }
-    }
+                $categoryName = Security::securiser($_POST['id_category']);
+                $categoryOptions = $_SESSION['categoryOptions'];
+                $id_category = array_search($categoryName, array_column($categoryOptions, 'value'));
+                $errors = Security::form($form->getConfig(), $_POST);
+                $trokos = 0;
 
+                if(empty($errors)){
+                    $product = new Product();
+                    $product->hydrate(
+                        $id,
+                        $id_category, 
+                        $_SESSION['userData']['id'], 
+                        Security::securiser($_POST['titre']), 
+                        Security::securiser($_POST['description']), 
+                        $trokos, 
+                        Security::securiser($_POST['thumbnail']), 
+                    );
+                    $product->save();
+                    echo "Insertion en BDD";
+                } else{
+                    $view->assign('errors', $errors);
+                }
+            }
+    } else {
+        $message = "Veuillez vous connecter afin de pouvoir créer un produit.";
+        header('Location: /?message=' . urlencode($message));
+        exit;
+    }
+    }
 }

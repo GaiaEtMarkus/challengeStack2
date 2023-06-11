@@ -15,6 +15,13 @@
 
 <h1>Bienvenue sur votre site de e-tournois !</h1>
 
+<?php
+$message = $_GET['message'] ?? '';
+if (!empty($message)) {
+    echo $message;
+}
+?>
+<br>
 <?php include $this->view; ?>
 <!-- <?php include $this->view . '.view.php'; ?> -->
 

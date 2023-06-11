@@ -18,12 +18,15 @@
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="/contact">Contact</a>
                 </li>
+                <?php if (!isset($_SESSION['userData'])): ?>
                 <li class="nav-item">
-                    <a class="nav-link text-danger" href="/login">Se connecter</a>
+                <a class="nav-link text-danger" href="/login">Se connecter</a>
                 </li>
+                <?php else: ?>
                 <li class="nav-item">
-                    <a class="nav-link text-danger" href="/deconnexion">Se deconnecter</a>
+                <a class="nav-link text-danger" href="/deconnexion">Se deconnecter</a>
                 </li>
+                <?php endif; ?>
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="/usermodifyprofile">Modifier ses infos</a>
                 </li>
