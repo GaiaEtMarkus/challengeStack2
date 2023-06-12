@@ -43,16 +43,13 @@ class UserController {
             if ($form->isSubmit()) {
                 $errors = Security::form($form->getConfig(), $_POST);
                 if (empty($errors)) {
-                    // Vérifier si la confirmation de suppression a été renseignée
                     if (isset($_POST['deleteThisProfile']) && $_POST['deleteThisProfile'] === 'deleteThisProfile') {
                         $user = new User();
                         var_dump($_SESSION['userData']['id']);
                         $user->delete($_SESSION['userData']['id']);
                         echo "Votre profil a été supprimé";
-                        // Effectuer une redirection ou afficher un message de succès
                     } else {
                         echo "Veuillez confirmer la suppression en saisissant 'deleteThisProfile'";
-                        // Afficher un message d'erreur ou rediriger vers la page de suppression du profil
                     }
                 } else {
                     $view->assign('errors', $errors);
@@ -213,8 +210,6 @@ class UserController {
             }
         }
     }
-    
-    
 
     public function userInterface()
     {

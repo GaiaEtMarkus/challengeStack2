@@ -98,7 +98,6 @@ abstract class Sql{
     {
         $query = 'SELECT * FROM "Product" WHERE id_seller = :userId';
         $params = [':userId' => $userId];
-    
         $queryPrepared = $this->pdo->prepare($query);
         $queryPrepared->execute($params);
     

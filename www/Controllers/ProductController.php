@@ -41,7 +41,8 @@ class ProductController {
                 $product = new Product();
                 $categoryName = Security::securiser($_POST['id_category']);
                 $categoryOptions = $_SESSION['categoryOptions'];
-                $id_category = array_search($categoryName, array_column($categoryOptions, 'value'));
+                var_dump($categoryOptions); // Ajout du var_dump pour déboguer la valeur de $categoryOptions
+                $id_category = array_search($categoryName, array_column($categoryOptions, 'value')) + 1 ;
                 $errors = Security::form($form->getConfig(), $_POST);
                 $trokos = 0;
 
@@ -78,4 +79,18 @@ class ProductController {
         exit;
     }
     }
+
+    public function deleteProduct(): void
+    {
+        $productId = $_POST['productId'];
+        var_dump($_GET['productId']);
+
+        $product = new Product();
+        $product->delete($productId);
+        
+        $message = "Le produit a été supprimé avec succès.";
+        header('Location: /userInterface?message=' . urlencode($message));
+    }
+    
+
 }
