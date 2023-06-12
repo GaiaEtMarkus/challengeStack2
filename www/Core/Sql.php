@@ -93,4 +93,17 @@ abstract class Sql{
     
         return $result;
     }
+
+    public function getProductsByUserId(int $userId): array
+    {
+        $query = 'SELECT * FROM "Product" WHERE id_seller = :userId';
+        $params = [':userId' => $userId];
+    
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);
+    
+        return $queryPrepared->fetchAll(\PDO::FETCH_ASSOC);
+    }
+    
+    
 }

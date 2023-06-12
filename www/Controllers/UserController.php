@@ -216,15 +216,20 @@ class UserController {
     
     
 
-    public function userInterface() {
-
+    public function userInterface()
+    {
         if ($_SESSION['userData']['id_role'] == 1) {
-        $view = new View("User/userInterface", "front");
+            $userId = $_SESSION['userData']['id'];
+            $user = new User();
+            $products = $user->getProductsByUserId($userId);
+            $view = new View("User/userInterface", "front");
+            $view->assign('products', $products);
         } else {
-            $message = "Veuillez vous connecter afin de pouvoir accèder à votre interface.";
+            $message = "Veuillez vous connecter afin de pouvoir accéder à votre interface.";
             header('Location: /?message=' . urlencode($message));
         }
     }
+    
 
     public function contact() {
         $view = new View("User/contact", "front");
