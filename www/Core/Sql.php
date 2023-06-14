@@ -45,7 +45,7 @@ abstract class Sql{
         }else{
             $queryPrepared = $this->pdo->prepare("INSERT INTO \"".$this->table."\" (".implode(",", array_keys($columns)).") 
                             VALUES (:".implode(",:", array_keys($columns)).")");
-            // var_dump($queryPrepared);
+            var_dump($queryPrepared);
         }
     
         var_dump($queryPrepared->queryString); // Ajouter cette ligne pour afficher la requête préparée
@@ -103,6 +103,23 @@ abstract class Sql{
     
         return $queryPrepared->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    public function getProductById(int $productId): ?array
+    {
+    $query = 'SELECT * FROM "Product" WHERE id = :productId';
+    $params = [':productId' => $productId];
+    $queryPrepared = $this->pdo->prepare($query);
+    $queryPrepared->execute($params);
+
+    $result = $queryPrepared->fetch(\PDO::FETCH_ASSOC);
+
+    if ($result === false) {
+        return null;
+    }
+
+    return $result;
+    }
+
     
     
 }

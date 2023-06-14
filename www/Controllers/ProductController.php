@@ -9,6 +9,7 @@ use App\Forms\LoginUser;
 use App\Forms\ModifyProfile;
 use App\Forms\DeleteProfile;
 use App\Models\Product;
+use App\Forms\ModifyProduct;
 
 class ProductController {
     
@@ -31,8 +32,6 @@ class ProductController {
             $form = new AddProduct();
             $view = new View("Forms/form", "front");
             $view->assign('form', $form->getConfig());
-            $isModifyForm = false; 
-            $view->assign('isModifyForm', $isModifyForm);
 
 
             if($form->isSubmit()){
@@ -50,12 +49,14 @@ class ProductController {
 
                     $thumbnail = $_FILES['thumbnail'] ?? null;
                     if ($thumbnail && $thumbnail['error'] === UPLOAD_ERR_OK) {
-                        $thumbnailPath = './assets/userProfile/' . $thumbnail['name'];
+                        $thumbnailPath = './assets/product/' . $thumbnail['name'];
                         var_dump($thumbnailPath); // Ajout du var_dump pour déboguer la valeur de $thumbnail
                         move_uploaded_file($thumbnail['tmp_name'], $thumbnailPath);
                     } else {
                         $thumbnailPath = null; // Pas de fichier téléchargé
                     }
+                            
+                    var_dump($thumbnail); // Ajout du var_dump pour déboguer la valeur de $thumbnail
 
                     $product = new Product();
                     $product->hydrate(
@@ -80,16 +81,56 @@ class ProductController {
     }
     }
 
+    public function modifyProduct()
+    {
+        if (isset($_SESSION['userData'])) {
+            $form = new ModifyProduct;
+            $view = new View("Forms/form", "front");
+            $product = new Product();
+            $productData = $_SESSION['productData'];
+            unset($_SESSION['productData']);
+            var_dump($productData);
+            $view->assign('form', $form->getConfig($_POST['productId']));
+    
+            if ($form->isSubmit()) {
+                $errors = Security::form($form->getConfig(), $_POST);
+                if (empty($errors)) {
+
+                    $product->hydrate(
+                    $productData['id'],
+                    $productData['id_category'],
+                    $productData['id_seller'],
+                    Security::securiser($_POST['title']),
+                    Security::securiser($_POST['description']),
+                    $productData['trokos'],
+                    Security::securiser($_POST['thumbnail'])
+                );
+                    $product->save();
+    
+                    echo "Mise à jour réussie";
+                    // Redirection
+                } else {
+                    $view->assign('errors', $errors);
+                }
+            }
+    
+            // Assignez les données du produit à la vue
+            $view->assign('productData', $productData);
+        } else {
+            $message = "Veuillez vous connecter afin de pouvoir modifier le produit !";
+            header('Location: /?message=' . urlencode($message));
+        }
+    }
+    
     public function deleteProduct(): void
     {
         $productId = $_POST['productId'];
-        var_dump($_GET['productId']);
-
+        var_dump($productId); // Ajout du var_dump pour déboguer la valeur de $productId
         $product = new Product();
         $product->delete($productId);
         
         $message = "Le produit a été supprimé avec succès.";
-        header('Location: /userInterface?message=' . urlencode($message));
+        // header('Location: /userInterface?message=' . urlencode($message));
     }
     
 

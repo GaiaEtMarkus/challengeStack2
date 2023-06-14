@@ -65,8 +65,6 @@ class UserController {
                 $form = new ModifyProfile;
                 $view = new View("Forms/form", "front");
                 $view->assign('form', $form->getConfig());
-                $isModifyForm = true;
-                $view->assign('isModifyForm', $isModifyForm);
             
                 if ($form->isSubmit()) {
                     $errors = Security::form($form->getConfig(), $_POST);
@@ -118,8 +116,6 @@ class UserController {
         $form = new LoginUser;
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
-        $isModifyForm = false; 
-        $view->assign('isModifyForm', $isModifyForm);
     
         if ($form->isSubmit()) {
             $errors = Security::form($form->getConfig(), $_POST);
@@ -156,8 +152,6 @@ class UserController {
         $form = new AddUser();
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
-        $isModifyForm = false;
-        $view->assign('isModifyForm', $isModifyForm);
     
         if ($form->isSubmit()) {
             $errors = Security::form($form->getConfig(), $_POST);
@@ -179,7 +173,8 @@ class UserController {
                         var_dump($thumbnailPath); // Ajout du var_dump pour déboguer la valeur de $thumbnail
                         move_uploaded_file($thumbnail['tmp_name'], $thumbnailPath);
                     } else {
-                        $thumbnailPath = null; // Pas de fichier téléchargé
+                        $thumbnailPath = null; 
+                        echo('error');// Pas de fichier téléchargé
                     }
 
                     var_dump($thumbnail); // Ajout du var_dump pour déboguer la valeur de $thumbnail

@@ -60,4 +60,9 @@ return [
         'controller' => 'Product',
         'action' => 'deleteProduct'
     ],
+
+    '/modifyproduct' => [
+        'controller' => 'Product',
+        'action' => 'modifyProduct'
+    ],
 ];
