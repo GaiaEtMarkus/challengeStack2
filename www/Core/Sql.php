@@ -52,7 +52,6 @@ abstract class Sql{
         var_dump($columns); // Affiche les données à lier
         $queryPrepared->execute($columns);
     }
-    
 
     public function login($email, $password)
     {
@@ -80,7 +79,6 @@ abstract class Sql{
     {
         $queryPrepared = $this->pdo->prepare('DELETE FROM "' . $this->table . '" WHERE id = :id');
         $queryPrepared->execute([':id' => $id]);
-        var_dump($queryPrepared->queryString);
     }
     
     public function getAllFromTable($tableName)
@@ -88,9 +86,7 @@ abstract class Sql{
         $queryPrepared = $this->pdo->prepare("SELECT * FROM \"$tableName\"");
         $queryPrepared->execute();
         $result = $queryPrepared->fetchAll(\PDO::FETCH_ASSOC);
-        
-        // var_dump($result); // Ajoutez var_dump ici pour afficher le résultat
-    
+            
         return $result;
     }
 
@@ -106,20 +102,17 @@ abstract class Sql{
 
     public function getProductById(int $productId): ?array
     {
-    $query = 'SELECT * FROM "Product" WHERE id = :productId';
-    $params = [':productId' => $productId];
-    $queryPrepared = $this->pdo->prepare($query);
-    // var_dump($queryPrepared);
-    $queryPrepared->execute($params);
+        $query = 'SELECT * FROM "Product" WHERE id = :productId';
+        $params = [':productId' => $productId];
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);
+        $result = $queryPrepared->fetch(\PDO::FETCH_ASSOC);
 
-    $result = $queryPrepared->fetch(\PDO::FETCH_ASSOC);
-    // var_dump($result);
-
-    if ($result === false) {
-        return null;
-    }
-
-    return $result;
+        if ($result === false) {
+            return null;
+        }
+        
+        return $result;
     }
 
     

@@ -55,10 +55,17 @@ class ModifyProduct extends AForm {
                     "value" => $productData['description']
                 ],
                 "thumbnail" => [
-                    "type" => "text",
-                    "error" => "Une erreur est survenue avec la valeur thumbnail",
+                    "type" => "file", 
+                    "error" => "Une erreur est survenue lors du téléchargement du fichier",
                     "placeholder" => "Chemin de la photo de produit",
+                    "required" => false,
+                    "value" => $productData['thumbnail']
+                ],
+                "thumbnail_old" => [
+                    "type" => "hidden",
                     "required" => true,
+                    "error" => "",
+                    "placeholder" => "",
                     "value" => $productData['thumbnail']
                 ],
                 "productId" => [

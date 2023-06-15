@@ -6,11 +6,9 @@ use App\Core\View;
 
 class ModifyProfile extends AForm {
     
-
     protected $method = "POST";
 
-    public function getConfig(): array
-    
+    public function getConfig(): array  
     {        
         $countries = View::buildCountryOptions();
 

@@ -84,29 +84,35 @@ class ProductController {
     public function modifyProduct()
     {
         $productId = intval($_POST['productId']);
-
+    
         if (isset($_SESSION['userData'])) {
             $form = new ModifyProduct;
             $view = new View("Forms/form", "front");
             $product = new Product();
             $productData = $product->getProductById($productId);
-            // var_dump($productData);
+            var_dump($productData);
             $_SESSION['productData'] = $productData;
             $view->assign('form', $form->getConfig($productData));
     
             if ($form->isSubmit()) {
                 $errors = Security::form($form->getConfig(), $_POST);
                 if (empty($errors)) {
-
+                    $thumbnail = $_FILES['thumbnail_old'] ?? null;
+                    $thumbnailPath = $thumbnail ? './assets/product/' . $thumbnail['name'] : $productData['thumbnail'];
+    
+                    if ($thumbnail && $thumbnail['error'] === UPLOAD_ERR_OK) {
+                        move_uploaded_file($thumbnail['tmp_name'], $thumbnailPath);
+                    }
+    
                     $product->hydrate(
-                    $productData['id'],
-                    $productData['id_category'],
-                    $productData['id_seller'],
-                    Security::securiser($_POST['title']),
-                    Security::securiser($_POST['description']),
-                    $productData['trokos'],
-                    Security::securiser($_POST['thumbnail'])
-                );
+                        $productData['id'],
+                        $productData['id_category'],
+                        $productData['id_seller'],
+                        Security::securiser($_POST['title']),
+                        Security::securiser($_POST['description']),
+                        $productData['trokos'],
+                        $thumbnailPath,
+                    );
                     $product->save();
     
                     echo "Mise à jour réussie";
@@ -123,6 +129,7 @@ class ProductController {
             header('Location: /?message=' . urlencode($message));
         }
     }
+    
     
     public function deleteProduct(): void
     {
