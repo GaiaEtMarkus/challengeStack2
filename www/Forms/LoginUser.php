@@ -19,11 +19,13 @@ class LoginUser extends AForm {
                 "email" => [
                     "type" => "email",
                     "placeholder" => "Email",
+                    "required"=>true,
                     "error" => "Veuillez entrer un email valide"
                 ],
                 "pwd" => [
                     "type" => "password",
                     "placeholder" => "Mot de passe",
+                    "required"=>true,
                     "error" => "Veuillez entrer un mot de passe valide"
                 ]
             ]

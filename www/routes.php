@@ -55,4 +55,14 @@ return [
         'controller' => 'Product',
         'action' => 'createProduct'
     ],
+
+    '/deleteproduct' => [
+        'controller' => 'Product',
+        'action' => 'deleteProduct'
+    ],
+
+    '/modifyproduct' => [
+        'controller' => 'Product',
+        'action' => 'modifyProduct'
+    ],
 ];

@@ -7,4 +7,4 @@
     print_r($errors??null);
     ?>
 
-    <?php $this->form("form", $form, $isModifyForm);?>
+    <?php $this->form("form", $form);?>

@@ -43,16 +43,13 @@ class UserController {
             if ($form->isSubmit()) {
                 $errors = Security::form($form->getConfig(), $_POST);
                 if (empty($errors)) {
-                    // Vérifier si la confirmation de suppression a été renseignée
                     if (isset($_POST['deleteThisProfile']) && $_POST['deleteThisProfile'] === 'deleteThisProfile') {
                         $user = new User();
                         var_dump($_SESSION['userData']['id']);
                         $user->delete($_SESSION['userData']['id']);
                         echo "Votre profil a été supprimé";
-                        // Effectuer une redirection ou afficher un message de succès
                     } else {
                         echo "Veuillez confirmer la suppression en saisissant 'deleteThisProfile'";
-                        // Afficher un message d'erreur ou rediriger vers la page de suppression du profil
                     }
                 } else {
                     $view->assign('errors', $errors);
@@ -68,8 +65,6 @@ class UserController {
                 $form = new ModifyProfile;
                 $view = new View("Forms/form", "front");
                 $view->assign('form', $form->getConfig());
-                $isModifyForm = true;
-                $view->assign('isModifyForm', $isModifyForm);
             
                 if ($form->isSubmit()) {
                     $errors = Security::form($form->getConfig(), $_POST);
@@ -121,8 +116,6 @@ class UserController {
         $form = new LoginUser;
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
-        $isModifyForm = false; 
-        $view->assign('isModifyForm', $isModifyForm);
     
         if ($form->isSubmit()) {
             $errors = Security::form($form->getConfig(), $_POST);
@@ -159,8 +152,6 @@ class UserController {
         $form = new AddUser();
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
-        $isModifyForm = false;
-        $view->assign('isModifyForm', $isModifyForm);
     
         if ($form->isSubmit()) {
             $errors = Security::form($form->getConfig(), $_POST);
@@ -182,7 +173,8 @@ class UserController {
                         var_dump($thumbnailPath); // Ajout du var_dump pour déboguer la valeur de $thumbnail
                         move_uploaded_file($thumbnail['tmp_name'], $thumbnailPath);
                     } else {
-                        $thumbnailPath = null; // Pas de fichier téléchargé
+                        $thumbnailPath = null; 
+                        echo('error');// Pas de fichier téléchargé
                     }
 
                     var_dump($thumbnail); // Ajout du var_dump pour déboguer la valeur de $thumbnail
@@ -213,18 +205,21 @@ class UserController {
             }
         }
     }
-    
-    
 
-    public function userInterface() {
-
+    public function userInterface()
+    {
         if ($_SESSION['userData']['id_role'] == 1) {
-        $view = new View("User/userInterface", "front");
+            $userId = $_SESSION['userData']['id'];
+            $user = new User();
+            $products = $user->getProductsByUserId($userId);
+            $view = new View("User/userInterface", "front");
+            $view->assign('products', $products);
         } else {
-            $message = "Veuillez vous connecter afin de pouvoir accèder à votre interface.";
+            $message = "Veuillez vous connecter afin de pouvoir accéder à votre interface.";
             header('Location: /?message=' . urlencode($message));
         }
     }
+    
 
     public function contact() {
         $view = new View("User/contact", "front");

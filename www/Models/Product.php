@@ -8,19 +8,19 @@ class Product extends Sql{
     protected int $id = 0;
     protected int $id_category = 1;
     protected int $id_seller = 1;
-    protected string $titre;
+    protected string $title;
     protected string $description;
     protected string $thumbnail;
     protected int $trokos;
 
-    public function hydrate($id = null,  $id_category, $id_seller, $titre, $description, $trokos, $thumbnail) 
+    public function hydrate($id = null,  $id_category, $id_seller, $title, $description, $trokos, $thumbnail) 
     {
         if ($id !== null) {
             $this->setId($id);
         }
         $this->setId_category($id_category);
         $this->setId_Seller($id_seller);
-        $this->setTitre($titre);
+        $this->setTitle($title);
         $this->setDescription($description);
         $this->setTrokos($trokos);
         $this->setThumbnail($thumbnail);
@@ -98,9 +98,9 @@ class Product extends Sql{
     /**
      * Get the value of titre
      */ 
-    public function getTitre()
+    public function getTitle()
     {
-        return $this->titre;
+        return $this->title;
     }
 
     /**
@@ -108,9 +108,9 @@ class Product extends Sql{
      *
      * @return  self
      */ 
-    public function setTitre($titre)
+    public function setTitle($title)
     {
-        $this->titre = $titre;
+        $this->title = $title;
 
         return $this;
     }
