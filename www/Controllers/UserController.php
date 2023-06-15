@@ -57,47 +57,68 @@ class UserController {
             }
         }
 
-        public function userModifyProfile() {
-
+        public function userModifyProfile()
+        {
             if (isset($_SESSION['userData'])) {
-
                 $userData = $_SESSION['userData'];
                 $form = new ModifyProfile;
                 $view = new View("Forms/form", "front");
                 $view->assign('form', $form->getConfig());
-            
+        
                 if ($form->isSubmit()) {
                     $errors = Security::form($form->getConfig(), $_POST);
                     if (empty($errors)) {
                         $user = new User();
-            
+        
                         // Génération d'un nouveau token tronqué
                         $newCompleteToken = Security::generateCompleteToken();
                         $newTruncatedToken = Security::staticgenerateTruncatedToken($newCompleteToken);
-            
+        
+                        $thumbnail = $_FILES['thumbnail'] ?? null;
+                        $thumbnailPath = $thumbnail ? './assets/UserProfile/' . $thumbnail['name'] : $_SESSION['userData']['thumbnail'];
+        
+                        if ($thumbnail && $thumbnail['error'] === UPLOAD_ERR_OK) {
+                            move_uploaded_file($thumbnail['tmp_name'], $thumbnailPath);
+                        } elseif (!$thumbnail || $thumbnail['error'] === UPLOAD_ERR_NO_FILE) {
+                            $oldThumbnail = $_SESSION['userData']['thumbnail'];
+                            $thumbnailPath = !empty($oldThumbnail) ? $oldThumbnail : null;
+                        }
+        
+                        $userData['firstname'] = Security::securiser($_POST['firstname']);
+                        $userData['lastname'] = Security::securiser($_POST['lastname']);
+                        $userData['pseudo'] = Security::securiser($_POST['pseudo']);
+                        $userData['email'] = Security::securiser($_POST['email']);
+                        $userData['phone'] = Security::securiser($_POST['phone']);
+                        $userData['birth_date'] = Security::securiser($_POST['birth_date']);
+                        $userData['address'] = Security::securiser($_POST['address']);
+                        $userData['zip_code'] = Security::securiser($_POST['zip_code']);
+                        $userData['country'] = Security::securiser($_POST['country']);
+                        $userData['thumbnail'] = $thumbnailPath;
+        
                         $user->hydrate(
                             $userData['id'],
                             $userData['id_role'],
-                            Security::securiser($_POST['firstname']),
-                            Security::securiser($_POST['lastname']),
-                            Security::securiser($_POST['pseudo']),
-                            Security::securiser($_POST['email']),
-                            Security::securiser($_POST['phone']),
-                            Security::securiser($_POST['birth_date']),
-                            Security::securiser($_POST['address']),
-                            Security::securiser($_POST['zip_code']),
-                            Security::securiser($_POST['country']),
+                            $userData['firstname'],
+                            $userData['lastname'],
+                            $userData['pseudo'],
+                            $userData['email'],
+                            $userData['phone'],
+                            $userData['birth_date'],
+                            $userData['address'],
+                            $userData['zip_code'],
+                            $userData['country'],
                             Security::hashPassword($_POST['pwd']),
-                            Security::securiser($_POST['thumbnail']),
-                            $newTruncatedToken // Assignez le nouveau token tronqué à la propriété correspondante dans la classe User
+                            $thumbnailPath,
+                            $newTruncatedToken
                         );
-            
+        
                         // Stockage du nouveau token tronqué dans la session de l'utilisateur
-                        $_SESSION['userData']['token_hash'] = $newTruncatedToken;
-
-                        // Stockage du nouveau token tronqué dans un cookie côté client
+                        $userData['token_hash'] = $newTruncatedToken;
+                        $_SESSION['userData'] = $userData;
+        
+                        // Stockage du nouveau token tronqué dans un cookie
                         setcookie('user_token', $newTruncatedToken, time() + (86400 * 30), '/'); // Expire dans 30 jours
-            
+        
                         $user->save();
                         echo "Mise à jour réussie";
                         // Redirection
@@ -109,7 +130,9 @@ class UserController {
                 $message = "Veuillez vous connecter afin de pouvoir modifier votre profil !";
                 header('Location: /?message=' . urlencode($message));
             }
-    }
+        }
+        
+        
 
     public function showLoginForm() {
         
