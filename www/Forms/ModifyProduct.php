@@ -9,19 +9,30 @@ class ModifyProduct extends AForm {
     protected $method = "POST";
 
     public function getConfig(): array
-    {           
+    {
         $productData = $_SESSION['productData'];
-
+    
         $product = new Product();
         $categories = $product->getCategories();
         $categoryOptions = [];
-
+    
         if (is_array($categories) && !empty($categories)) {
             foreach ($categories as $category) {
-                $selected = $category['name'] === $_SESSION['productData']['id_category'] ? true : false;
+                $selected = $category['id'] === $_SESSION['productData']['id_category'] ? true : false;
                 $categoryOptions[] = ['value' => $category['name'], 'selected' => $selected];
             }
         }
+    
+        $selectedCategory = $_SESSION['productData']['id_category'];
+        $defaultCategory = null;
+    
+        foreach ($categoryOptions as $option) {
+            if ($option['selected']) {
+                $defaultCategory = $option['value'];
+                break;
+            }
+        }
+    
 
         return [
             "config" => [
@@ -36,7 +47,8 @@ class ModifyProduct extends AForm {
                     "type" => "select",
                     "options" => $categoryOptions,
                     "required" => true,
-                    "error" => "La catégorie est requise"
+                    "error" => "La catégorie est requise",
+                    "value" => $defaultCategory
                 ],
                 "title" => [
                     "type" => "text",

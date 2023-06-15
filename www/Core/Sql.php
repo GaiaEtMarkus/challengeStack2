@@ -115,6 +115,19 @@ abstract class Sql{
         return $result;
     }
 
-    
+    public function getCategoryNameById($categoryId)
+    {
+        $queryPrepared = $this->pdo->prepare("SELECT name FROM \"Category\" WHERE id = :categoryId");
+        $queryPrepared->bindValue(':categoryId', $categoryId, \PDO::PARAM_INT);
+        $queryPrepared->execute();
+        $result = $queryPrepared->fetch(\PDO::FETCH_ASSOC);
+
+        if ($result) {
+            return $result['name'];
+        } else {
+            return null;
+        }
+    }
+
     
 }

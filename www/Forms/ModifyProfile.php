@@ -103,15 +103,23 @@ class ModifyProfile extends AForm {
                     "type" => "select",
                     "options" => $countries,
                     "required" => true,
-                    "error" => "Pays incorrect"
+                    "error" => "Pays incorrect",
+                    "value" => $_SESSION['userData']['country'],
                 ],
                 "thumbnail" => [
-                    "type" => "text",
+                    "type" => "file",
                     "error" => "Une erreur est survenue avec la valeur thumnbail",
                     "placeholder" => "Chemin de la photo de profil",
-                    "required" => true,
+                    "required" => false,
                     "value" => $_SESSION['userData']['thumbnail'],
-                ]
+                ],
+                "thumbnail_old" => [
+                    "type" => "hidden",
+                    "required" => true,
+                    "error" => "",
+                    "placeholder" => "",
+                    "value" => $_SESSION['userData']['thumbnail'],
+                ],
             ]
         ];
     }
