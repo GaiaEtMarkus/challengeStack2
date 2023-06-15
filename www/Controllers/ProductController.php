@@ -83,14 +83,16 @@ class ProductController {
 
     public function modifyProduct()
     {
+        $productId = intval($_POST['productId']);
+
         if (isset($_SESSION['userData'])) {
             $form = new ModifyProduct;
             $view = new View("Forms/form", "front");
             $product = new Product();
-            $productData = $_SESSION['productData'];
-            unset($_SESSION['productData']);
-            var_dump($productData);
-            $view->assign('form', $form->getConfig($_POST['productId']));
+            $productData = $product->getProductById($productId);
+            // var_dump($productData);
+            $_SESSION['productData'] = $productData;
+            $view->assign('form', $form->getConfig($productData));
     
             if ($form->isSubmit()) {
                 $errors = Security::form($form->getConfig(), $_POST);

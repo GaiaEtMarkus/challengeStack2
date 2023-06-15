@@ -109,9 +109,11 @@ abstract class Sql{
     $query = 'SELECT * FROM "Product" WHERE id = :productId';
     $params = [':productId' => $productId];
     $queryPrepared = $this->pdo->prepare($query);
+    // var_dump($queryPrepared);
     $queryPrepared->execute($params);
 
     $result = $queryPrepared->fetch(\PDO::FETCH_ASSOC);
+    // var_dump($result);
 
     if ($result === false) {
         return null;

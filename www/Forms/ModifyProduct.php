@@ -63,6 +63,8 @@ class ModifyProduct extends AForm {
                 ],
                 "productId" => [
                     "type" => "hidden",
+                    "error" => "",
+                    "placeholder" => "",
                     "required" => true,
                     "value" => $productData['id']
                 ]
