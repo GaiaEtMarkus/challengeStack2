@@ -65,4 +65,24 @@ return [
         'controller' => 'Product',
         'action' => 'modifyProduct'
     ],
+
+    '/displaynewusers' => [
+        'controller' => 'Moderator',
+        'action' => 'displaynewusers'
+    ],
+
+    '/validuser' => [
+        'controller' => 'Moderator',
+        'action' => 'validuser'
+    ],
+
+    '/displaynewproducts' => [
+        'controller' => 'Moderator',
+        'action' => 'displaynewproducts'
+    ],
+
+    '/validproduct' => [
+        'controller' => 'Moderator',
+        'action' => 'validproduct'
+    ],
 ];

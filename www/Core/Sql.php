@@ -128,6 +128,4 @@ abstract class Sql{
             return null;
         }
     }
-
-    
 }

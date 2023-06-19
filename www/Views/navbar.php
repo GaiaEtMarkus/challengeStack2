@@ -36,6 +36,12 @@
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="/createproduct">Créer un produit</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="/displaynewproducts">Afficher les nouveaux produits</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="/displaynewusers">Afficher les nouveaux utilisateurs</a>
+                </li>
             </ul>
         </div>
     </div>
