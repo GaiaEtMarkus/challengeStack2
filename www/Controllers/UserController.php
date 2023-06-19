@@ -93,6 +93,7 @@ class UserController {
                         $userData['zip_code'] = Security::securiser($_POST['zip_code']);
                         $userData['country'] = Security::securiser($_POST['country']);
                         $userData['thumbnail'] = $thumbnailPath;
+                        $userData['is_verified'] = $_POST['country'];
         
                         $user->hydrate(
                             $userData['id'],
@@ -108,13 +109,14 @@ class UserController {
                             $userData['country'],
                             Security::hashPassword($_POST['pwd']),
                             $thumbnailPath,
-                            $newTruncatedToken
+                            $newTruncatedToken,
+                            $userData['is_verified']
                         );
         
                         $userData['token_hash'] = $newTruncatedToken;
                         $_SESSION['userData'] = $userData;
         
-                        setcookie('user_token', $newTruncatedToken, time() + (86400 * 30), '/'); // Expire dans 30 jours
+                        setcookie('user_token', $newTruncatedToken, time() + (86400 * 30), '/');
         
                         $user->save();
                         echo "Mise à jour réussie";
@@ -130,8 +132,6 @@ class UserController {
             }
         }
         
-        
-
     public function showLoginForm() {
         
         $form = new LoginUser;
@@ -148,14 +148,11 @@ class UserController {
                 $isLoggedIn = $userConnected->login($email, $password);
     
                 if ($isLoggedIn) {
-                    // Génération d'un nouveau token tronqué
                     $newCompleteToken = Security::generateCompleteToken();
                     $newTruncatedToken = Security::staticgenerateTruncatedToken($newCompleteToken);
     
-                    // Stockage du nouveau token tronqué dans la session de l'utilisateur
                     $_SESSION['userData']['token_hash'] = $newTruncatedToken;
     
-                    // Stockage du nouveau token tronqué dans un cookie côté client
                     setcookie('user_token', $newTruncatedToken, time() + (86400 * 30), '/'); // Expire dans 30 jours
     
                     echo "Connecté avec succès";
@@ -185,6 +182,7 @@ class UserController {
                     $hashedPassword = Security::hashPassword($_POST['pwd']);
                     $completeToken = Security::generateCompleteToken(); 
                     $truncatedToken = Security::staticgenerateTruncatedToken($completeToken); 
+                    $is_verified = false;
     
                     $thumbnail = $_FILES['thumbnail'] ?? null;
                     if ($thumbnail && $thumbnail['error'] === UPLOAD_ERR_OK) {
@@ -213,7 +211,8 @@ class UserController {
                         Security::securiser($_POST['country']),
                         $hashedPassword,
                         $thumbnailPath,
-                        $truncatedToken 
+                        $truncatedToken,
+                        $is_verified 
                     );
     
                     $user->save();

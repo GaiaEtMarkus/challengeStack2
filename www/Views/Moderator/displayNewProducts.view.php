@@ -8,10 +8,12 @@
                     <div class="card-body">
                         <h5 class="card-title"><?= $product['title'] ?></h5>
                         <p class="card-text"><?= $product['description'] ?></p>
-                        <p class="card-text">Trokos : <?= $product['trokos'] ?></p>
-                        <!-- Autres informations du produit -->
                         <form method="POST" action="/validProduct">
                             <input type="hidden" name="productId" value="<?= $product['id'] ?>">
+                            <div class="form-group">
+                                <label for="trokos">Valeur de Trokos :</label>
+                                <input type="number" class="form-control" id="trokos" name="trokos" required>
+                            </div>
                             <button type="submit" class="btn btn-primary">Valider</button>
                         </form>
                     </div>
@@ -20,4 +22,3 @@
         <?php endforeach; ?>
     </div>
 </div>
-

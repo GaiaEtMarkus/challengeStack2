@@ -19,8 +19,9 @@ class User extends Sql{
     protected string $pwd;
     protected string $country;
     protected string $token_hash;
+    protected bool $is_verified = false;
 
-    public function hydrate($id = null, $id_role, $firstname, $lastname, $pseudo, $email, $phone, $birth_date, $address, $zip_code, $country, $pwd, $thumbnail, $token_hash) 
+    public function hydrate($id = null, $id_role, $firstname, $lastname, $pseudo, $email, $phone, $birth_date, $address, $zip_code, $country, $pwd, $thumbnail, $token_hash, $is_verified) 
     {
         if ($id !== null) {
             $this->setId($id);
@@ -38,6 +39,7 @@ class User extends Sql{
         $this->setPwd($pwd);
         $this->setThumbnail($thumbnail);
         $this->setToken_hash($token_hash);
+        $this->setIs_verified($is_verified);
     }
     
 
@@ -356,6 +358,26 @@ class User extends Sql{
     public function setPhone($phone)
     {
         $this->phone = $phone;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of is_verified
+     */ 
+    public function getIs_verified()
+    {
+        return $this->is_verified;
+    }
+
+    /**
+     * Set the value of is_verified
+     *
+     * @return  self
+     */ 
+    public function setIs_verified($is_verified)
+    {
+        $this->is_verified = $is_verified;
 
         return $this;
     }

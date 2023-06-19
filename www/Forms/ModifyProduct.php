@@ -86,7 +86,14 @@ class ModifyProduct extends AForm {
                     "placeholder" => "",
                     "required" => true,
                     "value" => $productData['id']
-                ]
+                ],
+                "is_verified" => [
+                    "type" => "hidden",
+                    "required" => true,
+                    "error" => "",
+                    "placeholder" => "",
+                    "value" => $productData['is_verified'],
+                ],
             ]
         ];
     }

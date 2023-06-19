@@ -120,6 +120,13 @@ class ModifyProfile extends AForm {
                     "placeholder" => "",
                     "value" => $_SESSION['userData']['thumbnail'],
                 ],
+                "is_verified" => [
+                    "type" => "hidden",
+                    "required" => true,
+                    "error" => "",
+                    "placeholder" => "",
+                    "value" => $_SESSION['userData']['is_verified'],
+                ],
             ]
         ];
     }

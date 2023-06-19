@@ -12,8 +12,9 @@ class Product extends Sql{
     protected string $description;
     protected string $thumbnail;
     protected int $trokos;
+    protected bool $is_verified;
 
-    public function hydrate($id = null,  $id_category, $id_seller, $title, $description, $trokos, $thumbnail) 
+    public function hydrate($id = null,  $id_category, $id_seller, $title, $description, $trokos, $thumbnail, $is_verified=false) 
     {
         if ($id !== null) {
             $this->setId($id);
@@ -24,6 +25,8 @@ class Product extends Sql{
         $this->setDescription($description);
         $this->setTrokos($trokos);
         $this->setThumbnail($thumbnail);
+        $this->setIs_verified($is_verified);
+
     }
 
     public function getCategories(): array
@@ -172,6 +175,26 @@ class Product extends Sql{
     public function setThumbnail($thumbnail)
     {
         $this->thumbnail = $thumbnail;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of is_verified
+     */ 
+    public function getIs_verified()
+    {
+        return $this->is_verified;
+    }
+
+    /**
+     * Set the value of is_verified
+     *
+     * @return  self
+     */ 
+    public function setIs_verified($is_verified)
+    {
+        $this->is_verified = $is_verified;
 
         return $this;
     }
