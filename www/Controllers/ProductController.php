@@ -13,17 +13,16 @@ use App\Forms\ModifyProduct;
 
 class ProductController {
     
-    protected int $id = 0;
-    protected string $firstname;
-    protected string $surname;
-    protected string $email;
-    protected string $phone;
-    protected string $country;
-    protected string $birth_date;
-    protected string $thumbnail;
-    protected string $pwd;
-    protected bool $vip = false;
-
+    // protected int $id = 0;
+    // protected string $firstname;
+    // protected string $surname;
+    // protected string $email;
+    // protected string $phone;
+    // protected string $country;
+    // protected string $birth_date;
+    // protected string $thumbnail;
+    // protected string $pwd;
+    // protected bool $vip = false;
 
     public function createProduct(): void {
         if (isset($_SESSION['userData'])) {
@@ -125,15 +124,12 @@ class ProductController {
                 }
             }
     
-            // Assignez les données du produit à la vue
             $view->assign('productData', $productData);
         } else {
             $message = "Veuillez vous connecter afin de pouvoir modifier le produit !";
             header('Location: /?message=' . urlencode($message));
         }
     }
-    
-    
     
     public function deleteProduct(): void
     {
@@ -145,6 +141,22 @@ class ProductController {
         $message = "Le produit a été supprimé avec succès.";
         // header('Location: /userInterface?message=' . urlencode($message));
     }
-    
 
+    public function displayProductDetails(): void
+    {
+        if (isset($_GET['productId'])) {
+            $productId = intval($_GET['productId']);
+            $product = new Product();
+            $productData = $product->getProductById($productId);
+    
+            if ($productData) {
+                $view = new View("User/displayProductDetails", "front");
+                $view->assign('product', $productData);
+            } else {
+                $message = "Produit non trouvé.";
+                header('Location: /?message=' . urlencode($message));
+                exit;
+            }
+        }
+    }
 }

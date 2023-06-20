@@ -22,6 +22,15 @@ class UserController {
     // protected string $pwd;
     // protected bool $vip = false;
 
+    public function displayProducts()
+    {
+        $user = new User();
+        $products = $user->getVerifiedProducts();
+
+        $view = new View("User/displayProducts", "front", compact('products'));
+        $view->assign('products', $products);
+    }
+
     public function deconnexion()
     {
         if (isset($_SESSION['userData'])) {
@@ -31,11 +40,9 @@ class UserController {
             header('Location: /?message=' . urlencode($message));     
         }
     }
-    
 
     public function userDeleteProfile()
     {
-        
             $form = new DeleteProfile();
             $view = new View("Forms/form", "front");
             $view->assign('form', $form->getConfig()); 

@@ -16,6 +16,9 @@
                     <a class="nav-link text-danger" href="/userInterface">Interface user</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link text-danger" href="/displayProducts">Afficher produits</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-danger" href="/contact">Contact</a>
                 </li>
                 <?php if (!isset($_SESSION['userData'])): ?>

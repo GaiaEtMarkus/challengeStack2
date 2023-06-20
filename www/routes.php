@@ -85,4 +85,15 @@ return [
         'controller' => 'Moderator',
         'action' => 'validproduct'
     ],
+
+    '/displayproducts' => [
+        'controller' => 'User',
+        'action' => 'displayproducts'
+    ],
+
+    '/displaydetailsproduct' => [
+        'controller' => 'Product',
+        'action' => 'displayProductDetails'
+    ],
+
 ];

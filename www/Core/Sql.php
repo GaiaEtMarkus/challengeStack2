@@ -8,7 +8,6 @@ abstract class Sql{
     private $table;
 
     public function __construct(){
-        //Mettre en place un SINGLETON
         try{ 
             $this->pdo = new \PDO("pgsql:host=database;port=5432;dbname=tournamount" , "tournamount_admin" , "Admin1234" );
         }catch(\Exception $e){
@@ -67,10 +66,8 @@ abstract class Sql{
                   
             $_SESSION['userData'] = $userData;
             var_dump($_SESSION['userData']);
-            // $test = (object) $userData;
             return true;
         } else {
-            // Les mots de passe ne correspondent pas
             return false;
         }
     }
@@ -128,4 +125,14 @@ abstract class Sql{
             return null;
         }
     }
+
+    public function getVerifiedProducts()
+    {
+        $queryPrepared = $this->pdo->prepare('SELECT * FROM "Product" WHERE is_verified = true');
+        $queryPrepared->execute();
+        $result = $queryPrepared->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
 }
