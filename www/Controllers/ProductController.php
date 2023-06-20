@@ -26,60 +26,58 @@ class ProductController {
 
 
     public function createProduct(): void {
-
         if (isset($_SESSION['userData'])) {
-
-            $form = new AddProduct();
-            $view = new View("Forms/form", "front");
-            $view->assign('form', $form->getConfig());
-
-
-            if($form->isSubmit()){
-
-                $id = null ;
-                $product = new Product();
-                $categoryName = Security::securiser($_POST['id_category']);
-                $categoryOptions = $_SESSION['categoryOptions'];
-                var_dump($categoryOptions); // Ajout du var_dump pour déboguer la valeur de $categoryOptions
-                $id_category = array_search($categoryName, array_column($categoryOptions, 'value')) + 1 ;
-                $errors = Security::form($form->getConfig(), $_POST);
-                $trokos = 0;
-
-                if(empty($errors)){
-
-                    $thumbnail = $_FILES['thumbnail'] ?? null;
-                    if ($thumbnail && $thumbnail['error'] === UPLOAD_ERR_OK) {
-                        $thumbnailPath = './assets/product/' . $thumbnail['name'];
-                        var_dump($thumbnailPath); // Ajout du var_dump pour déboguer la valeur de $thumbnail
-                        move_uploaded_file($thumbnail['tmp_name'], $thumbnailPath);
-                    } else {
-                        $thumbnailPath = null; // Pas de fichier téléchargé
-                    }
-                            
-                    var_dump($thumbnail); // Ajout du var_dump pour déboguer la valeur de $thumbnail
-
+            if ($_SESSION['userData']['is_verified'] === true) {
+                $form = new AddProduct();
+                $view = new View("Forms/form", "front");
+                $view->assign('form', $form->getConfig());
+    
+                if ($form->isSubmit()) {
+                    $id = null;
                     $product = new Product();
-                    $product->hydrate(
-                        $id,
-                        $id_category, 
-                        $_SESSION['userData']['id'], 
-                        Security::securiser($_POST['titre']), 
-                        Security::securiser($_POST['description']), 
-                        $trokos, 
-                        $thumbnailPath, 
-                    );
-                    $product->save();
-                    echo "Insertion en BDD";
-                } else{
-                    $view->assign('errors', $errors);
+                    $categoryName = Security::securiser($_POST['id_category']);
+                    $categoryOptions = $_SESSION['categoryOptions'];
+                    $id_category = array_search($categoryName, array_column($categoryOptions, 'value')) + 1;
+                    $errors = Security::form($form->getConfig(), $_POST);
+                    $trokos = 0;
+    
+                    if (empty($errors)) {
+                        $thumbnail = $_FILES['thumbnail'] ?? null;
+                        if ($thumbnail && $thumbnail['error'] === UPLOAD_ERR_OK) {
+                            $thumbnailPath = './assets/product/' . $thumbnail['name'];
+                            move_uploaded_file($thumbnail['tmp_name'], $thumbnailPath);
+                        } else {
+                            $thumbnailPath = null; // Pas de fichier téléchargé
+                        }
+    
+                        $product->hydrate(
+                            $id,
+                            $id_category,
+                            $_SESSION['userData']['id'],
+                            Security::securiser($_POST['titre']),
+                            Security::securiser($_POST['description']),
+                            $trokos,
+                            $thumbnailPath
+                        );
+                        $product->save();
+    
+                        echo "Insertion en BDD";
+                    } else {
+                        $view->assign('errors', $errors);
+                    }
                 }
+            } else {
+                $message = "Votre profil doit être validé avant de pouvoir créer un produit. Veuillez attendre la validation de votre profil sous 24h ouvrables maximum après la date de création de votre profil.";
+                header('Location: /?message=' . urlencode($message));
+                exit;
             }
-    } else {
-        $message = "Veuillez vous connecter afin de pouvoir créer un produit.";
-        header('Location: /?message=' . urlencode($message));
-        exit;
+        } else {
+            $message = "Veuillez vous connecter afin de pouvoir créer un produit.";
+            header('Location: /?message=' . urlencode($message));
+            exit;
+        }
     }
-    }
+    
 
     public function modifyProduct()
     {
