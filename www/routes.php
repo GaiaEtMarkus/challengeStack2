@@ -87,7 +87,7 @@ return [
     ],
 
     '/displayproducts' => [
-        'controller' => 'User',
+        'controller' => 'Product',
         'action' => 'displayproducts'
     ],
 
@@ -95,5 +95,18 @@ return [
         'controller' => 'Product',
         'action' => 'displayProductDetails'
     ],
+        '/displaydetailsproduct' => [
+        'controller' => 'Product',
+        'action' => 'displayProductDetails'
+    ],
 
+    '/createtransaction' => [
+        'controller' => 'Transaction',
+        'action' => 'createTransaction'
+    ],
+
+    '/savetransaction' => [
+        'controller' => 'Transaction',
+        'action' => 'saveTransaction'
+    ],
 ];

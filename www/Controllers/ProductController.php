@@ -39,6 +39,7 @@ class ProductController {
                     $id_category = array_search($categoryName, array_column($categoryOptions, 'value')) + 1;
                     $errors = Security::form($form->getConfig(), $_POST);
                     $trokos = 0;
+                    $is_verified = false;
     
                     if (empty($errors)) {
                         $thumbnail = $_FILES['thumbnail'] ?? null;
@@ -56,7 +57,8 @@ class ProductController {
                             Security::securiser($_POST['titre']),
                             Security::securiser($_POST['description']),
                             $trokos,
-                            $thumbnailPath
+                            $thumbnailPath,
+                            $is_verified
                         );
                         $product->save();
     
@@ -142,6 +144,15 @@ class ProductController {
         // header('Location: /userInterface?message=' . urlencode($message));
     }
 
+    public function displayProducts()
+    {
+        $product = new Product();
+        $products = $product->getVerifiedProducts();
+
+        $view = new View("Product/displayProducts", "front", compact('products'));
+        $view->assign('products', $products);
+    }
+
     public function displayProductDetails(): void
     {
         if (isset($_GET['productId'])) {
@@ -150,7 +161,7 @@ class ProductController {
             $productData = $product->getProductById($productId);
     
             if ($productData) {
-                $view = new View("User/displayProductDetails", "front");
+                $view = new View("Product/displayProductDetails", "front");
                 $view->assign('product', $productData);
             } else {
                 $message = "Produit non trouvé.";

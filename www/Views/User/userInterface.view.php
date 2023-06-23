@@ -6,7 +6,7 @@
                 <div class="card-body">
                     <h5 class="card-title"><?= $product['title'] ?></h5>
                     <p class="card-text"><?= $product['description'] ?></p>
-                    <!-- Autres informations du produit -->
+                    <p class="card-text"><?= $product['trokos'] ?></p>
                     <form method="POST" action="/deleteProduct">
                         <input type="hidden" name="productId" value="<?= $product['id'] ?>">
                         <button type="submit" class="btn btn-danger">Supprimer</button>

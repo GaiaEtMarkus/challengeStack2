@@ -22,15 +22,6 @@ class UserController {
     // protected string $pwd;
     // protected bool $vip = false;
 
-    public function displayProducts()
-    {
-        $user = new User();
-        $products = $user->getVerifiedProducts();
-
-        $view = new View("User/displayProducts", "front", compact('products'));
-        $view->assign('products', $products);
-    }
-
     public function deconnexion()
     {
         if (isset($_SESSION['userData'])) {

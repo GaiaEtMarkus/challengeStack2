@@ -49,6 +49,7 @@ abstract class Sql{
     
         var_dump($queryPrepared->queryString); // Ajouter cette ligne pour afficher la requête préparée
         var_dump($columns); // Affiche les données à lier
+        
         $queryPrepared->execute($columns);
     }
 
@@ -108,7 +109,6 @@ abstract class Sql{
         if ($result === false) {
             return null;
         }
-        
         return $result;
     }
 
@@ -134,5 +134,10 @@ abstract class Sql{
 
         return $result;
     }
+
+    protected function arrayToString(array $array)
+{
+    return '{' . implode(',', $array) . '}';
+}
 
 }

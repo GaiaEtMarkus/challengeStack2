@@ -19,7 +19,7 @@ class ModeratorController {
         $moderator = new Moderator();
         $newUsers = $moderator->getUnverifiedUsers(); 
       
-        $view = new View("Moderator/displayNewUsers", "back");
+        $view = new View("User/displayNewUsers", "back");
         $view->assign('newUsers', $newUsers);
       }
 
@@ -66,7 +66,7 @@ class ModeratorController {
         $moderator = new Moderator();
         $products = $moderator->getUnverifiedProducts();
 
-        $view = new View("Moderator/displayNewProducts", "back", compact('products'));
+        $view = new View("Product/displayNewProducts", "back", compact('products'));
         $view->assign('products', $products);
     }
 
@@ -101,6 +101,4 @@ class ModeratorController {
         } else {
         }
     }
-    
-    
 }

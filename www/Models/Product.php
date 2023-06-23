@@ -12,9 +12,9 @@ class Product extends Sql{
     protected string $description;
     protected string $thumbnail;
     protected int $trokos;
-    protected bool $is_verified;
+    protected bool $is_verified = false;
 
-    public function hydrate($id = null,  $id_category, $id_seller, $title, $description, $trokos, $thumbnail, $is_verified=false) 
+    public function hydrate($id = null, $id_category, $id_seller, $title, $description, $trokos, $thumbnail, $is_verified = false)
     {
         if ($id !== null) {
             $this->setId($id);
@@ -25,9 +25,11 @@ class Product extends Sql{
         $this->setDescription($description);
         $this->setTrokos($trokos);
         $this->setThumbnail($thumbnail);
-        $this->setIs_verified($is_verified);
-
+        
+        // Convertir la valeur booléenne en une valeur adaptée pour la base de données
+        $this->is_verified = $is_verified ? 'TRU' : 'FALSE';
     }
+    
 
     public function getCategories(): array
     {
