@@ -95,10 +95,6 @@ return [
         'controller' => 'Product',
         'action' => 'displayProductDetails'
     ],
-        '/displaydetailsproduct' => [
-        'controller' => 'Product',
-        'action' => 'displayProductDetails'
-    ],
 
     '/createtransaction' => [
         'controller' => 'Transaction',
@@ -108,5 +104,10 @@ return [
     '/savetransaction' => [
         'controller' => 'Transaction',
         'action' => 'saveTransaction'
+    ],
+
+    '/validatetransaction' => [
+        'controller' => 'Transaction',
+        'action' => 'validateTransaction'
     ],
 ];

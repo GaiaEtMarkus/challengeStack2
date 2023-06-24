@@ -10,11 +10,11 @@ class Transaction extends Sql
     protected int $id_receiver;
     protected int $id_seller;
     protected int $id_item_receiver;
-    protected int $id_item_seller; // Nouveau champ en tant que tableau
-    protected bool $is_validate = false;
+    protected int $id_item_seller;
+    protected bool $is_validate;
     protected int $quality;
 
-    public function hydrate($id, $id_receiver, $id_seller, $id_item_receiver, $id_item_seller = [], $is_validate, $quality)
+    public function hydrate($id, $id_receiver, $id_seller, $id_item_receiver, $id_item_seller, $is_validate, $quality)
     {
         if ($id !== null) {
             $this->setId($id);
@@ -128,8 +128,6 @@ class Transaction extends Sql
 
         return $this;
     }
-
-
 
 
     /**

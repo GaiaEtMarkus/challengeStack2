@@ -48,7 +48,7 @@ abstract class Sql{
         }
     
         var_dump($queryPrepared->queryString); // Ajouter cette ligne pour afficher la requête préparée
-        var_dump($columns); // Affiche les données à lier
+        // var_dump($columns); // Affiche les données à lier
         
         $queryPrepared->execute($columns);
     }
@@ -136,8 +136,29 @@ abstract class Sql{
     }
 
     protected function arrayToString(array $array)
-{
+    {
     return '{' . implode(',', $array) . '}';
-}
+    }
+
+    public function getTransactionById(int $transactionId): ?array
+    {
+        $query = 'SELECT * FROM "Transaction" WHERE id = :transactionId';
+        $params = [':transactionId' => $transactionId];
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);
+        $result = $queryPrepared->fetch(\PDO::FETCH_ASSOC);
+
+        if ($result === false) {
+            return null;
+        }
+        return $result;
+    }
+
+    public function validateTransaction($transactionId)
+{
+    $query = 'UPDATE "Transaction" SET is_validate = true WHERE id = :transactionId';
+    $params = [':transactionId' => $transactionId];
+    $queryPrepared = $this->pdo->prepare($query);
+    $queryPrepared->execute($params);}
 
 }

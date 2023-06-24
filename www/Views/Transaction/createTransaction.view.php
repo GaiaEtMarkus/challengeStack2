@@ -4,7 +4,6 @@
         <input type="hidden" name="productReceiverId" value="<?= $productData['id'] ?>">
         <input type="hidden" name="receiverId" value="<?= $productData['id_seller'] ?>">
         <input type="hidden" name="receiverTrokos" value="<?= $productData['trokos'] ?>">
-
         <div class="form-group">
             <label for="exchangeProductId">Produit à proposer en échange :</label>
             <select name="exchangeProductId" class="form-control">

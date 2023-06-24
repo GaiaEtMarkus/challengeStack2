@@ -8,6 +8,7 @@ use App\Core\Security;
 use App\Forms\ModifyProfile;
 use App\Forms\DeleteProfile;
 use App\Forms\LoginUser;
+use App\Models\Transaction;
 
 class UserController {
     
@@ -225,16 +226,56 @@ class UserController {
     public function userInterface()
     {
         if ($_SESSION['userData']['id_role'] == 1) {
+            $pseudo = $_SESSION['userData']['pseudo'];
+            $thumbnail = $_SESSION['userData']['thumbnail'];
             $userId = $_SESSION['userData']['id'];
             $user = new User();
             $products = $user->getProductsByUserId($userId);
+            $allTransactions = $user->getAllFromTable("Transaction");
+            var_dump($allTransactions);
+            // Tri des produits en fonction de l'utilisateur connecté
+            $userProducts = [];
+            $otherProducts = [];
+            
+            foreach ($allTransactions as $transaction) {
+                if ($transaction['id_seller'] == $userId) {
+                    $otherProduct = $user->getProductById($transaction['id_item_receiver']);
+                    if ($otherProduct) {
+                        
+                        $otherProducts[$transaction['id']] = $otherProduct;
+                    }
+                    $userProduct = $user->getProductById($transaction['id_item_seller']);
+                    if ($userProduct) {
+                        $userProducts[$transaction['id']] = $userProduct;
+                    }
+                } elseif ($transaction['id_receiver'] == $userId) {
+                    $otherProduct = $user->getProductById($transaction['id_item_seller']);
+                    if ($otherProduct) {
+                        $otherProducts[$transaction['id']] = $otherProduct;
+                    }
+                    $userProduct = $user->getProductById($transaction['id_item_receiver']);
+                    if ($userProduct) {
+                        $userProduct['isReceiver'] = true;
+                        $userProduct['transactionId'] = $transaction['id']; 
+                        $userProducts[$transaction['id']] = $userProduct;
+                    }
+                }
+            }
+            
             $view = new View("User/userInterface", "front");
+            $view->assign('userProducts', $userProducts);
+            $view->assign('otherProducts', $otherProducts);
             $view->assign('products', $products);
+            $view->assign('allTransactions', $allTransactions);
+            $view->assign('pseudo', $pseudo);
+            $view->assign('thumbnail', $thumbnail);
         } else {
             $message = "Veuillez vous connecter afin de pouvoir accéder à votre interface.";
             header('Location: /?message=' . urlencode($message));
         }
     }
+    
+    
     
 
     public function contact() {

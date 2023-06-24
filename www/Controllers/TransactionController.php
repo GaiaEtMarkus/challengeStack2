@@ -56,7 +56,6 @@ class TransactionController
             $transaction->hydrate($id, $receiverId, $userId, $productId, $exchangeProductId, $is_validate, $quality);
             $transaction->save();
 
-            echo "Insertion en BDD";
             $message = "Votre proposition de transaction a bien été effectué.";
             header('Location: /displayProducts?message=' . urlencode($message));        
         } else {
@@ -65,6 +64,15 @@ class TransactionController
         }
     }
     
+    public function validateTransaction()
+    {   
+        $transactionId = $_POST['transactionId'];
+        $transaction = new Transaction;
+        $transaction->validateTransaction($transactionId);
+
+        $message = "La transaction a bien été acceptée !";
+        header('Location: /userInterface?message=' . urlencode($message)); 
+    }
     
 }
 
