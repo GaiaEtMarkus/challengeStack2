@@ -155,10 +155,25 @@ abstract class Sql{
     }
 
     public function validateTransaction($transactionId)
-{
-    $query = 'UPDATE "Transaction" SET is_validate = true WHERE id = :transactionId';
-    $params = [':transactionId' => $transactionId];
-    $queryPrepared = $this->pdo->prepare($query);
-    $queryPrepared->execute($params);}
+    {
+        $query = 'UPDATE "Transaction" SET is_validate = true WHERE id = :transactionId';
+        $params = [':transactionId' => $transactionId];
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);
+    }
+
+    public function getUserByMail(string $mailUser): ?array
+    {
+        $query = 'SELECT * FROM "User" WHERE email = :mailUser';
+        $params = [':mailUser' => $mailUser];
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);
+        $result = $queryPrepared->fetch(\PDO::FETCH_ASSOC);
+
+        if ($result === false) {
+            return null;
+        }
+        return $result;
+    }
 
 }

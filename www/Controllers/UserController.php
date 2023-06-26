@@ -7,6 +7,7 @@ use App\Forms\AddUser;
 use App\Core\Security;
 use App\Forms\ModifyProfile;
 use App\Forms\DeleteProfile;
+use App\Forms\ForgotPassword;
 use App\Forms\LoginUser;
 use App\Models\Transaction;
 
@@ -275,11 +276,70 @@ class UserController {
         }
     }
     
-    
-    
-
     public function contact() {
         $view = new View("User/contact", "front");
     }
+
+    public function validContact() {
+
+        require_once('./Core/Functions.php');
+
+        $userMail = $_POST['email'];
+        $userSubject = $_POST['subject'];
+        $userMessage = $_POST['message'];
+        var_dump($_POST);
+
+        mailFormContact("Accusé de réception", $userMail, $userSubject, "Nous avons bien reçu votre message et nous vous répondrons dans les plus brefs délais.");
+        mailFormContact("Demande d'information", "trokos.contact@gmail.com", $userSubject, $userMessage);
+
+        $message = "Votre message a bien été envoyé !";
+        header('Location: /userinterface?message=' . urlencode($message));
+    }
+
+    public function forgotPassword() {
+
+        require_once('./Core/Functions.php');
+
+var_dump($_POST);
+
+        $form = new ForgotPassword;
+        $view = new View("Forms/form", "front");
+        $view->assign('form', $form->getConfig());
+    
+        if ($form->isSubmit()) {
+            // include './Modules/Php-Mailer/src/mail.php'; 
+            $errors = Security::form($form->getConfig(), $_POST);
+
+
+            if (empty($errors)) {
+
+                $userMail = Security::securiser($_POST['email']); 
+                $user = new User();
+                $userData = $user->getUserByMail($userMail);
+                $userPseudo = $userData['pseudo'];
+                $subject = $_POST['subject'];
+                $message = "Hello $userPseudo ! Voici ton mot de passe : $userMail. Nous te conseillons de changer celui-ci dans la section Modifier mes infos ! 
+                            A très bientôt ! L'équipe Trokos";
+                var_dump($userData);
+                var_dump($userPseudo);
+                
+    
+                if ($userData) {
+          
+                    mailFormContact($subject, $userMail, "A ne transmettre à personne", $message);
+                    mailFormContact($subject, "trokos.contact@gmail.com", "Une demande de mot de passe oublié a été effectué", "message");
+
+                    $message = "Votre message a bien été envoyé !";
+                    // header('Location: /=' . urlencode($message));
+                } else {
+                    $message = "Votre message a bien été envoyé !";
+                    // header('Location: /=' . urlencode($message));
+                }
+            } else {
+                $view->assign('errors', $errors);
+                }
+            }
+        }    
 }
 
+    

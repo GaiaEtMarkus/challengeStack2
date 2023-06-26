@@ -41,6 +41,11 @@ return [
     'action' => 'contact'
     ],
 
+    '/validcontact' => [
+        'controller' => 'User',
+        'action' => 'validContact'
+        ],
+
     '/usermodifyprofile' => [
         'controller' => 'User',
         'action' => 'userModifyProfile'
@@ -110,4 +115,10 @@ return [
         'controller' => 'Transaction',
         'action' => 'validateTransaction'
     ],
+
+    '/forgotpassword' => [
+        'controller' => 'User',
+        'action' => 'forgotPassword'
+    ],
+
 ];

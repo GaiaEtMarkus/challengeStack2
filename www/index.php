@@ -3,7 +3,7 @@ namespace App;
 
 session_start();
 
-var_dump($_SESSION);
+// var_dump($_SESSION);
 
 spl_autoload_register(function ($class) {
     $class = str_replace("App\\", "", $class);
