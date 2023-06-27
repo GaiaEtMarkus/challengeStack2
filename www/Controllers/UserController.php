@@ -1,27 +1,23 @@
 <?php
 namespace App\Controllers;
 
+require_once('./Core/Functions.php');
+
 use App\Models\User;
 use App\Core\View;
 use App\Forms\AddUser;
 use App\Core\Security;
+use App\Forms\ChangePassword;
 use App\Forms\ModifyProfile;
 use App\Forms\DeleteProfile;
+use App\Forms\ForgotPassword;
+use App\Forms\Contact;
 use App\Forms\LoginUser;
 
 class UserController {
-    
-    protected int $id = 0;
-    protected string $firstname;
-    protected string $surname;
-    protected string $email;
-    protected string $phone;
-    protected string $country;
-    protected string $birth_date;
-    protected string $thumbnail;
-    protected string $pwd;
-    protected bool $vip = false;
 
+    
+    
     public function deconnexion()
     {
         if (isset($_SESSION['userData'])) {
@@ -31,11 +27,10 @@ class UserController {
             header('Location: /?message=' . urlencode($message));     
         }
     }
-    
 
     public function userDeleteProfile()
     {
-        
+        if (isset($_SESSION['userData'])) {
             $form = new DeleteProfile();
             $view = new View("Forms/form", "front");
             $view->assign('form', $form->getConfig()); 
@@ -44,10 +39,26 @@ class UserController {
                 $errors = Security::form($form->getConfig(), $_POST);
                 if (empty($errors)) {
                     if (isset($_POST['deleteThisProfile']) && $_POST['deleteThisProfile'] === 'deleteThisProfile') {
+
+                        $userId = $_SESSION['userData']['id'];
                         $user = new User();
-                        var_dump($_SESSION['userData']['id']);
-                        $user->delete($_SESSION['userData']['id']);
-                        echo "Votre profil a été supprimé";
+                        $user->delete($userId);
+
+                        // $userData = $user->getUserById($userId);
+                        $userMail = $_SESSION['userData']['email'];
+                        $userPseudo = $_SESSION['userData']['pseudo'];
+                        session_unset();
+                        session_destroy();
+
+                        $subject = "Suppression de compte";
+                        $message = "Bonjour {$userPseudo} ! Ceci est un message pour te signaler que ton compte a bien été supprimé !
+                                    N'hésite pas à nous rendre visite à nouveau sur Trokos";
+            
+                        mailFormContact($subject, $userMail, $subject, $message);
+                        mailFormContact($subject, "trokos.contact@gmail.com", $subject, "Un utilisateur a supprimé son profil sur Trokos : {$userMail}!");
+
+                        $message = "Votre compte a bien été supprimé !";
+                        header('Location: /?message=' . urlencode($message));    
                     } else {
                         echo "Veuillez confirmer la suppression en saisissant 'deleteThisProfile'";
                     }
@@ -56,6 +67,7 @@ class UserController {
                 }
             }
         }
+    }
 
         public function userModifyProfile()
         {
@@ -70,7 +82,6 @@ class UserController {
                     if (empty($errors)) {
                         $user = new User();
         
-                        // Génération d'un nouveau token tronqué
                         $newCompleteToken = Security::generateCompleteToken();
                         $newTruncatedToken = Security::staticgenerateTruncatedToken($newCompleteToken);
         
@@ -94,46 +105,63 @@ class UserController {
                         $userData['zip_code'] = Security::securiser($_POST['zip_code']);
                         $userData['country'] = Security::securiser($_POST['country']);
                         $userData['thumbnail'] = $thumbnailPath;
+                        $userData['is_verified'] = $_POST['country'];
+                        $pwd = Security::securiser($_POST['pwd']);
+                        $confirmPwd = Security::securiser($_POST['confirmPwd']);
+
+                        if ($pwd !== $confirmPwd) {
+
+                            $message = "Les mots de passes ne correspondent pas !";
+                            header('Location: /userModifyProfile?message=' . urlencode($message));    
+
+                        }else {
         
-                        $user->hydrate(
-                            $userData['id'],
-                            $userData['id_role'],
-                            $userData['firstname'],
-                            $userData['lastname'],
-                            $userData['pseudo'],
-                            $userData['email'],
-                            $userData['phone'],
-                            $userData['birth_date'],
-                            $userData['address'],
-                            $userData['zip_code'],
-                            $userData['country'],
-                            Security::hashPassword($_POST['pwd']),
-                            $thumbnailPath,
-                            $newTruncatedToken
-                        );
+                            $user->hydrate(
+                                $userData['id'],
+                                $userData['id_role'],
+                                $userData['firstname'],
+                                $userData['lastname'],
+                                $userData['pseudo'],
+                                $userData['email'],
+                                $userData['phone'],
+                                $userData['birth_date'],
+                                $userData['address'],
+                                $userData['zip_code'],
+                                $userData['country'],
+                                Security::hashPassword($pwd),
+                                $thumbnailPath,
+                                $newTruncatedToken,
+                                $userData['is_verified']
+                            );
+                        }
         
-                        // Stockage du nouveau token tronqué dans la session de l'utilisateur
                         $userData['token_hash'] = $newTruncatedToken;
                         $_SESSION['userData'] = $userData;
         
-                        // Stockage du nouveau token tronqué dans un cookie
-                        setcookie('user_token', $newTruncatedToken, time() + (86400 * 30), '/'); // Expire dans 30 jours
+                        setcookie('user_token', $newTruncatedToken, time() + (86400 * 30), '/');
         
                         $user->save();
-                        echo "Mise à jour réussie";
-                        // Redirection
+
+                        $subject = "Modification de compte";
+                        $message = "Bonjour {$userData['pseudo']} ! Ceci est un message pour te signaler que ton compte a bien été modifié.
+                        si tu n'es pas à l'origine de cette modification, contacte nous au plus vite !";
+            
+                        mailFormContact($subject, $userData['email'], $subject, $message);
+                        mailFormContact($subject, "trokos.contact@gmail.com", $subject, "Un utilisateur a modifié son profil sur Trokos : {$userData['email']},!");
+
+                        $message = "La mise à jour a bien été effectué !";
+                        header('Location: /userInterface?message=' . urlencode($message));
                     } else {
                         $view->assign('errors', $errors);
                     }
                 }
             } else {
+
                 $message = "Veuillez vous connecter afin de pouvoir modifier votre profil !";
                 header('Location: /?message=' . urlencode($message));
             }
         }
         
-        
-
     public function showLoginForm() {
         
         $form = new LoginUser;
@@ -150,28 +178,29 @@ class UserController {
                 $isLoggedIn = $userConnected->login($email, $password);
     
                 if ($isLoggedIn) {
-                    // Génération d'un nouveau token tronqué
+
                     $newCompleteToken = Security::generateCompleteToken();
                     $newTruncatedToken = Security::staticgenerateTruncatedToken($newCompleteToken);
-    
-                    // Stockage du nouveau token tronqué dans la session de l'utilisateur
                     $_SESSION['userData']['token_hash'] = $newTruncatedToken;
     
-                    // Stockage du nouveau token tronqué dans un cookie côté client
-                    setcookie('user_token', $newTruncatedToken, time() + (86400 * 30), '/'); // Expire dans 30 jours
-    
-                    echo "Connecté avec succès";
-                    header('Location: /userinterface');
+                    setcookie('user_token', $newTruncatedToken, time() + (86400 * 30), '/'); 
+
+                    $message = "Connexion réussie !";
+                    header('Location: /userinterface?message=' . urlencode($message));;
+
                 } else {
+
                     echo "Échec de la connexion";
                 }
             } else {
+
                 $view->assign('errors', $errors);
             }
         }
     }
 
     public function userCreateProfile(): void {
+
         $form = new AddUser();
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
@@ -179,52 +208,60 @@ class UserController {
         if ($form->isSubmit()) {
             $errors = Security::form($form->getConfig(), $_POST);
             if (empty($errors)) {
-                // Vérification des mots de passe
-                if ($_POST['pwd'] !== $_POST['pwdConfirm']) {
-                    $errors['pwdConfirm'] = "Les mots de passe ne sont pas identiques";
+                if ( Security::securiser($_POST['pwd']) !==  Security::securiser($_POST['pwdConfirm'])) {
+                    $message = "Les mots de passes ne sont pas identiques. Veuillez rééessayer !";
+                    header('Location: /userCreateProfile?message=' . urlencode($message));;                
                 } else {
                     $id_role = 1;
                     $id = null;
+                    $userPseudo = Security::securiser($_POST['pseudo']);
+                    $userMail = Security::securiser($_POST['email']);
                     $hashedPassword = Security::hashPassword($_POST['pwd']);
-                    $completeToken = Security::generateCompleteToken(); // Génère le jeton complet
-                    $truncatedToken = Security::staticgenerateTruncatedToken($completeToken); // Génère le jeton tronqué
-    
-                    // Gestion du téléchargement de la photo de profil
+                    $completeToken = Security::generateCompleteToken(); 
+                    $truncatedToken = Security::staticgenerateTruncatedToken($completeToken); 
+                    $is_verified = false;
                     $thumbnail = $_FILES['thumbnail'] ?? null;
                     if ($thumbnail && $thumbnail['error'] === UPLOAD_ERR_OK) {
                         $thumbnailPath = './assets/userProfile/' . $thumbnail['name'];
-                        var_dump($thumbnailPath); // Ajout du var_dump pour déboguer la valeur de $thumbnail
                         move_uploaded_file($thumbnail['tmp_name'], $thumbnailPath);
                     } else {
                         $thumbnailPath = null; 
-                        echo('error');// Pas de fichier téléchargé
+                        echo('error');
                     }
 
-                    var_dump($thumbnail); // Ajout du var_dump pour déboguer la valeur de $thumbnail
-    
                     $user = new User();
                     $user->hydrate(
                         $id,
                         $id_role,
                         Security::securiser($_POST['firstname']),
                         Security::securiser($_POST['lastname']),
-                        Security::securiser($_POST['pseudo']),
-                        Security::securiser($_POST['email']),
+                        $userPseudo,
+                        $userMail,
                         Security::securiser($_POST['phone']),
                         Security::securiser($_POST['birth_date']),
                         Security::securiser($_POST['address']),
                         Security::securiser($_POST['zip_code']),
                         Security::securiser($_POST['country']),
                         $hashedPassword,
-                        $thumbnailPath, // Utilisez le chemin du fichier de la photo de profil
-                        $truncatedToken 
+                        $thumbnailPath,
+                        $is_verified,
+                        $truncatedToken
                     );
     
                     $user->save();
-                    echo "Insertion en BDD";
+
+                    $subject = "Nouvelle création de compte";
+                    $message = "Bonjour $userPseudo ! Nous te remercions pour ton inscription et te souhaite de faire plein de bonnes affaires sur Trokos !";
+
+                    mailFormContact($subject, $userMail, "Réinitialisation du mot de passe", $message);
+                    mailFormContact($subject, "trokos.contact@gmail.com", "D'inscription'", "Un nouvel utilisateur s'est inscrit sur Trokos : $userMail !");
+
+                    $message = "Votre compte a été créé !";
+                    header('Location: /?message=' . urlencode($message));;
                 }
             } else {
-                $view->assign('errors', $errors);
+                $message = "Il y a eu une erreur. Veuillez rééessayer !";
+                header('Location: /userCreateProfile?message=' . urlencode($message));;
             }
         }
     }
@@ -232,20 +269,191 @@ class UserController {
     public function userInterface()
     {
         if ($_SESSION['userData']['id_role'] == 1) {
+            $pseudo = $_SESSION['userData']['pseudo'];
+            $thumbnail = $_SESSION['userData']['thumbnail'];
             $userId = $_SESSION['userData']['id'];
             $user = new User();
             $products = $user->getProductsByUserId($userId);
+            $allTransactions = $user->getAllFromTable("Transaction");
+            $userProducts = [];
+            $otherProducts = [];
+            
+            foreach ($allTransactions as $transaction) {
+                if ($transaction['id_seller'] == $userId) {
+                    $otherProduct = $user->getProductById($transaction['id_item_receiver']);
+                    if ($otherProduct) {
+                        
+                        $otherProducts[$transaction['id']] = $otherProduct;
+                    }
+                    $userProduct = $user->getProductById($transaction['id_item_seller']);
+                    if ($userProduct) {
+                        $userProducts[$transaction['id']] = $userProduct;
+                    }
+                } elseif ($transaction['id_receiver'] == $userId) {
+                    $otherProduct = $user->getProductById($transaction['id_item_seller']);
+                    if ($otherProduct) {
+                        $otherProducts[$transaction['id']] = $otherProduct;
+                    }
+                    $userProduct = $user->getProductById($transaction['id_item_receiver']);
+                    if ($userProduct) {
+                        $userProduct['isReceiver'] = true;
+                        $userProduct['transactionId'] = $transaction['id']; 
+                        $userProducts[$transaction['id']] = $userProduct;
+                    }
+                }
+            }
+            
             $view = new View("User/userInterface", "front");
+            $view->assign('userProducts', $userProducts);
+            $view->assign('otherProducts', $otherProducts);
             $view->assign('products', $products);
+            $view->assign('allTransactions', $allTransactions);
+            $view->assign('pseudo', $pseudo);
+            $view->assign('thumbnail', $thumbnail);
         } else {
             $message = "Veuillez vous connecter afin de pouvoir accéder à votre interface.";
             header('Location: /?message=' . urlencode($message));
         }
     }
     
+    public function contact() 
+    {
+        $form = new Contact;
+        $view = new View("Forms/form", "front");
+        $view->assign('form', $form->getConfig());
 
-    public function contact() {
-        $view = new View("User/contact", "front");
+        if ($form->isSubmit()) {
+            $errors = Security::form($form->getConfig(), $_POST);
+            if (empty($errors)) {
+          
+                require_once('./Core/Functions.php');
+
+                $userMail =  Security::securiser($_POST['email']);
+                $userSubject =  Security::securiser($_POST['subject']);
+                $userMessage =  Security::securiser($_POST['message']);
+        
+                mailFormContact("Accusé de réception", $userMail, $userSubject, "Nous avons bien reçu votre message et nous vous répondrons dans les plus brefs délais.");
+                mailFormContact("Demande d'information", "trokos.contact@gmail.com", $userSubject, "Vous avez reçu le message suivant {$userMessage} de la part de {$userMail}.");
+        
+                $message = "Votre message a bien été envoyé !";
+                header('Location: /?message=' . urlencode($message));
+
+                }
+                else {
+                    $errors['Echec'] = "Oups .... Veuillez réessayer !";
+                }
+
+            } else {
+            }
+        }
+
+    public function forgotPassword()
+    {
+        require_once('./Core/Functions.php');
+    
+        $form = new ForgotPassword;
+        $view = new View("Forms/form", "front");
+        $view->assign('form', $form->getConfig());
+    
+        if ($form->isSubmit()) {
+            $errors = Security::form($form->getConfig(), $_POST);
+    
+            if (empty($errors)) {
+                $userMail = Security::securiser($_POST['email']);
+                $user = new User();
+                $userData = $user->getUserByMail($userMail);
+                $userPseudo = $userData['pseudo'];
+                $subject = $_POST['subject'];
+    
+                if ($userData) {
+                    $userId = $userData['id'];
+                    $token = Security::generateResetToken(); 
+                    $expiration = time() + 24 * 60 * 60; 
+    
+                    $user->setResetToken($userId, $token, $expiration); 
+    
+                    $resetLink = "localhost/changePassword?token=$token"; 
+                    $message = "Bonjour $userPseudo ! Voici le lien pour réinitialiser votre mot de passe : $resetLink. "
+                             . "Ce lien est valable pendant 24 heures. Si vous n'avez pas demandé la réinitialisation de votre mot de passe, veuillez ignorer ce message.";
+    
+                    mailFormContact($subject, $userMail, "Réinitialisation du mot de passe", $message);
+                    mailFormContact($subject, "trokos.contact@gmail.com", "Demande de réinitialisation de mot de passe", "Un user vient d'effectuer 
+                                    une demande de réinintialisation sur le mail $userMail");
+    
+                    $message = "Un lien de réinitialisation de mot de passe a été envoyé à votre adresse e-mail.";
+                    header('Location: /=' . urlencode($message));
+                } else {
+                    $message = "Un lien de réinitialisation de mot de passe a été envoyé à votre adresse e-mail.";
+                    header('Location: /=' . urlencode($message));
+                } 
+            } else {
+                $view->assign('errors', $errors);
+            }
+        }
     }
+    
+    public function changePassword() {
+
+        $token =  Security::securiser($_GET['token']);
+        $user = new User;
+        $tokenData = $user->getUserByToken($token);
+        $userId = $tokenData['user_id'];
+        $userData = $user->getUserById($userId);
+        $userData = $userData[0];
+        $expiration = $tokenData['expiration'];
+        $expirationTimestamp = strtotime($expiration);
+
+        $form = new ChangePassword;
+        $view = new View("Forms/form", "front");
+        $view->assign('form', $form->getConfig());
+
+
+        if ($form->isSubmit() && time() < $expirationTimestamp) {
+            $errors = Security::form($form->getConfig(), $_POST);
+            if (empty($errors)) {
+                $password = Security::securiser($_POST['password']);
+                $confirmPassword = Security::securiser($_POST['confirmPassword']);
+
+                if($password == $confirmPassword) {
+
+                    $user->hydrate(
+                        $userData['id'],
+                        $userData['id_role'],
+                        $userData['firstname'],
+                        $userData['lastname'],
+                        $userData['pseudo'],
+                        $userData['email'],
+                        $userData['phone'],
+                        $userData['birth_date'],
+                        $userData['address'],
+                        $userData['zip_code'],
+                        $userData['country'],
+                        $password,
+                        $userData['thumbnail'],
+                        $userData['is_verified'],
+                        $userData['token_hash'],
+                    );
+    
+                    $user->save();
+                    echo "Insertion en BDD";
+
+                    $hashedPassword = Security::hashPassword($password);
+                    $user->changePassword($userId, $password);
+                    var_dump($userId);
+                    var_dump($password);
+                    echo"ok";
+                }
+                else {
+                    $errors['confirmPassword'] = "Les mots de passe ne correspondent pas";
+                }
+
+            } else {
+                $view->assign('errors', $errors);
+                echo'error';
+            }
+        }
+    }
+    
 }
 
+    

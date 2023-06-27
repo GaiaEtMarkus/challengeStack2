@@ -76,7 +76,7 @@ class ModifyProfile extends AForm {
                     "error" => "Votre mot de passe est incorrect",
                     "value" => "",
                 ],
-                "pwdConfirm" => [
+                "confirmPwd" => [
                     "type" => "password",
                     "placeholder" => "Confirmation",
                     "required" => true,
@@ -119,6 +119,13 @@ class ModifyProfile extends AForm {
                     "error" => "",
                     "placeholder" => "",
                     "value" => $_SESSION['userData']['thumbnail'],
+                ],
+                "is_verified" => [
+                    "type" => "hidden",
+                    "required" => true,
+                    "error" => "",
+                    "placeholder" => "",
+                    "value" => $_SESSION['userData']['is_verified'],
                 ],
             ]
         ];

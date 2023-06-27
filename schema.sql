@@ -6,7 +6,11 @@ DROP TABLE IF EXISTS "ProductImages" CASCADE;
 DROP TABLE IF EXISTS "Comment" CASCADE;
 DROP TABLE IF EXISTS "Sale" CASCADE;
 DROP TABLE IF EXISTS "Category" CASCADE;
+DROP TABLE IF EXISTS "Transaction" CASCADE;
+DROP TABLE IF EXISTS "ResetToken" CASCADE;
+
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 
 
 CREATE TABLE "Role" (
@@ -70,6 +74,18 @@ CREATE TABLE "Product" (
     FOREIGN KEY (id_categorie) REFERENCES "Category"(id)
 );
 
+CREATE TABLE "Transaction" (
+    id                  SERIAL         PRIMARY KEY,
+    id_receiver         INTEGER        NOT NULL,
+    id_seller           INTEGER        NOT NULL,
+    id_item_receiver    INTEGER        NOT NULL,
+    id_item_seller      INTEGER        NOT NULL,
+    is_validate         BOOLEAN        NOT NULL DEFAULT FALSE, 
+    quality             INTEGER        NOT NULL, 
+    FOREIGN KEY (id_receiver) REFERENCES "User"(id),
+    FOREIGN KEY (id_seller) REFERENCES "User"(id)
+);
+
 CREATE TABLE "ProductImages" (
     id              SERIAL         PRIMARY KEY,
     product_id      INTEGER        NOT NULL,
@@ -84,5 +100,14 @@ CREATE TABLE "Comment" (
     id_user      INTEGER        NOT NULL, 
     PRIMARY KEY (id),
     FOREIGN KEY (id_user) REFERENCES "User"(id)
+);
+
+CREATE TABLE "ResetToken" (
+    id           SERIAL         NOT NULL,
+    user_id      INTEGER        NOT NULL,
+    token        VARCHAR(256)   NOT NULL,
+    expiration   TIMESTAMP      NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES "User"(id)
 );
 

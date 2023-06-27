@@ -1,23 +1,20 @@
 <?php
 namespace App;
-//Contrainte : utilisation des Namespace
 
 session_start();
 
+// var_dump($_SESSION);
 
 spl_autoload_register(function ($class) {
     $class = str_replace("App\\", "", $class);
     $class = str_replace("\\", "/", $class) . ".php";
 
-    $filePath = __DIR__ . "/" . $class; // Chemin absolu vers le fichier de classe
+    $filePath = __DIR__ . "/" . $class; 
 
     if (file_exists($filePath)) {
         include $filePath;
     }
 });
-
-
-
 
 //Récupérer dans l'url l'uri /login ou /user/toto
 //Nettoyer la donnée

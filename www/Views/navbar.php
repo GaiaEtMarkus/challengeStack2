@@ -10,13 +10,16 @@
                     <a class="nav-link text-danger" href="/userCreateProfile">Créer un profil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-danger" href="/userProfile">Profil user</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link text-danger" href="/userInterface">Interface user</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link text-danger" href="/displayProducts">Afficher produits</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-danger" href="/contact">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="/forgotpassword">Mot de passe oublié</a>
                 </li>
                 <?php if (!isset($_SESSION['userData'])): ?>
                 <li class="nav-item">
@@ -35,6 +38,12 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="/createproduct">Créer un produit</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="/displaynewproducts">Afficher les nouveaux produits</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="/displaynewusers">Afficher les nouveaux utilisateurs</a>
                 </li>
             </ul>
         </div>

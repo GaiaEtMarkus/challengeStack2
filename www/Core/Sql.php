@@ -8,7 +8,6 @@ abstract class Sql{
     private $table;
 
     public function __construct(){
-        //Mettre en place un SINGLETON
         try{ 
             $this->pdo = new \PDO("pgsql:host=database;port=5432;dbname=tournamount" , "tournamount_admin" , "Admin1234" );
         }catch(\Exception $e){
@@ -45,11 +44,12 @@ abstract class Sql{
         }else{
             $queryPrepared = $this->pdo->prepare("INSERT INTO \"".$this->table."\" (".implode(",", array_keys($columns)).") 
                             VALUES (:".implode(",:", array_keys($columns)).")");
-            var_dump($queryPrepared);
+            // var_dump($queryPrepared);
         }
     
-        var_dump($queryPrepared->queryString); // Ajouter cette ligne pour afficher la requête préparée
-        var_dump($columns); // Affiche les données à lier
+        // var_dump($queryPrepared->queryString); // Ajouter cette ligne pour afficher la requête préparée
+        // var_dump($columns); // Affiche les données à lier
+        
         $queryPrepared->execute($columns);
     }
 
@@ -67,10 +67,8 @@ abstract class Sql{
                   
             $_SESSION['userData'] = $userData;
             var_dump($_SESSION['userData']);
-            // $test = (object) $userData;
             return true;
         } else {
-            // Les mots de passe ne correspondent pas
             return false;
         }
     }
@@ -100,6 +98,16 @@ abstract class Sql{
         return $queryPrepared->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    public function getUserById(int $userId): array
+    {
+        $query = 'SELECT * FROM "User" WHERE id = :userId';
+        $params = [':userId' => $userId];
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);
+    
+        return $queryPrepared->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public function getProductById(int $productId): ?array
     {
         $query = 'SELECT * FROM "Product" WHERE id = :productId';
@@ -111,7 +119,6 @@ abstract class Sql{
         if ($result === false) {
             return null;
         }
-        
         return $result;
     }
 
@@ -129,5 +136,81 @@ abstract class Sql{
         }
     }
 
+    public function getVerifiedProducts()
+    {
+        $queryPrepared = $this->pdo->prepare('SELECT * FROM "Product" WHERE is_verified = true');
+        $queryPrepared->execute();
+        $result = $queryPrepared->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
+    protected function arrayToString(array $array)
+    {
+    return '{' . implode(',', $array) . '}';
+    }
+
+    public function getTransactionById(int $transactionId): ?array
+    {
+        $query = 'SELECT * FROM "Transaction" WHERE id = :transactionId';
+        $params = [':transactionId' => $transactionId];
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);
+        $result = $queryPrepared->fetch(\PDO::FETCH_ASSOC);
+
+        if ($result === false) {
+            return null;
+        }
+        return $result;
+    }
+
+    public function validateTransaction($transactionId)
+    {
+        $query = 'UPDATE "Transaction" SET is_validate = true WHERE id = :transactionId';
+        $params = [':transactionId' => $transactionId];
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);
+    }
+
+    public function getUserByMail(string $mailUser): ?array
+    {
+        $query = 'SELECT * FROM "User" WHERE email = :mailUser';
+        $params = [':mailUser' => $mailUser];
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);
+        $result = $queryPrepared->fetch(\PDO::FETCH_ASSOC);
+
+        if ($result === false) {
+            return null;
+        }
+        return $result;
+    }
+
+    public function getUserByToken(string $token): ?array
+    {
+        $query = 'SELECT * FROM "ResetToken" WHERE token = :token';
+        $params = [':token' => $token];
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);
+        $result = $queryPrepared->fetch(\PDO::FETCH_ASSOC);
+
+        if ($result === false) {
+            return null;
+        }
+        return $result;
+    }
+
+    public function setResetToken($userId, $token, $expiration)
+    {
+        $query = 'INSERT INTO "ResetToken" (user_id, token, expiration) VALUES (:userId, :token, :expiration)';
+        $params = [
+            ':userId' => $userId,
+            ':token' => $token,
+            ':expiration' => date('Y-m-d H:i:s', $expiration)
+        ];
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);   
+    }
     
+
 }

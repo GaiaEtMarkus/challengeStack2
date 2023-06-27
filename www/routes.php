@@ -65,4 +65,60 @@ return [
         'controller' => 'Product',
         'action' => 'modifyProduct'
     ],
+
+    '/displaynewusers' => [
+        'controller' => 'Moderator',
+        'action' => 'displaynewusers'
+    ],
+
+    '/validuser' => [
+        'controller' => 'Moderator',
+        'action' => 'validuser'
+    ],
+
+    '/displaynewproducts' => [
+        'controller' => 'Moderator',
+        'action' => 'displaynewproducts'
+    ],
+
+    '/validproduct' => [
+        'controller' => 'Moderator',
+        'action' => 'validproduct'
+    ],
+
+    '/displayproducts' => [
+        'controller' => 'Product',
+        'action' => 'displayproducts'
+    ],
+
+    '/displaydetailsproduct' => [
+        'controller' => 'Product',
+        'action' => 'displayProductDetails'
+    ],
+
+    '/createtransaction' => [
+        'controller' => 'Transaction',
+        'action' => 'createTransaction'
+    ],
+
+    '/savetransaction' => [
+        'controller' => 'Transaction',
+        'action' => 'saveTransaction'
+    ],
+
+    '/validatetransaction' => [
+        'controller' => 'Transaction',
+        'action' => 'validateTransaction'
+    ],
+
+    '/forgotpassword' => [
+        'controller' => 'User',
+        'action' => 'forgotPassword'
+    ],
+
+    '/changepassword' => [
+        'controller' => 'User',
+        'action' => 'changePassword'
+    ],
+
 ];
