@@ -44,11 +44,11 @@ abstract class Sql{
         }else{
             $queryPrepared = $this->pdo->prepare("INSERT INTO \"".$this->table."\" (".implode(",", array_keys($columns)).") 
                             VALUES (:".implode(",:", array_keys($columns)).")");
-            var_dump($queryPrepared);
+            // var_dump($queryPrepared);
         }
     
-        var_dump($queryPrepared->queryString); // Ajouter cette ligne pour afficher la requête préparée
-        var_dump($columns); // Affiche les données à lier
+        // var_dump($queryPrepared->queryString); // Ajouter cette ligne pour afficher la requête préparée
+        // var_dump($columns); // Affiche les données à lier
         
         $queryPrepared->execute($columns);
     }

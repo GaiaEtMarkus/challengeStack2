@@ -1,6 +1,8 @@
 <?php
 namespace App\Controllers;
 
+require_once('./Core/Functions.php');
+
 use App\Models\User;
 use App\Core\View;
 use App\Core\Security;
@@ -24,7 +26,8 @@ class ProductController {
     // protected string $pwd;
     // protected bool $vip = false;
 
-    public function createProduct(): void {
+    public function createProduct(): void 
+    {
         if (isset($_SESSION['userData'])) {
             if ($_SESSION['userData']['is_verified'] === true) {
                 $form = new AddProduct();
@@ -67,7 +70,7 @@ class ProductController {
                         echo "Insertion en BDD";
 
                         $userPseudo = $_SESSION['userData']['pseudo'];
-                        $userMail = $_SESSION['userData']['mail'];
+                        $userMail = $_SESSION['userData']['email'];
 
                         $subject = "Ajout d'un produit";
                         $message = "Bonjour {$userPseudo} ! Ceci est un message pour te signaler que ton produit {$titleProduct} a bien été ajouté!
@@ -75,6 +78,9 @@ class ProductController {
             
                         mailFormContact($subject, $userMail, $subject, $message);
                         mailFormContact($subject, "trokos.contact@gmail.com", $subject, "Un utilisateur a ajouté le produit {$titleProduct} sur Trokos : {$userMail}!");
+
+                        $message = "Votre produit a bien été ajouté !";
+                        header('Location: /userInterface?message=' . urlencode($message));
                     } else {
                         $view->assign('errors', $errors);
                     }
@@ -82,21 +88,18 @@ class ProductController {
             } else {
                 $message = "Votre profil doit être validé avant de pouvoir créer un produit. Veuillez attendre la validation de votre profil sous 24h ouvrables maximum après la date de création de votre profil.";
                 header('Location: /?message=' . urlencode($message));
-                exit;
             }
         } else {
             $message = "Veuillez vous connecter afin de pouvoir créer un produit.";
             header('Location: /?message=' . urlencode($message));
-            exit;
         }
     }
     
 
     public function modifyProduct()
-    {
-        $productId = intval($_POST['productId']);
-    
+    {    
         if (isset($_SESSION['userData'])) {
+            $productId = intval($_POST['productId']);
             $form = new ModifyProduct;
             $view = new View("Forms/form", "front");
             $product = new Product();
@@ -114,7 +117,7 @@ class ProductController {
                         move_uploaded_file($thumbnail['tmp_name'], $thumbnailPath);
                     }
                     
-                    $titleProduct = Security::securiser($_POST['titre']);
+                    $titleProduct = Security::securiser($_POST['title']);
                     $categoryName = Security::securiser($_POST['id_category']);
                     $categoryOptions = $_SESSION['categoryOptions'];
                     $id_category = array_search($categoryName, array_column($categoryOptions, 'value')) + 1 ;
@@ -131,16 +134,21 @@ class ProductController {
                     $product->save();
     
                     $userPseudo = $_SESSION['userData']['pseudo'];
-                    $userMail = $_SESSION['userData']['mail'];
+                    $userMail = $_SESSION['userData']['email'];
 
                     $subject = "Modification d'un produit";
                     $message = "Bonjour {$userPseudo} ! Ceci est un message pour te signaler que ton produit {$titleProduct} a bien été modifié!
                                 N'hésite pas à nous rendre visite à nouveau sur Trokos";
         
                     mailFormContact($subject, $userMail, $subject, $message);
-                    mailFormContact($subject, "trokos.contact@gmail.com", $subject, "Un utilisateur a modifié le produit {$titleProduct} sur Trokos : {$userMail}!");                
+                    mailFormContact($subject, "trokos.contact@gmail.com", $subject, "Un utilisateur a modifié le produit {$titleProduct} sur Trokos : {$userMail}!");
+                    
+                    $message = "Le produit a été modifié avec succès.";
+                    header('Location: /userInterface?message=' . urlencode($message));
                 } else {
                     $view->assign('errors', $errors);
+                    $message = "Oops... Veuillez Rééessayer !";
+                    header('Location: /userInterface?message=' . urlencode($message));
                 }
             }
     
@@ -153,25 +161,30 @@ class ProductController {
     
     public function deleteProduct(): void
     {
-        $productId = Security::securiser($_POST['productId']);
-        var_dump($productId); 
-        $product = new Product();
-        $productData = $product->getProductById($productId);
-        $product->delete($productId);
-        $titleProduct = $productData['title'];
+        if (isset($_SESSION['userData'])) {
+            $productId = Security::securiser($_GET['productId']);
+            var_dump($productId); 
+            $product = new Product();
+            $productData = $product->getProductById($productId);
+            $product->delete($productId);
+            $titleProduct = $productData['title'];
 
-        $userPseudo = $_SESSION['userData']['pseudo'];
-        $userMail = $_SESSION['userData']['mail'];
+            $userPseudo = $_SESSION['userData']['pseudo'];
+            $userMail = $_SESSION['userData']['mail'];
 
-        $subject = "Suppression d'un produit";
-        $message = "Bonjour {$userPseudo} ! Ceci est un message pour te signaler que ton produit {$titleProduct} a bien été supprimé!
-                    N'hésite pas à nous rendre visite à nouveau sur Trokos";
+            $subject = "Suppression d'un produit";
+            $message = "Bonjour {$userPseudo} ! Ceci est un message pour te signaler que ton produit {$titleProduct} a bien été supprimé!
+                        N'hésite pas à nous rendre visite à nouveau sur Trokos";
 
-        mailFormContact($subject, $userMail, $subject, $message);
-        mailFormContact($subject, "trokos.contact@gmail.com", $subject, "Un utilisateur a supprimé le produit {$titleProduct} sur Trokos : {$userMail}!");    
-        
-        $message = "Le produit a été supprimé avec succès.";
-        header('Location: /userInterface?message=' . urlencode($message));
+            mailFormContact($subject, $userMail, $subject, $message);
+            mailFormContact($subject, "trokos.contact@gmail.com", $subject, "Un utilisateur a supprimé le produit {$titleProduct} sur Trokos : {$userMail}!");    
+            
+            $message = "Le produit a été supprimé avec succès.";
+            header('Location: /userInterface?message=' . urlencode($message));
+        } else {
+            $message = "Veuillez vous connecter afin de pouvoir supprimer un produit!";
+            header('Location: /?message=' . urlencode($message));
+        }
     }
 
     public function displayProducts()

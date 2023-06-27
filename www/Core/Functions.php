@@ -29,7 +29,7 @@ function mailContact($objet,$emailTo,$titre,$message,$by,$mdp="gznhvunfpjlxyewd"
     $mail->SMTPSecure = 'ssl';
     $mail->Username = $by; 
     $mail->Password = $mdp; 
-    $mail->SMTPDebug = 1;
+    $mail->SMTPDebug = 0;
     $mail->setFrom($by, $objet); 
     $mail->AddAddress($emailTo);
     $mail->IsHTML(true);

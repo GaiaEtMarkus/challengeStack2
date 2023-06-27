@@ -1,6 +1,8 @@
 <?php
 namespace App\Controllers;
 
+require_once('./Core/Functions.php');
+
 use App\Models\User;
 use App\Core\View;
 use App\Forms\AddUser;
@@ -13,6 +15,8 @@ use App\Forms\Contact;
 use App\Forms\LoginUser;
 
 class UserController {
+
+    
     
     public function deconnexion()
     {
@@ -26,6 +30,7 @@ class UserController {
 
     public function userDeleteProfile()
     {
+        if (isset($_SESSION['userData'])) {
             $form = new DeleteProfile();
             $view = new View("Forms/form", "front");
             $view->assign('form', $form->getConfig()); 
@@ -38,9 +43,12 @@ class UserController {
                         $userId = $_SESSION['userData']['id'];
                         $user = new User();
                         $user->delete($userId);
-                        $userData = $user->getUserById($userId);
-                        $userMail = $userData['email'];
-                        $userPseudo = $userData['pseudo'];
+
+                        // $userData = $user->getUserById($userId);
+                        $userMail = $_SESSION['userData']['email'];
+                        $userPseudo = $_SESSION['userData']['pseudo'];
+                        session_unset();
+                        session_destroy();
 
                         $subject = "Suppression de compte";
                         $message = "Bonjour {$userPseudo} ! Ceci est un message pour te signaler que ton compte a bien été supprimé !
@@ -48,6 +56,9 @@ class UserController {
             
                         mailFormContact($subject, $userMail, $subject, $message);
                         mailFormContact($subject, "trokos.contact@gmail.com", $subject, "Un utilisateur a supprimé son profil sur Trokos : {$userMail}!");
+
+                        $message = "Votre compte a bien été supprimé !";
+                        header('Location: /?message=' . urlencode($message));    
                     } else {
                         echo "Veuillez confirmer la suppression en saisissant 'deleteThisProfile'";
                     }
@@ -56,6 +67,7 @@ class UserController {
                 }
             }
         }
+    }
 
         public function userModifyProfile()
         {
@@ -94,24 +106,34 @@ class UserController {
                         $userData['country'] = Security::securiser($_POST['country']);
                         $userData['thumbnail'] = $thumbnailPath;
                         $userData['is_verified'] = $_POST['country'];
+                        $pwd = Security::securiser($_POST['pwd']);
+                        $confirmPwd = Security::securiser($_POST['confirmPwd']);
+
+                        if ($pwd !== $confirmPwd) {
+
+                            $message = "Les mots de passes ne correspondent pas !";
+                            header('Location: /userModifyProfile?message=' . urlencode($message));    
+
+                        }else {
         
-                        $user->hydrate(
-                            $userData['id'],
-                            $userData['id_role'],
-                            $userData['firstname'],
-                            $userData['lastname'],
-                            $userData['pseudo'],
-                            $userData['email'],
-                            $userData['phone'],
-                            $userData['birth_date'],
-                            $userData['address'],
-                            $userData['zip_code'],
-                            $userData['country'],
-                            Security::hashPassword($_POST['pwd']),
-                            $thumbnailPath,
-                            $newTruncatedToken,
-                            $userData['is_verified']
-                        );
+                            $user->hydrate(
+                                $userData['id'],
+                                $userData['id_role'],
+                                $userData['firstname'],
+                                $userData['lastname'],
+                                $userData['pseudo'],
+                                $userData['email'],
+                                $userData['phone'],
+                                $userData['birth_date'],
+                                $userData['address'],
+                                $userData['zip_code'],
+                                $userData['country'],
+                                Security::hashPassword($pwd),
+                                $thumbnailPath,
+                                $newTruncatedToken,
+                                $userData['is_verified']
+                            );
+                        }
         
                         $userData['token_hash'] = $newTruncatedToken;
                         $_SESSION['userData'] = $userData;
@@ -163,7 +185,7 @@ class UserController {
     
                     setcookie('user_token', $newTruncatedToken, time() + (86400 * 30), '/'); 
 
-                    $message = "Conenxion réussie !";
+                    $message = "Connexion réussie !";
                     header('Location: /userinterface?message=' . urlencode($message));;
 
                 } else {
@@ -178,6 +200,7 @@ class UserController {
     }
 
     public function userCreateProfile(): void {
+
         $form = new AddUser();
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
@@ -186,17 +209,17 @@ class UserController {
             $errors = Security::form($form->getConfig(), $_POST);
             if (empty($errors)) {
                 if ( Security::securiser($_POST['pwd']) !==  Security::securiser($_POST['pwdConfirm'])) {
-                    $errors['pwdConfirm'] = "Les mots de passe ne sont pas identiques";
+                    $message = "Les mots de passes ne sont pas identiques. Veuillez rééessayer !";
+                    header('Location: /userCreateProfile?message=' . urlencode($message));;                
                 } else {
                     $id_role = 1;
                     $id = null;
                     $userPseudo = Security::securiser($_POST['pseudo']);
-                    $userMail = Security::securiser($_POST['mail']);
+                    $userMail = Security::securiser($_POST['email']);
                     $hashedPassword = Security::hashPassword($_POST['pwd']);
                     $completeToken = Security::generateCompleteToken(); 
                     $truncatedToken = Security::staticgenerateTruncatedToken($completeToken); 
                     $is_verified = false;
-                    var_dump($is_verified);
                     $thumbnail = $_FILES['thumbnail'] ?? null;
                     if ($thumbnail && $thumbnail['error'] === UPLOAD_ERR_OK) {
                         $thumbnailPath = './assets/userProfile/' . $thumbnail['name'];
@@ -232,9 +255,13 @@ class UserController {
 
                     mailFormContact($subject, $userMail, "Réinitialisation du mot de passe", $message);
                     mailFormContact($subject, "trokos.contact@gmail.com", "D'inscription'", "Un nouvel utilisateur s'est inscrit sur Trokos : $userMail !");
+
+                    $message = "Votre compte a été créé !";
+                    header('Location: /?message=' . urlencode($message));;
                 }
             } else {
-                $view->assign('errors', $errors);
+                $message = "Il y a eu une erreur. Veuillez rééessayer !";
+                header('Location: /userCreateProfile?message=' . urlencode($message));;
             }
         }
     }
@@ -289,8 +316,8 @@ class UserController {
         }
     }
     
-    public function contact() {
-
+    public function contact() 
+    {
         $form = new Contact;
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());

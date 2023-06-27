@@ -76,7 +76,7 @@ class ModifyProfile extends AForm {
                     "error" => "Votre mot de passe est incorrect",
                     "value" => "",
                 ],
-                "pwdConfirm" => [
+                "confirmPwd" => [
                     "type" => "password",
                     "placeholder" => "Confirmation",
                     "required" => true,

@@ -20,6 +20,11 @@
                                 <div class="card-body">
                                     <h5 class="card-title"><?= $product['title'] ?></h5>
                                     <p class="card-text">Trokos : <?= $product['trokos'] ?></p>
+                                    <form method="POST" action="/modifyProduct">
+                                        <input type="hidden" name="productId" value="<?= $product['id'] ?>">
+                                        <button type="submit" class="btn btn-primary">Modifier</button>
+                                    </form>
+                                    <a class="nav-link text-danger" href="/deleteProduct?productId=<?php echo $product['id']; ?>">Supprimer</a>
                                 </div>
                             </div>
                         </div>

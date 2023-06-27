@@ -19,41 +19,42 @@ class ModeratorController {
       }
 
       
-      public function validUser()
-      {
-          $userId = Security::securiser($_GET['userId']);
-      
-          $moderator = new Moderator();
-          $userData = $moderator->getUserById($userId);
-          var_dump($userData); 
+    public function validUser()
+    {
+        if ($_SESSION['userData']['id_role'] == 2 || $_SESSION['userData']['id_role'] == 3) {
+            $userId = Security::securiser($_GET['userId']);
+            $moderator = new Moderator();
+            $userData = $moderator->getUserById($userId);
+            var_dump($userData); 
 
-          if ($userData) {
-              $userData['is_verified'] = true;
-              $user = new User();
-              $user->hydrate(
-                  $userData['id'],
-                  $userData['id_role'],
-                  $userData['firstname'],
-                  $userData['lastname'],
-                  $userData['pseudo'],
-                  $userData['email'],
-                  $userData['phone'],
-                  $userData['birth_date'],
-                  $userData['address'],
-                  $userData['zip_code'],
-                  $userData['country'],
-                  $userData['pwd'],
-                  $userData['thumbnail'],
-                  $userData['token_hash'],
-                  $userData['is_verified']
-              );
-      
-              $user->save();
-      
-              header("Location: /displaynewusers");
-          } else {
-          }
-      }
+            if ($userData) {
+                $userData['is_verified'] = true;
+                $user = new User();
+                $user->hydrate(
+                    $userData['id'],
+                    $userData['id_role'],
+                    $userData['firstname'],
+                    $userData['lastname'],
+                    $userData['pseudo'],
+                    $userData['email'],
+                    $userData['phone'],
+                    $userData['birth_date'],
+                    $userData['address'],
+                    $userData['zip_code'],
+                    $userData['country'],
+                    $userData['pwd'],
+                    $userData['thumbnail'],
+                    $userData['token_hash'],
+                    $userData['is_verified']
+                );
+        
+                $user->save();
+        
+                header("Location: /displaynewusers");
+            } else {
+            }
+        }   
+    }
       
 
     public function displayNewProducts()
