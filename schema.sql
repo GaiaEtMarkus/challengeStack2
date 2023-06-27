@@ -7,7 +7,10 @@ DROP TABLE IF EXISTS "Comment" CASCADE;
 DROP TABLE IF EXISTS "Sale" CASCADE;
 DROP TABLE IF EXISTS "Category" CASCADE;
 DROP TABLE IF EXISTS "Transaction" CASCADE;
+DROP TABLE IF EXISTS "ResetToken" CASCADE;
+
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 
 
 CREATE TABLE "Role" (
@@ -97,5 +100,14 @@ CREATE TABLE "Comment" (
     id_user      INTEGER        NOT NULL, 
     PRIMARY KEY (id),
     FOREIGN KEY (id_user) REFERENCES "User"(id)
+);
+
+CREATE TABLE "ResetToken" (
+    id           SERIAL         NOT NULL,
+    user_id      INTEGER        NOT NULL,
+    token        VARCHAR(256)   NOT NULL,
+    expiration   TIMESTAMP      NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES "User"(id)
 );
 

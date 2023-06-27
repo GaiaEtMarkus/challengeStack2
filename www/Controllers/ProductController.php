@@ -49,12 +49,14 @@ class ProductController {
                         } else {
                             $thumbnailPath = null; // Pas de fichier téléchargé
                         }
+
+                        $titleProduct = Security::securiser($_POST['titre']);
     
                         $product->hydrate(
                             $id,
                             $id_category,
                             $_SESSION['userData']['id'],
-                            Security::securiser($_POST['titre']),
+                            $titleProduct,
                             Security::securiser($_POST['description']),
                             $trokos,
                             $thumbnailPath,
@@ -63,6 +65,16 @@ class ProductController {
                         $product->save();
     
                         echo "Insertion en BDD";
+
+                        $userPseudo = $_SESSION['userData']['pseudo'];
+                        $userMail = $_SESSION['userData']['mail'];
+
+                        $subject = "Ajout d'un produit";
+                        $message = "Bonjour {$userPseudo} ! Ceci est un message pour te signaler que ton produit {$titleProduct} a bien été ajouté!
+                                    N'hésite pas à nous rendre visite à nouveau sur Trokos";
+            
+                        mailFormContact($subject, $userMail, $subject, $message);
+                        mailFormContact($subject, "trokos.contact@gmail.com", $subject, "Un utilisateur a ajouté le produit {$titleProduct} sur Trokos : {$userMail}!");
                     } else {
                         $view->assign('errors', $errors);
                     }
@@ -101,26 +113,32 @@ class ProductController {
                     if ($thumbnail && $thumbnail['error'] === UPLOAD_ERR_OK) {
                         move_uploaded_file($thumbnail['tmp_name'], $thumbnailPath);
                     }
-    
+                    
+                    $titleProduct = Security::securiser($_POST['titre']);
                     $categoryName = Security::securiser($_POST['id_category']);
                     $categoryOptions = $_SESSION['categoryOptions'];
-                    var_dump($categoryOptions); // Ajout du var_dump pour déboguer la valeur de $categoryOptions
                     $id_category = array_search($categoryName, array_column($categoryOptions, 'value')) + 1 ;
 
-    
                     $product->hydrate(
                         $productData['id'],
                         $id_category,
                         $productData['id_seller'],
-                        Security::securiser($_POST['title']),
+                        $titleProduct,
                         Security::securiser($_POST['description']),
                         $productData['trokos'],
                         $thumbnailPath
                     );
                     $product->save();
     
-                    echo "Mise à jour réussie";
-                    // Redirection
+                    $userPseudo = $_SESSION['userData']['pseudo'];
+                    $userMail = $_SESSION['userData']['mail'];
+
+                    $subject = "Modification d'un produit";
+                    $message = "Bonjour {$userPseudo} ! Ceci est un message pour te signaler que ton produit {$titleProduct} a bien été modifié!
+                                N'hésite pas à nous rendre visite à nouveau sur Trokos";
+        
+                    mailFormContact($subject, $userMail, $subject, $message);
+                    mailFormContact($subject, "trokos.contact@gmail.com", $subject, "Un utilisateur a modifié le produit {$titleProduct} sur Trokos : {$userMail}!");                
                 } else {
                     $view->assign('errors', $errors);
                 }
@@ -135,13 +153,25 @@ class ProductController {
     
     public function deleteProduct(): void
     {
-        $productId = $_POST['productId'];
-        var_dump($productId); // Ajout du var_dump pour déboguer la valeur de $productId
+        $productId = Security::securiser($_POST['productId']);
+        var_dump($productId); 
         $product = new Product();
+        $productData = $product->getProductById($productId);
         $product->delete($productId);
+        $titleProduct = $productData['title'];
+
+        $userPseudo = $_SESSION['userData']['pseudo'];
+        $userMail = $_SESSION['userData']['mail'];
+
+        $subject = "Suppression d'un produit";
+        $message = "Bonjour {$userPseudo} ! Ceci est un message pour te signaler que ton produit {$titleProduct} a bien été supprimé!
+                    N'hésite pas à nous rendre visite à nouveau sur Trokos";
+
+        mailFormContact($subject, $userMail, $subject, $message);
+        mailFormContact($subject, "trokos.contact@gmail.com", $subject, "Un utilisateur a supprimé le produit {$titleProduct} sur Trokos : {$userMail}!");    
         
         $message = "Le produit a été supprimé avec succès.";
-        // header('Location: /userInterface?message=' . urlencode($message));
+        header('Location: /userInterface?message=' . urlencode($message));
     }
 
     public function displayProducts()

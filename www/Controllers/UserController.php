@@ -5,25 +5,15 @@ use App\Models\User;
 use App\Core\View;
 use App\Forms\AddUser;
 use App\Core\Security;
+use App\Forms\ChangePassword;
 use App\Forms\ModifyProfile;
 use App\Forms\DeleteProfile;
 use App\Forms\ForgotPassword;
+use App\Forms\Contact;
 use App\Forms\LoginUser;
-use App\Models\Transaction;
 
 class UserController {
     
-    // protected int $id = 0;
-    // protected string $firstname;
-    // protected string $surname;
-    // protected string $email;
-    // protected string $phone;
-    // protected string $country;
-    // protected string $birth_date;
-    // protected string $thumbnail;
-    // protected string $pwd;
-    // protected bool $vip = false;
-
     public function deconnexion()
     {
         if (isset($_SESSION['userData'])) {
@@ -44,10 +34,20 @@ class UserController {
                 $errors = Security::form($form->getConfig(), $_POST);
                 if (empty($errors)) {
                     if (isset($_POST['deleteThisProfile']) && $_POST['deleteThisProfile'] === 'deleteThisProfile') {
+
+                        $userId = $_SESSION['userData']['id'];
                         $user = new User();
-                        var_dump($_SESSION['userData']['id']);
-                        $user->delete($_SESSION['userData']['id']);
-                        echo "Votre profil a été supprimé";
+                        $user->delete($userId);
+                        $userData = $user->getUserById($userId);
+                        $userMail = $userData['email'];
+                        $userPseudo = $userData['pseudo'];
+
+                        $subject = "Suppression de compte";
+                        $message = "Bonjour {$userPseudo} ! Ceci est un message pour te signaler que ton compte a bien été supprimé !
+                                    N'hésite pas à nous rendre visite à nouveau sur Trokos";
+            
+                        mailFormContact($subject, $userMail, $subject, $message);
+                        mailFormContact($subject, "trokos.contact@gmail.com", $subject, "Un utilisateur a supprimé son profil sur Trokos : {$userMail}!");
                     } else {
                         echo "Veuillez confirmer la suppression en saisissant 'deleteThisProfile'";
                     }
@@ -119,8 +119,16 @@ class UserController {
                         setcookie('user_token', $newTruncatedToken, time() + (86400 * 30), '/');
         
                         $user->save();
-                        echo "Mise à jour réussie";
 
+                        $subject = "Modification de compte";
+                        $message = "Bonjour {$userData['pseudo']} ! Ceci est un message pour te signaler que ton compte a bien été modifié.
+                        si tu n'es pas à l'origine de cette modification, contacte nous au plus vite !";
+            
+                        mailFormContact($subject, $userData['email'], $subject, $message);
+                        mailFormContact($subject, "trokos.contact@gmail.com", $subject, "Un utilisateur a modifié son profil sur Trokos : {$userData['email']},!");
+
+                        $message = "La mise à jour a bien été effectué !";
+                        header('Location: /userInterface?message=' . urlencode($message));
                     } else {
                         $view->assign('errors', $errors);
                     }
@@ -148,19 +156,22 @@ class UserController {
                 $isLoggedIn = $userConnected->login($email, $password);
     
                 if ($isLoggedIn) {
+
                     $newCompleteToken = Security::generateCompleteToken();
                     $newTruncatedToken = Security::staticgenerateTruncatedToken($newCompleteToken);
-    
                     $_SESSION['userData']['token_hash'] = $newTruncatedToken;
     
-                    setcookie('user_token', $newTruncatedToken, time() + (86400 * 30), '/'); // Expire dans 30 jours
-    
-                    echo "Connecté avec succès";
-                    header('Location: /userinterface');
+                    setcookie('user_token', $newTruncatedToken, time() + (86400 * 30), '/'); 
+
+                    $message = "Conenxion réussie !";
+                    header('Location: /userinterface?message=' . urlencode($message));;
+
                 } else {
+
                     echo "Échec de la connexion";
                 }
             } else {
+
                 $view->assign('errors', $errors);
             }
         }
@@ -174,36 +185,35 @@ class UserController {
         if ($form->isSubmit()) {
             $errors = Security::form($form->getConfig(), $_POST);
             if (empty($errors)) {
-                if ($_POST['pwd'] !== $_POST['pwdConfirm']) {
+                if ( Security::securiser($_POST['pwd']) !==  Security::securiser($_POST['pwdConfirm'])) {
                     $errors['pwdConfirm'] = "Les mots de passe ne sont pas identiques";
                 } else {
                     $id_role = 1;
                     $id = null;
+                    $userPseudo = Security::securiser($_POST['pseudo']);
+                    $userMail = Security::securiser($_POST['mail']);
                     $hashedPassword = Security::hashPassword($_POST['pwd']);
                     $completeToken = Security::generateCompleteToken(); 
                     $truncatedToken = Security::staticgenerateTruncatedToken($completeToken); 
                     $is_verified = false;
-    
+                    var_dump($is_verified);
                     $thumbnail = $_FILES['thumbnail'] ?? null;
                     if ($thumbnail && $thumbnail['error'] === UPLOAD_ERR_OK) {
                         $thumbnailPath = './assets/userProfile/' . $thumbnail['name'];
-                        var_dump($thumbnailPath); 
                         move_uploaded_file($thumbnail['tmp_name'], $thumbnailPath);
                     } else {
                         $thumbnailPath = null; 
                         echo('error');
                     }
 
-                    var_dump($thumbnail); 
-    
                     $user = new User();
                     $user->hydrate(
                         $id,
                         $id_role,
                         Security::securiser($_POST['firstname']),
                         Security::securiser($_POST['lastname']),
-                        Security::securiser($_POST['pseudo']),
-                        Security::securiser($_POST['email']),
+                        $userPseudo,
+                        $userMail,
                         Security::securiser($_POST['phone']),
                         Security::securiser($_POST['birth_date']),
                         Security::securiser($_POST['address']),
@@ -211,12 +221,17 @@ class UserController {
                         Security::securiser($_POST['country']),
                         $hashedPassword,
                         $thumbnailPath,
-                        $truncatedToken,
-                        $is_verified 
+                        $is_verified,
+                        $truncatedToken
                     );
     
                     $user->save();
-                    echo "Insertion en BDD";
+
+                    $subject = "Nouvelle création de compte";
+                    $message = "Bonjour $userPseudo ! Nous te remercions pour ton inscription et te souhaite de faire plein de bonnes affaires sur Trokos !";
+
+                    mailFormContact($subject, $userMail, "Réinitialisation du mot de passe", $message);
+                    mailFormContact($subject, "trokos.contact@gmail.com", "D'inscription'", "Un nouvel utilisateur s'est inscrit sur Trokos : $userMail !");
                 }
             } else {
                 $view->assign('errors', $errors);
@@ -233,8 +248,6 @@ class UserController {
             $user = new User();
             $products = $user->getProductsByUserId($userId);
             $allTransactions = $user->getAllFromTable("Transaction");
-            var_dump($allTransactions);
-            // Tri des produits en fonction de l'utilisateur connecté
             $userProducts = [];
             $otherProducts = [];
             
@@ -277,69 +290,143 @@ class UserController {
     }
     
     public function contact() {
-        $view = new View("User/contact", "front");
-    }
 
-    public function validContact() {
+        $form = new Contact;
+        $view = new View("Forms/form", "front");
+        $view->assign('form', $form->getConfig());
 
+        if ($form->isSubmit()) {
+            $errors = Security::form($form->getConfig(), $_POST);
+            if (empty($errors)) {
+          
+                require_once('./Core/Functions.php');
+
+                $userMail =  Security::securiser($_POST['email']);
+                $userSubject =  Security::securiser($_POST['subject']);
+                $userMessage =  Security::securiser($_POST['message']);
+        
+                mailFormContact("Accusé de réception", $userMail, $userSubject, "Nous avons bien reçu votre message et nous vous répondrons dans les plus brefs délais.");
+                mailFormContact("Demande d'information", "trokos.contact@gmail.com", $userSubject, "Vous avez reçu le message suivant {$userMessage} de la part de {$userMail}.");
+        
+                $message = "Votre message a bien été envoyé !";
+                header('Location: /?message=' . urlencode($message));
+
+                }
+                else {
+                    $errors['Echec'] = "Oups .... Veuillez réessayer !";
+                }
+
+            } else {
+            }
+        }
+
+    public function forgotPassword()
+    {
         require_once('./Core/Functions.php');
-
-        $userMail = $_POST['email'];
-        $userSubject = $_POST['subject'];
-        $userMessage = $_POST['message'];
-        var_dump($_POST);
-
-        mailFormContact("Accusé de réception", $userMail, $userSubject, "Nous avons bien reçu votre message et nous vous répondrons dans les plus brefs délais.");
-        mailFormContact("Demande d'information", "trokos.contact@gmail.com", $userSubject, $userMessage);
-
-        $message = "Votre message a bien été envoyé !";
-        header('Location: /userinterface?message=' . urlencode($message));
-    }
-
-    public function forgotPassword() {
-
-        require_once('./Core/Functions.php');
-
-var_dump($_POST);
-
+    
         $form = new ForgotPassword;
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
     
         if ($form->isSubmit()) {
-            // include './Modules/Php-Mailer/src/mail.php'; 
             $errors = Security::form($form->getConfig(), $_POST);
-
-
+    
             if (empty($errors)) {
-
-                $userMail = Security::securiser($_POST['email']); 
+                $userMail = Security::securiser($_POST['email']);
                 $user = new User();
                 $userData = $user->getUserByMail($userMail);
                 $userPseudo = $userData['pseudo'];
                 $subject = $_POST['subject'];
-                $message = "Hello $userPseudo ! Voici ton mot de passe : $userMail. Nous te conseillons de changer celui-ci dans la section Modifier mes infos ! 
-                            A très bientôt ! L'équipe Trokos";
-                var_dump($userData);
-                var_dump($userPseudo);
-                
     
                 if ($userData) {
-          
-                    mailFormContact($subject, $userMail, "A ne transmettre à personne", $message);
-                    mailFormContact($subject, "trokos.contact@gmail.com", "Une demande de mot de passe oublié a été effectué", "message");
-
-                    $message = "Votre message a bien été envoyé !";
-                    // header('Location: /=' . urlencode($message));
+                    $userId = $userData['id'];
+                    $token = Security::generateResetToken(); 
+                    $expiration = time() + 24 * 60 * 60; 
+    
+                    $user->setResetToken($userId, $token, $expiration); 
+    
+                    $resetLink = "localhost/changePassword?token=$token"; 
+                    $message = "Bonjour $userPseudo ! Voici le lien pour réinitialiser votre mot de passe : $resetLink. "
+                             . "Ce lien est valable pendant 24 heures. Si vous n'avez pas demandé la réinitialisation de votre mot de passe, veuillez ignorer ce message.";
+    
+                    mailFormContact($subject, $userMail, "Réinitialisation du mot de passe", $message);
+                    mailFormContact($subject, "trokos.contact@gmail.com", "Demande de réinitialisation de mot de passe", "Un user vient d'effectuer 
+                                    une demande de réinintialisation sur le mail $userMail");
+    
+                    $message = "Un lien de réinitialisation de mot de passe a été envoyé à votre adresse e-mail.";
+                    header('Location: /=' . urlencode($message));
                 } else {
-                    $message = "Votre message a bien été envoyé !";
-                    // header('Location: /=' . urlencode($message));
-                }
+                    $message = "Un lien de réinitialisation de mot de passe a été envoyé à votre adresse e-mail.";
+                    header('Location: /=' . urlencode($message));
+                } 
             } else {
                 $view->assign('errors', $errors);
-                }
             }
-        }    
+        }
+    }
+    
+    public function changePassword() {
+
+        $token =  Security::securiser($_GET['token']);
+        $user = new User;
+        $tokenData = $user->getUserByToken($token);
+        $userId = $tokenData['user_id'];
+        $userData = $user->getUserById($userId);
+        $userData = $userData[0];
+        $expiration = $tokenData['expiration'];
+        $expirationTimestamp = strtotime($expiration);
+
+        $form = new ChangePassword;
+        $view = new View("Forms/form", "front");
+        $view->assign('form', $form->getConfig());
+
+
+        if ($form->isSubmit() && time() < $expirationTimestamp) {
+            $errors = Security::form($form->getConfig(), $_POST);
+            if (empty($errors)) {
+                $password = Security::securiser($_POST['password']);
+                $confirmPassword = Security::securiser($_POST['confirmPassword']);
+
+                if($password == $confirmPassword) {
+
+                    $user->hydrate(
+                        $userData['id'],
+                        $userData['id_role'],
+                        $userData['firstname'],
+                        $userData['lastname'],
+                        $userData['pseudo'],
+                        $userData['email'],
+                        $userData['phone'],
+                        $userData['birth_date'],
+                        $userData['address'],
+                        $userData['zip_code'],
+                        $userData['country'],
+                        $password,
+                        $userData['thumbnail'],
+                        $userData['is_verified'],
+                        $userData['token_hash'],
+                    );
+    
+                    $user->save();
+                    echo "Insertion en BDD";
+
+                    $hashedPassword = Security::hashPassword($password);
+                    $user->changePassword($userId, $password);
+                    var_dump($userId);
+                    var_dump($password);
+                    echo"ok";
+                }
+                else {
+                    $errors['confirmPassword'] = "Les mots de passe ne correspondent pas";
+                }
+
+            } else {
+                $view->assign('errors', $errors);
+                echo'error';
+            }
+        }
+    }
+    
 }
 
     

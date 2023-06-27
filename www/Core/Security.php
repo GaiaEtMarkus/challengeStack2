@@ -61,4 +61,10 @@ class Security extends Sql
         $donnees = htmlspecialchars($donnees);
         return $donnees;
     }
+
+    public static function generateResetToken($length = 32)
+    {
+    $token = bin2hex(random_bytes($length));
+    return $token;
+    }
 }

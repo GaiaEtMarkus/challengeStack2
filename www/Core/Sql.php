@@ -48,7 +48,7 @@ abstract class Sql{
         }
     
         var_dump($queryPrepared->queryString); // Ajouter cette ligne pour afficher la requête préparée
-        // var_dump($columns); // Affiche les données à lier
+        var_dump($columns); // Affiche les données à lier
         
         $queryPrepared->execute($columns);
     }
@@ -91,6 +91,16 @@ abstract class Sql{
     public function getProductsByUserId(int $userId): array
     {
         $query = 'SELECT * FROM "Product" WHERE id_seller = :userId';
+        $params = [':userId' => $userId];
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);
+    
+        return $queryPrepared->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function getUserById(int $userId): array
+    {
+        $query = 'SELECT * FROM "User" WHERE id = :userId';
         $params = [':userId' => $userId];
         $queryPrepared = $this->pdo->prepare($query);
         $queryPrepared->execute($params);
@@ -175,5 +185,32 @@ abstract class Sql{
         }
         return $result;
     }
+
+    public function getUserByToken(string $token): ?array
+    {
+        $query = 'SELECT * FROM "ResetToken" WHERE token = :token';
+        $params = [':token' => $token];
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);
+        $result = $queryPrepared->fetch(\PDO::FETCH_ASSOC);
+
+        if ($result === false) {
+            return null;
+        }
+        return $result;
+    }
+
+    public function setResetToken($userId, $token, $expiration)
+    {
+        $query = 'INSERT INTO "ResetToken" (user_id, token, expiration) VALUES (:userId, :token, :expiration)';
+        $params = [
+            ':userId' => $userId,
+            ':token' => $token,
+            ':expiration' => date('Y-m-d H:i:s', $expiration)
+        ];
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);   
+    }
+    
 
 }

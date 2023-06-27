@@ -8,7 +8,7 @@
                 <?php endforeach; ?>
             </select>
         <?php else: ?>
-            <?php $value = isset($input["value"]) ? $input["value"] : ""; ?>
+            <?php $value = isset($input["value"]) ? $input["value"] : null; ?>
             <input name="<?= $name; ?>" type="<?= $input["type"] ?>" placeholder="<?= $input["placeholder"] ?>" <?= $input["required"] ? "required" : "" ?> value="<?= $value ?>">
         <?php endif; ?>
     <?php endforeach; ?>

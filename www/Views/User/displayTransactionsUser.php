@@ -43,8 +43,5 @@
                     </div>
                 </div>
             </div>
-
-
-
-                                                <button type="submit" class="btn btn-primary">Valider la transaction</button>
-                                            </form>
+        <!-- <button type="submit" class="btn btn-primary">Valider la transaction</button>
+    </form> -->

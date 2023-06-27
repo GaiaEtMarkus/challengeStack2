@@ -21,7 +21,8 @@ class User extends Sql{
     protected string $token_hash;
     protected bool $is_verified = false;
 
-    public function hydrate($id = null, $id_role, $firstname, $lastname, $pseudo, $email, $phone, $birth_date, $address, $zip_code, $country, $pwd, $thumbnail, $token_hash, $is_verified) 
+    public function hydrate($id = null, $id_role, $firstname, $lastname, $pseudo, $email, $phone, $birth_date, $address, $zip_code, 
+    $country, $pwd, $thumbnail, $token_hash, $is_verified=false) 
     {
         if ($id !== null) {
             $this->setId($id);

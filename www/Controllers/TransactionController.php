@@ -5,13 +5,14 @@ namespace App\Controllers;
 use App\Core\View;
 use App\Models\Transaction;
 use App\Models\Product;
+use App\Core\Security;
 
 class TransactionController
 {
     public function createTransaction()
     {
         if (isset($_SESSION['userData'])) {
-            $productId = $_POST['productId'] ?? null;
+            $productId = Security::securiser($_POST['productId']);
     
             if ($productId) {
                 $product = new Product();
@@ -43,8 +44,8 @@ class TransactionController
         if (isset($_SESSION['userData'])) {
 
             $transaction = new Transaction;
-            $productId = intval($_POST['productReceiverId']);
-            $receiverId = intval($_POST['receiverId']);
+            $productId =  Security::securiser(intval($_POST['productReceiverId']));
+            $receiverId = Security::securiser(intval($_POST['receiverId']));
             $receiverTrokos = intval($_POST['receiverTrokos']);
             $exchangeProductId = $_POST['exchangeProductId'];
             $productSender = $transaction->getProductById($exchangeProductId);
@@ -66,7 +67,7 @@ class TransactionController
     
     public function validateTransaction()
     {   
-        $transactionId = $_POST['transactionId'];
+        $transactionId = Security::securiser($_POST['transactionId']);
         $transaction = new Transaction;
         $transaction->validateTransaction($transactionId);
 

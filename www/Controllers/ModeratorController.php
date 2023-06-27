@@ -3,12 +3,7 @@ namespace App\Controllers;
 
 use App\Models\User;
 use App\Core\View;
-use App\Forms\AddUser;
 use App\Core\Security;
-use App\Forms\ModifyProfile;
-use App\Forms\DeleteProfile;
-use App\Forms\LoginUser;
-use App\Core\SqlModerator;
 use App\Models\Moderator;
 use App\Models\Product;
 
@@ -26,7 +21,7 @@ class ModeratorController {
       
       public function validUser()
       {
-          $userId = $_GET['userId'];
+          $userId = Security::securiser($_GET['userId']);
       
           $moderator = new Moderator();
           $userData = $moderator->getUserById($userId);
@@ -72,8 +67,8 @@ class ModeratorController {
 
     public function validProduct()
     {
-        $productId = $_POST['productId'];
-        $trokos = $_POST['trokos'];
+        $productId = Security::securiser($_POST['productId']);
+        $trokos = Security::securiser($_POST['trokos']);
     
         $moderator = new Moderator();
         $productData = $moderator->getProductById($productId);
