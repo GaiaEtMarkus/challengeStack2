@@ -1,5 +1,5 @@
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#productsModal">
-    Afficher les produits
+    Afficher vos produits
 </button>
 
 <div class="modal fade" id="productsModal" tabindex="-1" role="dialog" aria-labelledby="productsModalLabel" aria-hidden="true">
@@ -13,7 +13,7 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <?php foreach ($products as $product): ?>
+                    <?php foreach ($productsUser as $product): ?>
                         <div class="col-md-6">
                             <div class="card">
                                 <img src="<?= $product['thumbnail'] ?>" class="card-img-top" alt="<?= $product['title'] ?>">

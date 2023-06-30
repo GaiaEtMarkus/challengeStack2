@@ -2,28 +2,28 @@
 
 return [
     '/' => [
-    'controller' => 'Main',
-    'action' => 'index'
+        'controller' => 'Main',
+        'action' => 'index'
     ],
 
     '/usercreateprofile' => [
-    'controller' => 'User',
-    'action' => 'userCreateProfile'
+        'controller' => 'User',
+        'action' => 'userCreateProfile'
     ],
 
-    '/uservalidprofile' => [
-    'controller' => 'User',
-    'action' => 'userValidProfile'
-    ],
+    // '/uservalidprofile' => [
+    //     'controller' => 'User',
+    //     'action' => 'userValidProfile'
+    // ],
 
-    '/userprofile' => [
-    'controller' => 'User',
-    'action' => 'userProfile'
-    ],
+    // '/userprofile' => [
+    //     'controller' => 'User',
+    //     'action' => 'userProfile'
+    // ],
 
     '/userinterface' => [
-    'controller' => 'User',
-    'action' => 'userInterface'
+        'controller' => 'User',
+        'action' => 'userInterface'
     ],
 
     '/login' => [
@@ -37,8 +37,8 @@ return [
     ],
 
     '/contact' => [
-    'controller' => 'User',
-    'action' => 'contact'
+        'controller' => 'User',
+        'action' => 'contact'
     ],
 
     '/usermodifyprofile' => [
@@ -66,19 +66,9 @@ return [
         'action' => 'modifyProduct'
     ],
 
-    '/displaynewusers' => [
-        'controller' => 'Moderator',
-        'action' => 'displaynewusers'
-    ],
-
     '/validuser' => [
         'controller' => 'Moderator',
         'action' => 'validuser'
-    ],
-
-    '/displaynewproducts' => [
-        'controller' => 'Moderator',
-        'action' => 'displaynewproducts'
     ],
 
     '/validproduct' => [
@@ -121,4 +111,38 @@ return [
         'action' => 'changePassword'
     ],
 
+    '/moderatorinterface' => [
+        'controller' => 'Moderator',
+        'action' => 'moderatorInterface'
+    ],
+
+    '/admininterface' => [
+        'controller' => 'Admin',
+        'action' => 'adminInterface'
+    ],
+
+    '/createcomment' => [
+        'controller' => 'Comment',
+        'action' => 'createComment'
+    ],
+
+    '/displayuserstats' => [
+        'controller' => 'User',
+        'action' => 'displayUserStats'
+    ],
+
+    '/deletecomment' => [
+        'controller' => 'Comment',
+        'action' => 'deleteComment'
+    ],
+
+    '/refuseuser' => [
+        'controller' => 'Moderator',
+        'action' => 'refuseUser'
+    ],
+
+    '/banuser' => [
+        'controller' => 'Moderator',
+        'action' => 'banUser'
+    ],
 ];

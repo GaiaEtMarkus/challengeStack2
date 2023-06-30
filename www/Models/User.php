@@ -7,40 +7,40 @@ class User extends Sql{
 
     protected int $id = 0;
     protected int $id_role = 1;
+    protected bool $is_verified;
     protected string $firstname;
     protected string $lastname;
     protected string $pseudo;
+    protected string $birth_date;
     protected string $email;
     protected string $phone;
-    protected string $birth_date;
-    protected string $thumbnail;
-    protected string $address;
-    protected string $zip_code;
-    protected string $pwd;
     protected string $country;
+    protected string $thumbnail;
+    protected string $zip_code;
+    protected string $address;
+    protected string $pwd;
     protected string $token_hash;
-    protected bool $is_verified = false;
 
-    public function hydrate($id = null, $id_role, $firstname, $lastname, $pseudo, $email, $phone, $birth_date, $address, $zip_code, 
-    $country, $pwd, $thumbnail, $token_hash, $is_verified=false) 
+    public function hydrate($id = null, $id_role, bool $is_verified, $firstname, $lastname, $pseudo, $birth_date, $email, $phone,  
+    $country, $thumbnail, $zip_code, $address, $pwd,  $token_hash) 
     {
         if ($id !== null) {
             $this->setId($id);
         }
         $this->setId_Role($id_role);
+        $this->setIs_verified($is_verified);
         $this->setFirstname($firstname);
         $this->setLastname($lastname);
         $this->setPseudo($pseudo);
+        $this->setdate($birth_date);
         $this->setEmail($email);
         $this->setPhone($phone);
-        $this->setBirth_Date($birth_date);
-        $this->setAddress($address);
-        $this->setZip_code($zip_code);
         $this->setCountry($country);
-        $this->setPwd($pwd);
         $this->setThumbnail($thumbnail);
+        $this->setZip_code($zip_code);
+        $this->setAddress($address);
+        $this->setPwd($pwd);
         $this->setToken_hash($token_hash);
-        $this->setIs_verified($is_verified);
     }
     
 
@@ -204,19 +204,19 @@ class User extends Sql{
     }
 
     /**
-     * Get the value of birth_date
+     * Get the value of date
      */ 
-    public function getBirth_date()
+    public function getdate()
     {
         return $this->birth_date;
     }
 
     /**
-     * Set the value of birth_date
+     * Set the value of date
      *
      * @return  self
      */ 
-    public function setBirth_date($birth_date)
+    public function setdate($birth_date)
     {
         $this->birth_date = $birth_date;
 

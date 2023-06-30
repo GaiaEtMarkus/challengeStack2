@@ -3,7 +3,7 @@
     <div class="row">
         <?php foreach ($products as $product): ?>
             <?php if ($product['id_seller'] !== $_SESSION['userData']['id']): ?>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="card">
                         <img src="<?= $product['thumbnail'] ?>" class="card-img-top" alt="Product Image">
                         <div class="card-body">
@@ -19,7 +19,7 @@
                     </div>
                 </div>
             <?php else: ?>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="card">
                         <img src="<?= $product['thumbnail'] ?>" class="card-img-top" alt="Product Image">
                         <div class="card-body">

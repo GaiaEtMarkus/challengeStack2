@@ -51,7 +51,7 @@ class TransactionController
             $productSender = $transaction->getProductById($exchangeProductId);
             $senderTrokos = $productSender['trokos'];
             $quality = ($receiverTrokos - $senderTrokos);
-            $is_validate = false;
+            $is_validate = true;
             $id= null;
             $userId = $_SESSION['userData']['id'];
             $transaction->hydrate($id, $receiverId, $userId, $productId, $exchangeProductId, $is_validate, $quality);

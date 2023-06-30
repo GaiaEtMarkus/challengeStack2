@@ -45,5 +45,24 @@ abstract class ModeratorSql extends Sql{
         return $queryPrepared->fetch(\PDO::FETCH_ASSOC);
     }
     
+    public function validUser(int $userId)
+    {
+    $query = 'UPDATE "User" SET is_verified = TRUE WHERE id = :userId';
+    $params = [':userId' => $userId];
+    $queryPrepared = $this->pdo->prepare($query);
+    $queryPrepared->execute($params);
+    }
+
+public function validProduct(int $productId, int $trokos)
+{
+    $query = 'UPDATE "Product" SET is_verified = TRUE, trokos = :trokos WHERE id = :productId';
+    $params = [
+        ':productId' => $productId,
+        ':trokos' => $trokos
+    ];
+    $queryPrepared = $this->pdo->prepare($query);
+    $queryPrepared->execute($params);
+}
+
 
 }

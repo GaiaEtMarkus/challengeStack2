@@ -11,22 +11,11 @@ DROP TABLE IF EXISTS "ResetToken" CASCADE;
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
-
-
 CREATE TABLE "Role" (
     id           SERIAL         NOT NULL,
     name         VARCHAR(64)    NOT NULL, 
     PRIMARY KEY (id)
 );
-
--- CREATE TABLE "Media" (
---     id    SERIAL                 NOT NULL,
---     url   VARCHAR(64)            NOT NULL,
---     type  BOOLEAN                NOT NULL,
---     PRIMARY KEY (id),
---     UNIQUE (url)
--- );
-
 
 CREATE TABLE "Category" (
     id           SERIAL         NOT NULL,
@@ -48,7 +37,7 @@ CREATE TABLE "User" (
     firstname    VARCHAR(256)   NOT NULL, 
     lastname     VARCHAR(64)    NOT NULL,
     pseudo       VARCHAR(64)    NOT NULL, 
-    birth_date   DATE           NOT NULL,
+    birth_date   VARCHAR(10)    NOT NULL,
     email        VARCHAR(128)   NOT NULL,
     phone        VARCHAR(10)    DEFAULT NULL,
     country      CHAR(3)        DEFAULT NULL, 
@@ -94,12 +83,17 @@ CREATE TABLE "ProductImages" (
 );
 
 CREATE TABLE "Comment" (
-    id           SERIAL         NOT NULL,
-    content      VARCHAR(256)   NOT NULL, 
-    date         DATE           NOT NULL,
-    id_user      INTEGER        NOT NULL, 
-    PRIMARY KEY (id),
-    FOREIGN KEY (id_user) REFERENCES "User"(id)
+    id              SERIAL         PRIMARY KEY,
+    pseudo          VARCHAR(64)    NOT NULL, 
+    content         VARCHAR(256)   NOT NULL, 
+    date            TIMESTAMP      DEFAULT CURRENT_TIMESTAMP,
+    id_user         INTEGER        NOT NULL, 
+    target_user     INTEGER,
+    target_product  INTEGER,
+    is_signaled     BOOLEAN        NOT NULL DEFAULT FALSE, 
+    FOREIGN KEY (id_user) REFERENCES "User"(id),
+    FOREIGN KEY (id_user) REFERENCES "User"(id),
+    FOREIGN KEY (target_product) REFERENCES "Product"(id)
 );
 
 CREATE TABLE "ResetToken" (
