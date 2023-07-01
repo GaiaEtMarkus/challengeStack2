@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newProductsModal">
+<button type="button" class="btn btn-primary col-3 m-2" data-toggle="modal" data-target="#newProductsModal">
     Afficher les nouveaux produits
 </button>
 

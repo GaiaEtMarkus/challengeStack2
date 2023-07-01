@@ -7,15 +7,15 @@ class CommentController{
 
     public function createComment(){
 
-        $userId = $_SESSION['userData']['id'];
-        $userPseudo = $_SESSION['userData']['pseudo'];
-        $userComment = $_POST['commentContent'];
+        $userId = ['id'];
+        $userPseudo = ['pseudo'];
+        $userComment = Security::securiser($_POST['commentContent']);
         $comment = new Comment();
-        $targetUserId = intval($_POST['userId']);
+        $targetUserId = Security::securiser(intval($_POST['userId']));
         $is_signaled = false;
 
         if(isset($_POST['productId'])){
-            $productId = intval($_POST['productId']);
+            $productId = Security::securiser(intval($_POST['productId']));
             $comment->hydrate(null, $userPseudo, $userComment, $userId, 0, $productId, $is_signaled);
         }
         else {

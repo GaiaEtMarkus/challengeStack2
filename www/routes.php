@@ -145,4 +145,9 @@ return [
         'controller' => 'Moderator',
         'action' => 'banUser'
     ],
+
+    '/validdatasite' => [
+        'controller' => 'Admin',
+        'action' => 'validDataSite'
+    ],
 ];

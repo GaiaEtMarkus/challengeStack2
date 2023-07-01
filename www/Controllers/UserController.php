@@ -103,7 +103,7 @@ class UserController {
                     $userData['zip_code'] = Security::securiser($_POST['zip_code']);
                     $userData['country'] = Security::securiser($_POST['country']);
                     $userData['thumbnail'] = $thumbnailPath;
-                    $userData['is_verified'] = $_POST['country'];
+                    $userData['is_verified'] = Security::securiser($_POST['country']);
                     $pwd = Security::securiser($_POST['pwd']);
                     $confirmPwd = Security::securiser($_POST['confirmPwd']);
 

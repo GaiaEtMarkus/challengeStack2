@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#usersModal">
+<button type="button" class="btn btn-primary m-2 col-3" data-toggle="modal" data-target="#usersModal">
     Afficher tout les utilisateurs
 </button>
 

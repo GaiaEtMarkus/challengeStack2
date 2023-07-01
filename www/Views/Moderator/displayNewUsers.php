@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newsUsersModal">
+<button type="button" class="btn btn-primary col-3 m-2" data-toggle="modal" data-target="#newsUsersModal">
     Afficher les nouveaux utilisateurs
 </button>
 

@@ -1,5 +1,5 @@
-<div class="container">
-    <div class="card" style="width: 300px;">
+<div class="container mt-3 mx-auto">
+    <div class="card mx-auto" style="width: 300px;">
         <img class="card-img-top" src="<?php echo $userData[0]['thumbnail']; ?>" alt="Portrait de l'utilisateur">
         <div class="card-body">
             <h5 class="card-title">Pseudo : <?php echo $userData[0]['pseudo']; ?></h5>

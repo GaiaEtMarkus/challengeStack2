@@ -55,7 +55,6 @@ class ModeratorController {
 
     public function refuseUser()
     {
-        var_dump($_POST);
         if ($_SESSION['userData']['id_role'] == 2) {
             
             $userId = intval(Security::securiser($_POST['userId']));
@@ -63,7 +62,7 @@ class ModeratorController {
             $user = new User();
             $userData = $moderator->getUserById($userId);
             // dd($userData);
-            $user->delete($userId);
+            $moderator->deleteUserWithProductsAndTransactions($userId);
             $userPseudo = $userData['pseudo'];
             $userMail = $userData['email'];
 

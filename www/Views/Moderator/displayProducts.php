@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#usersModal">
+<button type="button" class="btn btn-primary col-3 m-2" data-toggle="modal" data-target="#usersModal">
     Afficher tout les produits
 </button>
 
