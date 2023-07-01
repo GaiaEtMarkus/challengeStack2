@@ -31,7 +31,13 @@ abstract class Sql{
         $columnsToDeleted =get_class_vars(get_class());
         $columns = array_diff_key($columns, $columnsToDeleted);
         unset($columns["id"]);
-    
+        foreach($columns as $key=>$value)
+        {
+            if(is_bool($value))
+            {
+                $columns[$key] = $value ? "true" : "false";
+            }
+        }
         if(is_numeric($this->getId()) && $this->getId()>0)
         {
             $columnsUpdate = [];
@@ -44,13 +50,10 @@ abstract class Sql{
         }else{
             $queryPrepared = $this->pdo->prepare("INSERT INTO \"".$this->table."\" (".implode(",", array_keys($columns)).") 
                             VALUES (:".implode(",:", array_keys($columns)).")");
-            // var_dump($queryPrepared);
         }
-    
-        // var_dump($queryPrepared->queryString); // Ajouter cette ligne pour afficher la requête préparée
-        // var_dump($columns); // Affiche les données à lier
-        
         $queryPrepared->execute($columns);
+        // dd($queryPrepared);
+        // var_dump($queryPrepared->execute($columns));
     }
 
     public function login($email, $password)
@@ -98,6 +101,7 @@ abstract class Sql{
         return $queryPrepared->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    
     public function getUserById(int $userId): array
     {
         $query = 'SELECT * FROM "User" WHERE id = :userId';
@@ -212,5 +216,61 @@ abstract class Sql{
         $queryPrepared->execute($params);   
     }
     
+    public function getAllComments($targetUserId = null, $targetProductId = null)
+    {
+    $query = 'SELECT * FROM "Comment" WHERE target_user = :target_user OR target_product = :target_product';
+    $params = [
+        'target_user' => $targetUserId,
+        'target_product' => $targetProductId,
+    ];
 
+    $queryPrepared = $this->pdo->prepare($query);
+    $queryPrepared->execute($params); 
+    $result = $queryPrepared->fetch(\PDO::FETCH_ASSOC);
+
+    if ($result === false) {
+        return null;
+    }
+    return $result;    
+    }
+
+    public function getCommentsByUserId(int $userId): array
+    {
+        $query = 'SELECT * FROM "Comment" WHERE target_user = :userId';
+        $params = [':userId' => $userId];
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);
+    
+        return $queryPrepared->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function getCommentsByProductId(int $productId): array
+    {
+        $query = 'SELECT * FROM "Comment" WHERE target_product = :productId';
+        $params = [':productId' => $productId];
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);
+    
+        return $queryPrepared->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function getProductCountByUserId(int $userId): int
+    {
+        $query = 'SELECT COUNT(*) as count FROM "Product" WHERE id_seller = :userId';
+        $params = [':userId' => $userId];
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);
+        $result = $queryPrepared->fetch(\PDO::FETCH_ASSOC);
+        return (int)$result['count'];
+    }
+
+    public function getTransactionCountByUserId(int $userId): int
+    {
+        $query = 'SELECT COUNT(*) as count FROM "Transaction" WHERE id_receiver = :userId OR id_seller = :userId';
+        $params = [':userId' => $userId];
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);
+        $result = $queryPrepared->fetch(\PDO::FETCH_ASSOC);
+        return (int)$result['count'];
+    }
 }

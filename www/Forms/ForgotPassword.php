@@ -22,12 +22,6 @@ class ForgotPassword extends AForm {
                     "required" => true,
                     "error" => "Veuillez entrer la confirmation de suppression"
                 ],
-                // "message" => [
-                //     "type" => "hidden",
-                //     "required" => false,
-                //     "placeholder" => "Veuillez saisir votre email",
-                //     "error" => "",
-                // ],
                 "subject" => [
                     "type" => "hidden",
                     "placeholder" => "",

@@ -46,12 +46,12 @@ class TransactionController
             $transaction = new Transaction;
             $productId =  Security::securiser(intval($_POST['productReceiverId']));
             $receiverId = Security::securiser(intval($_POST['receiverId']));
-            $receiverTrokos = intval($_POST['receiverTrokos']);
-            $exchangeProductId = $_POST['exchangeProductId'];
+            $receiverTrokos = Security::securiser(intval($_POST['receiverTrokos']));
+            $exchangeProductId = Security::securiser($_POST['exchangeProductId']);
             $productSender = $transaction->getProductById($exchangeProductId);
             $senderTrokos = $productSender['trokos'];
             $quality = ($receiverTrokos - $senderTrokos);
-            $is_validate = false;
+            $is_validate = true;
             $id= null;
             $userId = $_SESSION['userData']['id'];
             $transaction->hydrate($id, $receiverId, $userId, $productId, $exchangeProductId, $is_validate, $quality);

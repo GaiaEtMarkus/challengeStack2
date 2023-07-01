@@ -12,7 +12,7 @@ class Moderator extends ModeratorSql{
     protected string $pseudo;
     protected string $email;
     protected string $phone;
-    protected string $birth_date;
+    protected string $date;
     protected string $thumbnail;
     protected string $address;
     protected string $zip_code;
@@ -20,7 +20,7 @@ class Moderator extends ModeratorSql{
     protected string $country;
     protected string $token_hash;
 
-    public function hydrate($id = null, $id_role, $firstname, $lastname, $pseudo, $email, $phone, $birth_date, $address, $zip_code, $country, $pwd, $thumbnail, $token_hash) 
+    public function hydrate($id = null, $id_role, $firstname, $lastname, $pseudo, $email, $phone, $date, $address, $zip_code, $country, $pwd, $thumbnail, $token_hash) 
     {
         if ($id !== null) {
             $this->setId($id);
@@ -31,7 +31,7 @@ class Moderator extends ModeratorSql{
         $this->setPseudo($pseudo);
         $this->setEmail($email);
         $this->setPhone($phone);
-        $this->setBirth_Date($birth_date);
+        $this->setdate($date);
         $this->setAddress($address);
         $this->setZip_code($zip_code);
         $this->setCountry($country);
@@ -164,21 +164,21 @@ class Moderator extends ModeratorSql{
     }
 
     /**
-     * Get the value of birth_date
+     * Get the value of date
      */ 
-    public function getBirth_date()
+    public function getdate()
     {
-        return $this->birth_date;
+        return $this->date;
     }
 
     /**
-     * Set the value of birth_date
+     * Set the value of date
      *
      * @return  self
      */ 
-    public function setBirth_date($birth_date)
+    public function setdate($date)
     {
-        $this->birth_date = $birth_date;
+        $this->date = $date;
 
         return $this;
     }

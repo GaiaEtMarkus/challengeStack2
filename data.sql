@@ -17,7 +17,7 @@ INSERT INTO "Category" (name) VALUES ('Collection');
 
 -- Insertion des utilisateurs
 -- Utilisation de la fonction de hachage "SHA256" pour les mots de passe
-INSERT INTO "User" (id_role, is_verified, firstname, lastname, pseudo, birth_date, email, phone, country, thumbnail, zip_code, address, pwd)
+INSERT INTO "User" (id_role, is_verified, firstname, lastname, pseudo, date, email, phone, country, thumbnail, zip_code, address, pwd)
 VALUES
 (1, true, 'Nelson', 'Mandela', 'nelsonmandela', '1918-07-18', 'nelsonmandela@example.com', '0123456789', 'FRA', 'thumbnail.jpg', '75001', '1 Rue de la Liberté', digest('aaa', 'sha256')),
 (1, true, 'Fidel', 'Castro', 'fidelcastro', '1926-08-13', 'fidelcastro@example.com', '9876543210', 'FRA', 'thumbnail.jpg', '69002', '12 Avenue de la Révolution', digest('aaa', 'sha256')),

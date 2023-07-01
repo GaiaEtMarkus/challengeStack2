@@ -14,17 +14,6 @@ use App\Models\Product;
 use App\Forms\ModifyProduct;
 
 class ProductController {
-    
-    // protected int $id = 0;
-    // protected string $firstname;
-    // protected string $surname;
-    // protected string $email;
-    // protected string $phone;
-    // protected string $country;
-    // protected string $birth_date;
-    // protected string $thumbnail;
-    // protected string $pwd;
-    // protected bool $vip = false;
 
     public function createProduct(): void 
     {
@@ -129,7 +118,8 @@ class ProductController {
                         $titleProduct,
                         Security::securiser($_POST['description']),
                         $productData['trokos'],
-                        $thumbnailPath
+                        $thumbnailPath, 
+                        $productData['is_verified']
                     );
                     $product->save();
     
@@ -187,14 +177,13 @@ class ProductController {
         }
     }
 
-    public function displayProducts()
-    {
-        $product = new Product();
-        $products = $product->getVerifiedProducts();
-
-        $view = new View("Product/displayProducts", "front", compact('products'));
-        $view->assign('products', $products);
-    }
+    // public function displayProducts()
+    // {
+    //     $product = new Product();
+    //     $products = $product->getVerifiedProducts();
+    //     $view = new View("Product/displayNewProducts", "front", compact('products'));
+    //     $view->assign('products', $products);
+    // }
 
     public function displayProductDetails(): void
     {
@@ -202,14 +191,17 @@ class ProductController {
             $productId = intval($_GET['productId']);
             $product = new Product();
             $productData = $product->getProductById($productId);
+            $userData = $product->getUserById($productData['id_seller']);
+            $comments = $product->getCommentsByProductId($productId);
     
-            if ($productData) {
+            if ($productData || $comments) {
                 $view = new View("Product/displayProductDetails", "front");
                 $view->assign('product', $productData);
+                $view->assign('comments', $comments);
+                $view->assign('userData', $userData);
             } else {
-                $message = "Produit non trouvé.";
+                $message = "Veuillez reessayer !";
                 header('Location: /?message=' . urlencode($message));
-                exit;
             }
         }
     }

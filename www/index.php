@@ -2,6 +2,8 @@
 namespace App;
 
 session_start();
+require "vendor/autoload.php";
+var_dump($_SESSION);
 
 // var_dump($_SESSION);
 
@@ -64,3 +66,5 @@ if(!method_exists($objet, $action)){
 }
 
 $objet->$action();
+
+?>

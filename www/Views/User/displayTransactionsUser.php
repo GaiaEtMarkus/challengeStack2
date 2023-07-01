@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#transactionsModal">
+<button type="button" class="btn btn-primary col-3 m-3" data-toggle="modal" data-target="#transactionsModal">
     Afficher mes transactions
 </button>
 
@@ -43,5 +43,9 @@
                     </div>
                 </div>
             </div>
-        <!-- <button type="submit" class="btn btn-primary">Valider la transaction</button>
-    </form> -->
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+    </div>
+</div>

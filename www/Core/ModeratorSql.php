@@ -45,5 +45,42 @@ abstract class ModeratorSql extends Sql{
         return $queryPrepared->fetch(\PDO::FETCH_ASSOC);
     }
     
+    public function validUser(int $userId)
+    {
+    $query = 'UPDATE "User" SET is_verified = TRUE WHERE id = :userId';
+    $params = [':userId' => $userId];
+    $queryPrepared = $this->pdo->prepare($query);
+    $queryPrepared->execute($params);
+    }
+
+    public function validProduct(int $productId, int $trokos)
+    {
+        $query = 'UPDATE "Product" SET is_verified = TRUE, trokos = :trokos WHERE id = :productId';
+        $params = [
+            ':productId' => $productId,
+            ':trokos' => $trokos
+        ];
+        $queryPrepared = $this->pdo->prepare($query);
+        $queryPrepared->execute($params);
+    }
+
+    public function deleteUserWithProductsAndTransactions(int $userId): void
+    {
+        $transactionQuery = 'DELETE FROM "Transaction" WHERE id_receiver = :userId OR id_seller = :userId';
+        $transactionParams = [':userId' => $userId];
+        $transactionQueryPrepared = $this->pdo->prepare($transactionQuery);
+        $transactionQueryPrepared->execute($transactionParams);
+
+
+        $productQuery = 'DELETE FROM "Product" WHERE id_seller = :userId';
+        $productParams = [':userId' => $userId];
+        $productQueryPrepared = $this->pdo->prepare($productQuery);
+        $productQueryPrepared->execute($productParams);
+
+        $userQuery = 'DELETE FROM "User" WHERE id = :userId';
+        $userParams = [':userId' => $userId];
+        $userQueryPrepared = $this->pdo->prepare($userQuery);
+        $userQueryPrepared->execute($userParams);
+    }
 
 }
