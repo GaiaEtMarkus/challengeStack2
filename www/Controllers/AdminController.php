@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Core\View;
+use App\Forms\Initialisation;
 
 
 class AdminController {
@@ -10,5 +11,4 @@ class AdminController {
     {
         $view = new View("Admin/adminInterface", "back");
     }
-
 }
