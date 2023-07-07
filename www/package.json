@@ -1,0 +1,12 @@
+{
+  "name": "challengesemestriel2",
+  "version": "1.0.0",
+  "description": "## Commits Git",
+  "main": "form-config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}

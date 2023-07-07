@@ -24,7 +24,6 @@ class Security extends Sql
         return password_hash($password, PASSWORD_DEFAULT);
     }
 
-
     public static function form(array $config, array $data): array
     {
         $listOfErrors = [];

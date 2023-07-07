@@ -1,14 +1,18 @@
 version: '3'
 services:
   web:
-    build: site
-    ports :
-     - "80:80"
+    build:
+      context: site
+      args:
+        - NODE_ENV=production
+    ports:
+      - "80:80"
     volumes:
-     - ./www:/var/www/html/
-     - ./server/000-default.conf:/etc/apache2/sites-available/000-default.conf
-     - ./server/apache2.conf:/etc/apache2/apache2.conf
-     - ./server/php.ini:/usr/local/etc/php/php.ini
+      - ./www:/var/www/html/
+      - ./server/000-default.conf:/etc/apache2/sites-available/000-default.conf
+      - ./server/apache2.conf:/etc/apache2/apache2.conf
+      - ./server/php.ini:/usr/local/etc/php/php.ini
+      - ./site/form-validator.js:/var/www/html/form-validator.js
 
   database:
     image: postgres
@@ -16,8 +20,8 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: tournamount
-      POSTGRES_USER: tournamount_admin
+      POSTGRES_DB: trokos
+      POSTGRES_USER: trokos_admin
       POSTGRES_PASSWORD: Admin1234
 
   adminer:
@@ -25,7 +29,6 @@ services:
     restart: always
     ports:
       - 8080:8080
-
 
 volumes:
   pgdata:
