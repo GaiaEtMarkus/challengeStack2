@@ -362,8 +362,52 @@ function handleSubmit(event) {
 
   if(FormValidator.type_check( {prop1: data}, { type: 'object', properties: {prop1: {type: 'object'}} } )){
     console.log('ok');
-  }
+    let message = 'Félicitations ! Votre site est bien initialisé. Voici les valeurs que vous avez choisies :\n\n';
+
+    for (const key in data) {
+      if (key !== 'password' && key !== 'confirmPassword') {
+        let value = data[key];
+    
+        if (value instanceof File) {
+          value = value.name;
+        }
+    
+        message += `${key}: ${value}\n`;
+      }
+    }
+    
+    const modalContainer = document.createElement('div');
+    modalContainer.style.position = 'fixed';
+    modalContainer.style.top = '0';
+    modalContainer.style.left = '0';
+    modalContainer.style.width = '100vw';
+    modalContainer.style.height = '100vh';
+    modalContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    modalContainer.style.display = 'flex';
+    modalContainer.style.justifyContent = 'center';
+    modalContainer.style.alignItems = 'center';
+    
+    const modalContent = document.createElement('div');
+    modalContent.style.backgroundColor = 'white';
+    modalContent.style.padding = '20px';
+    modalContent.style.borderRadius = '5px';
+    modalContent.style.width = '100vw';
+    modalContent.style.height = '100vh';
+
+    const messageElement = document.createElement('p');
+    messageElement.innerText = message;
+    modalContent.appendChild(messageElement);
+    
+    const redirectButton = document.createElement('a');
+    redirectButton.href = '#'; // Remplacer '#' par l'URL souhaitée une fois disponible
+    redirectButton.innerText = 'Aller vers le site';
+    modalContent.appendChild(redirectButton);
+    
+    modalContainer.appendChild(modalContent);
+    document.body.appendChild(modalContainer);
+    
 
   // Réinitialiser le formulaire
   form.reset();
+}
 }
