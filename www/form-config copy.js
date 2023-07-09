@@ -8,9 +8,8 @@ class Component {
     return JSON.stringify(this.props) !== JSON.stringify(newProps);
   }
 
-  render(data) {
-    const jsonData = JSON.stringify(data);
-    return jsonData;
+  render() {
+    // Implémenter la logique de rendu du composant ici
   }
 
   display(newProps) {
@@ -28,7 +27,12 @@ class Component {
 }
 
 class FormValidator extends Component{
-
+  /**
+    * Main function for type checking which includes validation for type, value, enum, and properties.
+    * @param {any} variable - The variable to be checked.
+    * @param {Object} config - The configuration object for type checking.
+    * @returns {boolean}
+    */
   static type_check(variable, conf) {
 
     if ( conf === undefined || variable === undefined) {
@@ -141,31 +145,53 @@ class FormValidator extends Component{
 //  ######################################################################
 //  ######################################################################
 
-const formFields = [
-  { type: 'text', name: 'siteName', label: 'Nom du site', defaultValue: 'siteName' },
-  { type: 'file', name: 'backgroundImage', label: 'Image de fond de la page d\'accueil', defaultValue: '' },
-  { type: 'file', name: 'logo', label: 'Logo du site', defaultValue: '' },
-  // Ajoutez les autres champs ici
-  { type: 'text', name: 'firstname', label: 'Prénom du modérateur', defaultValue: 'John' },
-  { type: 'text', name: 'lastname', label: 'Nom de l\'admin', defaultValue: 'Doe' },
-  { type: 'text', name: 'pseudo', label: 'Pseudo de l\'admin', defaultValue: 'john_doe' },
-  { type: 'text', name: 'birthDate', label: 'Date de naissance de l\'admin', defaultValue: '01/01/1990' },
-  { type: 'email', name: 'email', label: 'Email de l\'admin', defaultValue: 'example@example.com' },
-  { type: 'number', name: 'phone', label: 'Téléphone de l\'admin', defaultValue: '0123456789' },
-  { type: 'text', name: 'country', label: 'Pays de l\'admin', defaultValue: 'France' },
-  { type: 'file', name: 'thumbnail', label: 'Miniature de l\'admin', defaultValue: 'thumbnail.jpg' },
-  { type: 'number', name: 'zipCode', label: 'Code postal de l\'admin', defaultValue: '12345' },
-  { type: 'text', name: 'address', label: 'Adresse de l\'admin', defaultValue: '123 Rue Principale' },
-  { type: 'password', name: 'password', label: 'Mot de passe de l\'admin', defaultValue: '' },
-  { type: 'password', name: 'confirmPassword', label: 'Confirmez le mot de passe de l\'admin', defaultValue: '' },
-];
-
 const form = document.createElement('form');
 
-formFields.forEach(field => {
-  const input = createInput(field.type, field.name, field.label, field.defaultValue);
-  form.appendChild(input);
-});
+const siteNameInput = createInput('text', 'siteName', 'Nom du site', 'siteName');
+form.appendChild(siteNameInput);
+
+const backgroundImageInput = createInput('file', 'backgroundImage', 'Image de fond de la page d\'accueil', '');
+form.appendChild(backgroundImageInput);
+
+const logo = createInput('file', 'logo', 'Logo du site', '');
+form.appendChild(logo);
+
+// Ajouter les autres champs du formulaire ici
+const firstnameInput = createInput('text', 'firstname', 'Prénom du modérateur', 'John');
+form.appendChild(firstnameInput);
+
+const lastnameInput = createInput('text', 'lastname', 'Nom de l\'admin', 'Doe');
+form.appendChild(lastnameInput);
+
+const pseudoInput = createInput('text', 'pseudo', 'Pseudo de l\'admin', 'john_doe');
+form.appendChild(pseudoInput);
+
+const birthdateInput = createInput('text', 'birthDate', 'Date de naissance de l\'admin', '01/01/1990');
+form.appendChild(birthdateInput);
+
+const emailInput = createInput('email', 'email', 'Email de l\'admin', 'example@example.com');
+form.appendChild(emailInput);
+
+const phoneInput = createInput('number', 'phone', 'Téléphone de l\'admin', '0123456789');
+form.appendChild(phoneInput);
+
+const countryInput = createInput('text', 'country', 'Pays de l\'admin', 'France');
+form.appendChild(countryInput);
+
+const thumbnailInput = createInput('file', 'thumbnail', 'Miniature de l\'admin', 'thumbnail.jpg');
+form.appendChild(thumbnailInput);
+
+const zipCodeInput = createInput('number', 'zipCode', 'Code postal de l\'admin', '12345');
+form.appendChild(zipCodeInput);
+
+const addressInput = createInput('text', 'address', 'Adresse de l\'admin', '123 Rue Principale');
+form.appendChild(addressInput);
+
+const passwordInput = createInput('password', 'password', 'Mot de passe de l\'admin', '');
+form.appendChild(passwordInput);
+
+const confirmPasswordInput = createInput('password', 'confirmPassword', 'Confirmez le mot de passe de l\'admin', '');
+form.appendChild(confirmPasswordInput);
 
 const submitButton = document.createElement('button');
 submitButton.type = 'submit';
@@ -189,7 +215,7 @@ function createInput(type, name, label, defaultValue) {
     inputElement.id = name;
     inputElement.required = true;
 
-    const countries = ['FR', 'US', 'ENG', 'ALG', 'MOR'];
+    const countries = ['FR', 'US', 'ENG', 'ALG', 'MOR']; // Liste des pays
 
     countries.forEach((country) => {
       const optionElement = document.createElement('option');
@@ -204,6 +230,7 @@ function createInput(type, name, label, defaultValue) {
     inputElement.id = name;
     inputElement.required = true;
 
+    // Gestion spécifique du champ de fichier
     if (type === 'file') {
       inputElement.accept = 'image/*';
     } else {
@@ -218,6 +245,7 @@ function createInput(type, name, label, defaultValue) {
   return container;
 }
 
+
 function handleSubmit(event) {
   event.preventDefault();
 
@@ -226,37 +254,37 @@ function handleSubmit(event) {
   const siteName = formData.get('siteName');
   if(!FormValidator.type_check( {prop1: siteName}, { type: 'object', properties: {prop1: {type: 'string'}} } )){
     alert('Nom invalide. Veuillez entrer un nom valide.');
-    return;
+    return;  // Stopper l'exécution de la fonction
   }
 
   const backgroundImage = formData.get('backgroundImage');
   if(!FormValidator.type_check( {prop1: backgroundImage}, { type: 'object', properties: {prop1: {type: 'object'}} } )){
     alert('Image invalide. Veuillez entrer une image valide.');
-    return;
+    return;  // Stopper l'exécution de la fonction
   }
 
   const logo = formData.get('logo');
   if(!FormValidator.type_check( {prop1: logo}, { type: 'object', properties: {prop1: {type: 'object'}} } )){
     alert('Logo invalide. Veuillez entrer un logo valide.');
-    return;
+    return;  // Stopper l'exécution de la fonction
   }
 
   const firstname = formData.get('firstname');
   if(!FormValidator.type_check( {prop1: firstname}, { type: 'object', properties: {prop1: {type: 'string'}} } )){
     alert('Prénom invalide. Veuillez entrer un prénom valide.');
-    return;
+    return;  // Stopper l'exécution de la fonction
   }
 
   const lastname = formData.get('lastname');
   if(!FormValidator.type_check( {prop1: lastname}, { type: 'object', properties: {prop1: {type: 'string'}} } )){
     alert('Nom invalide. Veuillez entrer un nom valide.');
-    return;
+    return;  // Stopper l'exécution de la fonction
   }
 
   const pseudo = formData.get('pseudo');
     if(!FormValidator.type_check( {prop1: pseudo}, { type: 'object', properties: {prop1: {type: 'string'}} } )){
       alert('Pseudo invalide. Veuillez entrer un pseudo valide.');
-      return;
+      return;  // Stopper l'exécution de la fonction
     }
   
 
@@ -264,7 +292,7 @@ function handleSubmit(event) {
   if (!FormValidator.validateBirthDate(birthDate)) {
     if(!FormValidator.type_check( {prop1: birthDate}, { type: 'object', properties: {prop1: {type: 'string'}} } )){
       alert('La date de naissance est invalide. Veuillez entrer une date de naissance valide.');
-      return;
+      return;  // Arrêter l'exécution de la fonction
     }
   }
 
@@ -272,7 +300,7 @@ function handleSubmit(event) {
   if (!FormValidator.validateEmail(email)) {
     if(!FormValidator.type_check( {prop1: email}, { type: 'object', properties: {prop1: {type: 'string'}} } )){
       alert('Adresse e-mail invalide. Veuillez entrer une adresse e-mail valide.');
-      return;
+      return;  // Stopper l'exécution de la fonction
     }
   }
 
@@ -280,27 +308,27 @@ function handleSubmit(event) {
     if (!FormValidator.validatePhoneNumber(phone)) {
       if(!FormValidator.type_check( {prop1: phone}, { type: 'object', properties: {prop1: {type: 'number'}} } )){
         alert('Le code postal est invalide. Veuillez entrer un code postal de 5 chiffres.');
-        return;
+        return;  // Arrêter l'exécution de la fonction
       }
     }
 
   const country = formData.get('country');
     if(!FormValidator.type_check( {prop1: country}, { type: 'object', properties: {prop1: {type: 'string'}} } )){
       alert('Veuillez resaissir de nouveau votre pays.');
-      return;
+      return;  // Stopper l'exécution de la fonction
     }
 
   const thumbnail = formData.get('thumbnail');
     if(!FormValidator.type_check( {prop1: thumbnail}, { type: 'object', properties: {prop1: {type: 'object'}} } )){
       alert('Photo invalid. Veuillez entrer une photo valide.');
-      return;
+      return;  // Stopper l'exécution de la fonction
     }
 
   const zipCode = parseInt(formData.get('zipCode'));
   if (!FormValidator.validateZipCode(zipCode)) {
     if(!FormValidator.type_check( {prop1: zipCode}, { type: 'object', properties: {prop1: {type: 'number'}} } )){
       alert('Le code postal est invalide. Veuillez entrer un code postal de 5 chiffres.');
-      return;
+      return;  // Arrêter l'exécution de la fonction
     }
   }
 
@@ -308,7 +336,7 @@ function handleSubmit(event) {
   console.log(typeof address);
     if(!FormValidator.type_check( {prop1: address}, { type: 'object', properties: {prop1: {type: 'string'}} } )){
       alert('L\'adresse est invalide. Veuillez entrer une adresse valide.');
-      return;
+      return;  // Arrêter l'exécution de la fonction
     }
 
   const password = formData.get('password');
@@ -316,7 +344,7 @@ function handleSubmit(event) {
   if (!FormValidator.passwordsMatch(password, confirmPassword)) {
     if(!FormValidator.type_check( {prop1: password}, { type: 'object', properties: {prop1: {type: 'string'}} } )){
       alert('Les mots de passe ne correspondent pas. Veuillez réessayer.');
-      return;
+      return;  // Arrêter l'exécution de la fonction
     }
   }
 
@@ -360,10 +388,22 @@ function handleSubmit(event) {
   
   console.log(data); // Affichage des données dans la console pour l'exemple
 
-  if (FormValidator.type_check({ prop1: data }, { type: 'object', properties: { prop1: { type: 'object' } } })) {
+  if(FormValidator.type_check( {prop1: data}, { type: 'object', properties: {prop1: {type: 'object'}} } )){
     console.log('ok');
-    let message = 'Félicitations ! Votre site est bien initialisé. Voici les valeurs que vous avez choisies :';
-  
+    let message = 'Félicitations ! Votre site est bien initialisé. Voici les valeurs que vous avez choisies :\n\n';
+
+    for (const key in data) {
+      if (key !== 'password' && key !== 'confirmPassword') {
+        let value = data[key];
+    
+        if (value instanceof File) {
+          value = value.name;
+        }
+    
+        message += `${key}: ${value}\n`;
+      }
+    }
+    
     const modalContainer = document.createElement('div');
     modalContainer.style.position = 'fixed';
     modalContainer.style.top = '0';
@@ -374,81 +414,28 @@ function handleSubmit(event) {
     modalContainer.style.display = 'flex';
     modalContainer.style.justifyContent = 'center';
     modalContainer.style.alignItems = 'center';
-  
+    
     const modalContent = document.createElement('div');
-    modalContent.style.display = 'flex';
     modalContent.style.backgroundColor = 'white';
     modalContent.style.padding = '20px';
     modalContent.style.borderRadius = '5px';
-    modalContent.style.width = '100%';
-    modalContent.style.height = '100%';
-  
-    const column1 = document.createElement('div');
-    column1.style.width = '50%';
-  
-    const column2 = document.createElement('div');
-    column2.style.width = '50%';
-  
-    for (const key in data) {
-      if (key !== 'password' && key !== 'confirmPassword') {
-        let value = data[key];
-  
-        if (value instanceof File) {
-          value = value.name;
-        }
-  
-        const valueElement = document.createElement('p');
-        valueElement.innerText = `${key}: ${value}`;
-  
-        valueElement.addEventListener('click', () => {
-          // Logique pour gérer la modification de la valeur
-          console.log(`Modifier la valeur de ${key}`);
-        });
-  
-        const containerElement = document.createElement('div');
-        containerElement.style.cursor = 'pointer'; // Ajout du style curseur pour indiquer que l'élément est cliquable
-  
-        containerElement.addEventListener('click', () => {
-          // Logique pour gérer le clic sur la valeur
-          console.log(`Modifier la valeur de ${key}`);
-        });
+    modalContent.style.width = '100vw';
+    modalContent.style.height = '100vh';
 
-        containerElement.appendChild(valueElement);
-          
-        if (Object.keys(column1.children).length < Object.keys(column2.children).length) {
-          column1.appendChild(containerElement);
-        } else {
-          column2.appendChild(containerElement);
-        }
-      }
-    }
-  
-    modalContent.appendChild(column1);
-    modalContent.appendChild(column2);
-  
     const messageElement = document.createElement('p');
     messageElement.innerText = message;
-    
-    const buttonContainer = document.createElement('div'); // Nouvelle div pour contenir le bouton
-    buttonContainer.style.marginTop = '10px'; // Espacement entre le message et le bouton
-    
-    // const redirectButton = document.createElement('a');
-    // redirectButton.href = '#'; // Remplacer '#' par l'URL souhaitée une fois disponible
-    // redirectButton.innerText = 'Aller vers le site';
-    
-    const linkSpan = document.createElement('span');
-    linkSpan.innerHTML = '<br> <a href="#">Confirmer</a> '; // Remplacez '#' par l'URL souhaitée une fois disponible
-    
-    messageElement.appendChild(linkSpan);
-    
     modalContent.appendChild(messageElement);
-    // modalContent.appendChild(redirectButton);
+    
+    const redirectButton = document.createElement('a');
+    redirectButton.href = '#'; // Remplacer '#' par l'URL souhaitée une fois disponible
+    redirectButton.innerText = 'Aller vers le site';
+    modalContent.appendChild(redirectButton);
     
     modalContainer.appendChild(modalContent);
     document.body.appendChild(modalContainer);
     
-    // Réinitialiser le formulaire
-    form.reset();
-  }
-  
+
+  // Réinitialiser le formulaire
+  form.reset();
+}
 }
