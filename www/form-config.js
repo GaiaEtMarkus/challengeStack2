@@ -4,16 +4,16 @@ class Component {
     this.oldProps = props;
   }
 
-  shouldUpdate(newProps) {
+  static shouldUpdate(newProps) {
     return JSON.stringify(this.props) !== JSON.stringify(newProps);
   }
 
-  render(data) {
+  static render(data) {
     const jsonData = JSON.stringify(data);
     return jsonData;
   }
 
-  display(newProps) {
+  static display(newProps) {
     if (this.shouldUpdate(newProps)) {
       this.props = newProps;
       this.render();
@@ -145,7 +145,6 @@ const formFields = [
   { type: 'text', name: 'siteName', label: 'Nom du site', defaultValue: 'siteName' },
   { type: 'file', name: 'backgroundImage', label: 'Image de fond de la page d\'accueil', defaultValue: '' },
   { type: 'file', name: 'logo', label: 'Logo du site', defaultValue: '' },
-  // Ajoutez les autres champs ici
   { type: 'text', name: 'firstname', label: 'Prénom du modérateur', defaultValue: 'John' },
   { type: 'text', name: 'lastname', label: 'Nom de l\'admin', defaultValue: 'Doe' },
   { type: 'text', name: 'pseudo', label: 'Pseudo de l\'admin', defaultValue: 'john_doe' },
@@ -358,10 +357,9 @@ function handleSubmit(event) {
     }
   };
   
-  console.log(data); // Affichage des données dans la console pour l'exemple
+  console.log(data);
 
   if (FormValidator.type_check({ prop1: data }, { type: 'object', properties: { prop1: { type: 'object' } } })) {
-    console.log('ok');
     let message = 'Félicitations ! Votre site est bien initialisé. Voici les valeurs que vous avez choisies :';
   
     const modalContainer = document.createElement('div');
@@ -400,21 +398,21 @@ function handleSubmit(event) {
         const valueElement = document.createElement('p');
         valueElement.innerText = `${key}: ${value}`;
   
-        valueElement.addEventListener('click', () => {
-          // Logique pour gérer la modification de la valeur
-          console.log(`Modifier la valeur de ${key}`);
-        });
-  
         const containerElement = document.createElement('div');
-        containerElement.style.cursor = 'pointer'; // Ajout du style curseur pour indiquer que l'élément est cliquable
+        containerElement.style.cursor = 'pointer';
   
         containerElement.addEventListener('click', () => {
-          // Logique pour gérer le clic sur la valeur
-          console.log(`Modifier la valeur de ${key}`);
+          const newValue = prompt(`Modifier la valeur de ${key}`, value);
+          if (newValue !== null) {
+            data[key] = newValue;
+            FormValidator.display(data);
+            console.log('ok');
+            console.log(data);
+          }
         });
-
+  
         containerElement.appendChild(valueElement);
-          
+  
         if (Object.keys(column1.children).length < Object.keys(column2.children).length) {
           column1.appendChild(containerElement);
         } else {
@@ -428,26 +426,20 @@ function handleSubmit(event) {
   
     const messageElement = document.createElement('p');
     messageElement.innerText = message;
-    
-    const buttonContainer = document.createElement('div'); // Nouvelle div pour contenir le bouton
-    buttonContainer.style.marginTop = '10px'; // Espacement entre le message et le bouton
-    
-    // const redirectButton = document.createElement('a');
-    // redirectButton.href = '#'; // Remplacer '#' par l'URL souhaitée une fois disponible
-    // redirectButton.innerText = 'Aller vers le site';
-    
+  
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.marginTop = '10px';
+  
     const linkSpan = document.createElement('span');
-    linkSpan.innerHTML = '<br> <a href="#">Confirmer</a> '; // Remplacez '#' par l'URL souhaitée une fois disponible
-    
+    linkSpan.innerHTML = '<br> <a href="#">Confirmer</a>';
+  
     messageElement.appendChild(linkSpan);
-    
+  
     modalContent.appendChild(messageElement);
-    // modalContent.appendChild(redirectButton);
-    
+  
     modalContainer.appendChild(modalContent);
     document.body.appendChild(modalContainer);
-    
-    // Réinitialiser le formulaire
+  
     form.reset();
   }
   
