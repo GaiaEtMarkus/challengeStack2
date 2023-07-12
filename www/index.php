@@ -4,25 +4,9 @@ namespace App;
 session_start();
 require "vendor/autoload.php";
 // var_dump($_SESSION);
+// var_dump($_POST);
+// var_dump($_GET);
 
-// Vérification de l'existence du fichier de configuration
-$configFilePath = './config.json';
-
-if (file_exists($configFilePath)) {
-
-    echo'Veuillez saisir la configuration de votre site.';
-    // Inclure les fichiers nécessaires pour initialiser l'application MVC
-    echo '<script src="./form-config.js"></script>';
-    // Le fichier de configuration existe, l'application est déjà installée
-    // Vous pouvez rediriger l'utilisateur vers la page d'accueil ou afficher un message indiquant que l'application est déjà installée
-}
-
-// Le fichier de configuration n'existe pas, afficher le formulaire de l'installer
-
-
-
-// Effectuer le routage vers les contrôleurs en fonction de la requête
-// ...
 
 spl_autoload_register(function ($class) {
     $class = str_replace("App\\", "", $class);

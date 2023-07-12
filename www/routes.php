@@ -150,4 +150,16 @@ return [
         'controller' => 'Admin',
         'action' => 'validDataSite'
     ],
+
+    '/configsite' => [
+        'controller' => 'Admin',
+        'action' => 'configSite'
+    ],
+
+    '/createconfigfile' => [
+        'controller' => 'Admin',
+        'action' => 'createConfigFile'
+    ],
 ];
+
+
