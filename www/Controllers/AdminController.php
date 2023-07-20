@@ -14,7 +14,6 @@ class AdminController {
 
     public function configSite(): void 
     {
-        // Récupérer les données du corps de la requête POST
         $_SESSION['postData'] = json_decode(file_get_contents('php://input'), true);
         
         // Traiter les données et mettre à jour le fichier config.json
@@ -26,9 +25,13 @@ class AdminController {
             'message' => 'Le fichier config.json a été mis à jour avec succès.',
             'data' => $_SESSION['postData']
         ];
-    
+            
+        //implementer fontions
+
         header('Content-Type: application/json');
+
         echo json_encode($response);
+
     }
 
     public function createConfigFile(): void 

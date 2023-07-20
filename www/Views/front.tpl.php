@@ -2,19 +2,23 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Ma super page</title>
+    <title>Bienvenue sur Trokos</title>
     <meta name="description" content="Trokos">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-    <?php $configFilePath = './config.json';
-    if (!file_exists($configFilePath)) {?>
-    <script type='module' src="/form-config.js" async></script>
-    <script type='module' src="/module.js" async></script>
-    <?php } ?>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 </head>
 <body>
     <?php include 'navbar.php'; 
     // phpinfo();    
     ?>
+
+
+    <div id="form-container">
+    </div>
+
+    <div id="confirm-container">
+    </div>
+
 
 <?php
 $message = $_GET['message'] ?? '';
