@@ -76,26 +76,19 @@ export function handleSubmit(event) {
   let formData = localStorage.getItem("data");
   formData = JSON.parse(formData);
 
-  console.log(formData);
-  console.log(formData['siteName']);
   const siteName = formData['siteName'].toString();
-  console.log(typeof siteName);
-
-
   if(!FormValidator.type_check( {prop1: siteName}, { type: 'object', properties: {prop1: {type: 'string'}} } )){
     alert('Nom invalide. Veuillez entrer un nom valide.');
     return;
   }
 
   const firstname = formData['firstname'];
-  console.log(firstname);
   if(!FormValidator.type_check( {prop1: firstname}, { type: 'object', properties: {prop1: {type: 'string'}} } )){
     alert('Prénom invalide. Veuillez entrer un prénom valide.');
     return;
   }
 
   const lastname = formData['lastname'];
-  console.log(lastname);
   if(!FormValidator.type_check( {prop1: lastname}, { type: 'object', properties: {prop1: {type: 'string'}} } )){
     alert('Nom invalide. Veuillez entrer un nom valide.');
     return;
@@ -147,7 +140,6 @@ export function handleSubmit(event) {
   }
 
   const address = formData['address'].toString();
-  console.log(typeof address);
     if(!FormValidator.type_check( {prop1: address}, { type: 'object', properties: {prop1: {type: 'string'}} } )){
       alert('L\'adresse est invalide. Veuillez entrer une adresse valide.');
       return;
@@ -173,28 +165,21 @@ export function handleSubmit(event) {
       'Content-Type': 'application/json'
     }
   })
-    .then(response => response.json())
-    .then(responseData => {
-      if (responseData.message) {
-        alert(responseData.message);
-      } else {
-        console.log('La configuration a été effectuée avec succès.');
+  .then(response => response.json())
+  .then(responseData => {
+    if (responseData.message) {
+      alert(responseData.message);
+    } else {
+      // Ici, vous pouvez rediriger vers createConfigSite.php
+    }
+  })
+  .catch(error => {
+    console.error('Erreur lors de la mise à jour de la configuration:', error);
+  });
+  window.location.href = '/admincreateprofile';
 
-        handleRedirection();
-      }
-    })
-    .catch(error => {
-      console.error('Erreur lors de la mise à jour de la configuration:', error);
-    })
-    .then(() => {
-      window.location.href = "/";
-    });
-
-  
-  console.log(data);
 }
 
-  
 export function createConfirmationPage(data) {
   
   const formFields = [
@@ -228,16 +213,10 @@ export function createConfirmationPage(data) {
   const submitButton = document.createElement('button');
   submitButton.type = 'submit';
   submitButton.innerText = 'Confirmer';
-  submitButton.addEventListener('click', handleSubmit); // Ajouter le gestionnaire d'événements
+  submitButton.addEventListener('click', handleSubmit);
 
   form.appendChild(submitButton);
 
   return form;
 }
-
-// function getDataFromLocalStorage() {
-//   const data = localStorage.getItem("data");
-//   return data ? JSON.parse(data) : {};
-// }
-
 

@@ -275,16 +275,6 @@ class UserController {
         }
     }
 
-// $userData = $user->getUserById($userId);
-// $countProducts = $user->getProductCountByUserId($userId);
-// $countTransactions = $user->getTransactionCountByUserId($userId);
-// $comments = $user->getCommentsByUserId($userId);
-// $view = new View("User/displayStats", "front");
-// $view->assign('userData', $userData);
-// $view->assign('countProducts', $countProducts);
-// $view->assign('countTransactions', $countTransactions);
-// $view->assign('comments', $comments);
-
     public function userInterface()
     {
         if ($_SESSION['userData']['id_role'] == 3) {

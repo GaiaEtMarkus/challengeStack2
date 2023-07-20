@@ -146,9 +146,9 @@ return [
         'action' => 'configSite'
     ],
 
-    '/createconfigfile' => [
+    '/admincreateprofile' => [
         'controller' => 'Admin',
-        'action' => 'createConfigFile'
+        'action' => 'adminCreateProfile'
     ],
 ];
 

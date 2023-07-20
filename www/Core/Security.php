@@ -66,4 +66,8 @@ class Security extends Sql
     $token = bin2hex(random_bytes($length));
     return $token;
     }
+
+    public static function generateSecurePassword($length = 8) {
+        return bin2hex(openssl_random_pseudo_bytes($length));
+    }
 }

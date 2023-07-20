@@ -9,7 +9,6 @@
 <body>
 
     <?php include 'navbar.php'; 
-    // phpinfo();    
     ?>
 
 <?php

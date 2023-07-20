@@ -5,7 +5,6 @@ import { BrowserEvent } from "../components/BrowserRouter.js";
 
 export default function Page1() {
 
-  console.log('tutu');
   const DATA_KEY = "data";
   let data = localStorage.getItem(DATA_KEY);
   if (!data) {
@@ -22,7 +21,7 @@ export default function Page1() {
     { type: 'text', name: 'birthDate', label: 'Date de naissance de l\'admin', defaultValue: '01/01/1990' },
     { type: 'email', name: 'email', label: 'Email de l\'admin', defaultValue: 'example@example.com' },
     { type: 'number', name: 'phone', label: 'Téléphone de l\'admin', defaultValue: '0123456789' },
-    { type: 'text', name: 'country', label: 'Pays de l\'admin', defaultValue: 'France' },
+    { type: 'text', name: 'country', label: 'Pays de l\'admin', defaultValue: 'FR', readonly: true },
     { type: 'number', name: 'zipCode', label: 'Code postal de l\'admin', defaultValue: '12345' },
     { type: 'text', name: 'address', label: 'Adresse de l\'admin', defaultValue: '123 Rue Principale' },
   ];

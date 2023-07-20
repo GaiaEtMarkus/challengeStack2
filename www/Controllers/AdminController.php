@@ -1,8 +1,16 @@
 <?php
 namespace App\Controllers;
 
+use App\Models\User;
 use App\Core\View;
-use App\Forms\Initialisation;
+use App\Forms\AddUser;
+use App\Core\Security;
+use App\Forms\ChangePassword;
+use App\Forms\ModifyProfile;
+use App\Forms\DeleteProfile;
+use App\Forms\ForgotPassword;
+use App\Forms\Contact;
+use App\Forms\LoginUser;
 
 
 class AdminController {
@@ -34,29 +42,50 @@ class AdminController {
 
     }
 
-    public function createConfigFile(): void 
+    public function adminCreateProfile(): void 
     {
-        // Récupérer les données du tableau $_SESSION['postData']
-        $configData = $_SESSION['postData'];
-        var_dump($configData);
+
+        echo'tutu';
+        // Récupérer les données de config.json
+        $configData = json_decode(file_get_contents('./config.json'), true);
+        
+        // Vous devez implémenter une fonction pour générer un mot de passe sécurisé ou le récupérer d'une autre manière
+        $password = Security::generateSecurePassword(); 
     
-        // Vérifier si la clé 'initialized' est définie et a la valeur 'false' dans le fichier config.json existant
-        $configFilePath = './config.json';
-        // $existingConfigData = json_decode(file_get_contents($configFilePath), true);
-        if (isset($configFilePath)) {
-            // Générer le contenu du fichier config.json à partir des données
-            $configContent = json_encode($configData, JSON_PRETTY_PRINT);
+        $id_role = 3;
+        $id = null;
+        $userPseudo = Security::securiser($configData['pseudo']); 
+        $userMail = Security::securiser($configData['email']);
+        $hashedPassword = Security::hashPassword($password);
+        $completeToken = Security::generateCompleteToken(); 
+        $truncatedToken = Security::staticgenerateTruncatedToken($completeToken); 
+        $is_verified = false;
+        $thumbnailPath = " ";
     
-            // Créer le fichier config.json
-            if (file_put_contents($configFilePath, $configContent) !== false) {
-                // Le fichier config.json a été créé avec succès
-                // Vous pouvez envoyer une réponse JSON appropriée si nécessaire
-                echo json_encode(['message' => 'Le fichier config.json a été créé avec succès.']);
-            } else {
-                // Une erreur s'est produite lors de la création du fichier config.json
-                // Vous pouvez envoyer une réponse JSON appropriée si nécessaire
-                echo json_encode(['error' => 'Erreur lors de la création du fichier config.json.']);
-            }
-        } 
+        $user = new User();
+        $user->hydrate(
+            $id,
+            $id_role,
+            $is_verified,
+            Security::securiser($configData['firstname']),
+            Security::securiser($configData['lastname']),
+            $userPseudo,
+            Security::securiser($configData['birthDate']),
+            $userMail,
+            Security::securiser($configData['phone']),
+            Security::securiser($configData['country']),
+            $thumbnailPath,
+            Security::securiser($configData['zipCode']),
+            Security::securiser($configData['address']),
+            $hashedPassword,
+            $truncatedToken
+        );
+        
+        $user->save();
+    
+        $message = "Bonjour $userPseudo ! Ton profil admin a bien été créé. Merci de bien vouloir vouloir recréer ton nouveau mot de passe!";
+    
+        header('Location: /?message=' . urlencode($message));;
     }
+    
 }
