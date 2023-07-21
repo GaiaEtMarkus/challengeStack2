@@ -30,6 +30,10 @@
                                             </div>
                                             <button type="submit" class="btn btn-primary">Valider</button>
                                         </form>
+                                        <form method="POST" action="/refuseProduct">
+                                            <input type="hidden" name="productId" value="<?= $product['id'] ?>">
+                                            <button type="submit" class="btn btn-primary"></button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>

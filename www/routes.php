@@ -146,6 +146,16 @@ return [
         'action' => 'configSite'
     ],
 
+    '/moderatorcreateprofile' => [
+        'controller' => 'Admin',
+        'action' => 'moderatorCreateProfile'
+    ],
+
+    '/refuseproduct' => [
+        'controller' => 'Moderator',
+        'action' => 'refuseProduct'
+    ],
+
     '/admincreateprofile' => [
         'controller' => 'Admin',
         'action' => 'adminCreateProfile'

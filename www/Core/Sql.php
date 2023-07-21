@@ -53,7 +53,6 @@ abstract class Sql{
         }
         var_dump($queryPrepared->execute($columns));
         // dd($queryPrepared);
-        $queryPrepared->execute($columns);
  
     }
 
@@ -274,4 +273,15 @@ abstract class Sql{
         $result = $queryPrepared->fetch(\PDO::FETCH_ASSOC);
         return (int)$result['count'];
     }
+
+    public function updatePassword($userId, $hashedPassword) {
+        $query = 'UPDATE "User" SET pwd = :password WHERE id = :id';
+        $params = [':password' => $hashedPassword,
+                   ':id' => $userId];
+        $queryPrepared = $this->pdo->prepare($query);
+                var_dump(        $queryPrepared = $this->pdo->prepare($query)
+            );
+        $queryPrepared->execute($params);
+    }
+    
 }

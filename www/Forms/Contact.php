@@ -36,7 +36,7 @@ class Contact extends AForm {
                 ],
                 "message" => [
                     "type" => "textarea",
-                    "placeholder" => "Le sujet",
+                    "placeholder" => "Le message",
                     "required"=>true,
                     "error" => "Veuillez saisir le message"
                 ]

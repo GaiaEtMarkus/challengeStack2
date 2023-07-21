@@ -3,13 +3,9 @@ namespace App\Controllers;
 
 require_once('./Core/Functions.php');
 
-use App\Models\User;
 use App\Core\View;
 use App\Core\Security;
 use App\Forms\AddProduct;
-use App\Forms\LoginUser;
-use App\Forms\ModifyProfile;
-use App\Forms\DeleteProfile;
 use App\Models\Product;
 use App\Forms\ModifyProduct;
 
@@ -176,14 +172,6 @@ class ProductController {
             header('Location: /?message=' . urlencode($message));
         }
     }
-
-    // public function displayProducts()
-    // {
-    //     $product = new Product();
-    //     $products = $product->getVerifiedProducts();
-    //     $view = new View("Product/displayNewProducts", "front", compact('products'));
-    //     $view->assign('products', $products);
-    // }
 
     public function displayProductDetails(): void
     {

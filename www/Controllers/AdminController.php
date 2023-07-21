@@ -5,13 +5,9 @@ use App\Models\User;
 use App\Core\View;
 use App\Forms\AddUser;
 use App\Core\Security;
-use App\Forms\ChangePassword;
-use App\Forms\ModifyProfile;
-use App\Forms\DeleteProfile;
-use App\Forms\ForgotPassword;
-use App\Forms\Contact;
-use App\Forms\LoginUser;
 
+
+$configFilePath = './config.json';
 
 class AdminController {
 
@@ -24,18 +20,14 @@ class AdminController {
     {
         $_SESSION['postData'] = json_decode(file_get_contents('php://input'), true);
         
-        // Traiter les données et mettre à jour le fichier config.json
         $configFilePath = './config.json';
         file_put_contents($configFilePath, json_encode($_SESSION['postData']));
         
-        // Envoyer une réponse JSON indiquant la mise à jour réussie
         $response = [
             'message' => 'Le fichier config.json a été mis à jour avec succès.',
             'data' => $_SESSION['postData']
         ];
             
-        //implementer fontions
-
         header('Content-Type: application/json');
 
         echo json_encode($response);
@@ -44,15 +36,13 @@ class AdminController {
 
     public function adminCreateProfile(): void 
     {
+        $configFilePath = './config.json';
+        if (file_exists($configFilePath)) {
 
-        echo'tutu';
-        // Récupérer les données de config.json
         $configData = json_decode(file_get_contents('./config.json'), true);
-        
-        // Vous devez implémenter une fonction pour générer un mot de passe sécurisé ou le récupérer d'une autre manière
         $password = Security::generateSecurePassword(); 
     
-        $id_role = 3;
+        $id_role = 1;
         $id = null;
         $userPseudo = Security::securiser($configData['pseudo']); 
         $userMail = Security::securiser($configData['email']);
@@ -85,7 +75,76 @@ class AdminController {
     
         $message = "Bonjour $userPseudo ! Ton profil admin a bien été créé. Merci de bien vouloir vouloir recréer ton nouveau mot de passe!";
     
-        header('Location: /?message=' . urlencode($message));;
-    }
+        header('Location: /?message=' . urlencode($message));
+    } else {
     
+        header('Location: /error404');
+    }
+    }
+
+    public function moderatorCreateProfile(): void 
+    {
+        if ($_SESSION['userData']['id_role'] == 1) {
+        $form = new AddUser();
+        $view = new View("Forms/form", "front");
+        $view->assign('form', $form->getConfig());
+    
+        if ($form->isSubmit()) {
+            $errors = Security::form($form->getConfig(), $_POST);
+            if (empty($errors)) {
+                if ( Security::securiser($_POST['pwd']) !==  Security::securiser($_POST['pwdConfirm'])) {
+                    $message = "Les mots de passes ne sont pas identiques. Veuillez rééessayer !";
+                    header('Location: /userCreateProfile?message=' . urlencode($message));;                
+                } else {
+                    $id_role = 2;
+                    $id = null;
+                    $userPseudo = Security::securiser($_POST['pseudo']); 
+                    $userMail = Security::securiser($_POST['email']);
+                    $hashedPassword = Security::hashPassword($_POST['pwd']);
+                    $completeToken = Security::generateCompleteToken(); 
+                    $truncatedToken = Security::staticgenerateTruncatedToken($completeToken); 
+                    $is_verified = false;
+                    $thumbnail = $_FILES['thumbnail'] ?? null;
+                    if ($thumbnail && $thumbnail['error'] === UPLOAD_ERR_OK) {
+                        $thumbnailPath = './assets/userProfile/' . $thumbnail['name'];
+                        move_uploaded_file($thumbnail['tmp_name'], $thumbnailPath);
+                    } else {
+                        $thumbnailPath = null; 
+                        echo('error');
+                    }
+
+                    $user = new User();
+                    $user->hydrate(
+                        $id,
+                        $id_role,
+                        $is_verified,
+                        Security::securiser($_POST['firstname']),
+                        Security::securiser($_POST['lastname']),
+                        $userPseudo,
+                        Security::securiser($_POST['birth_date']),
+                        $userMail,
+                        Security::securiser($_POST['phone']),
+                        Security::securiser($_POST['country']),
+                        $thumbnailPath,
+                        Security::securiser($_POST['zip_code']),
+                        Security::securiser($_POST['address']),
+                        $hashedPassword,
+                        $truncatedToken
+                    );
+                    
+                    $user->save();
+
+                    $message = "Le profil moderateur a bien été créé. Merci de bien vouloir vouloir lui demander de recréer son nouveau mot de passe!";
+    
+                    header('Location: /?message=' . urlencode($message));;
+                }
+            } else {
+                $message = "Il y a eu une erreur. Veuillez rééessayer !";
+                header('Location: /userCreateProfile?message=' . urlencode($message));;
+            }
+        }
+    } else {
+        header('Location: /error404');
+    }
+}
 }

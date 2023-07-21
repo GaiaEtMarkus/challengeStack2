@@ -53,7 +53,6 @@ class Security extends Sql
     }
 
     public static function securiser($donnees)
-    
     {
         $donnees = trim($donnees);
         $donnees = stripslashes($donnees);

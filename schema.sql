@@ -22,7 +22,7 @@ CREATE TABLE "Category" (
     name         VARCHAR(64)    NOT NULL, 
     PRIMARY KEY (id)
 );
-
+z
 CREATE TABLE "Sale" (
     id           SERIAL         NOT NULL,
     date         DATE           NOT NULL,
