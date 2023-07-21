@@ -24,7 +24,6 @@ class Security extends Sql
         return password_hash($password, PASSWORD_DEFAULT);
     }
 
-
     public static function form(array $config, array $data): array
     {
         $listOfErrors = [];
@@ -54,7 +53,6 @@ class Security extends Sql
     }
 
     public static function securiser($donnees)
-    
     {
         $donnees = trim($donnees);
         $donnees = stripslashes($donnees);
@@ -66,5 +64,9 @@ class Security extends Sql
     {
     $token = bin2hex(random_bytes($length));
     return $token;
+    }
+
+    public static function generateSecurePassword($length = 8) {
+        return bin2hex(openssl_random_pseudo_bytes($length));
     }
 }

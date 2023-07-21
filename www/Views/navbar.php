@@ -49,10 +49,13 @@
                 <?php if (isset($_SESSION['userData'])):
                         if ($_SESSION['userData']['id_role'] == 1): ?>
                 <li class="nav-item">
-                    <a class="nav-link text-danger" href="/adminInterface">Interface admin</a>
+                    <a class="nav-link text-danger" href="/moderatorCreateProfile">Ajouter moderateur</a>
                 </li>
                 <?php endif; ?>
                 <?php endif; ?>
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="/contact">Contact</a>
+                </li>
             </ul>
         </div>
     </div>

@@ -20,7 +20,7 @@ class Contact extends AForm {
                     "type" => "text",
                     "placeholder" => "Votre nom",
                     "required"=>true,
-                    "error" => "Veuillez saisir votre nom"
+                    "error" => "Veuillez  saisir votre nom"
                 ],
                 "email" => [
                     "type" => "email",
@@ -36,7 +36,7 @@ class Contact extends AForm {
                 ],
                 "message" => [
                     "type" => "textarea",
-                    "placeholder" => "Le sujet",
+                    "placeholder" => "Le message",
                     "required"=>true,
                     "error" => "Veuillez saisir le message"
                 ]

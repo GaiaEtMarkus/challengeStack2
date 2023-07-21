@@ -66,7 +66,7 @@ class ModifyProfile extends AForm {
                     "type" => "date",
                     "placeholder" => "Votre date de naissance",
                     "required" => true,
-                    "value" => $_SESSION['userData']['date'],
+                    "value" => $_SESSION['userData']['birth_date'],
                     "error" => "Le format de votre date de naissance est incorrect"
                 ],
                 "pwd" => [

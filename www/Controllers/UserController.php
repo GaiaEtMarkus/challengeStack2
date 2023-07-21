@@ -117,22 +117,22 @@ class UserController {
                         $user->hydrate(
                             $userData['id'],
                             $userData['id_role'],
+                            $userData['is_verified'],
                             $userData['firstname'],
                             $userData['lastname'],
                             $userData['pseudo'],
+                            $userData['birth_date'],
                             $userData['email'],
                             $userData['phone'],
-                            $userData['birth_date'],
-                            $userData['address'],
-                            $userData['zip_code'],
                             $userData['country'],
-                            Security::hashPassword($pwd),
                             $thumbnailPath,
+                            $userData['zip_code'],
+                            $userData['address'],
+                            Security::hashPassword($pwd),
                             $newTruncatedToken,
-                            $userData['is_verified']
                         );
                     }
-    
+
                     $userData['token_hash'] = $newTruncatedToken;
                     $_SESSION['userData'] = $userData;
     
@@ -274,16 +274,6 @@ class UserController {
             }
         }
     }
-
-// $userData = $user->getUserById($userId);
-// $countProducts = $user->getProductCountByUserId($userId);
-// $countTransactions = $user->getTransactionCountByUserId($userId);
-// $comments = $user->getCommentsByUserId($userId);
-// $view = new View("User/displayStats", "front");
-// $view->assign('userData', $userData);
-// $view->assign('countProducts', $countProducts);
-// $view->assign('countTransactions', $countTransactions);
-// $view->assign('comments', $comments);
 
     public function userInterface()
     {
@@ -429,51 +419,29 @@ class UserController {
         $userData = $userData[0];
         $expiration = $tokenData['expiration'];
         $expirationTimestamp = strtotime($expiration);
-
+    
         $form = new ChangePassword;
         $view = new View("Forms/form", "front");
         $view->assign('form', $form->getConfig());
-
-
+    
+    
         if ($form->isSubmit() && time() < $expirationTimestamp) {
             $errors = Security::form($form->getConfig(), $_POST);
             if (empty($errors)) {
                 $password = Security::securiser($_POST['password']);
                 $confirmPassword = Security::securiser($_POST['confirmPassword']);
-
-                if($password == $confirmPassword) {
-
-                    $user->hydrate(
-                        $userData['id'],
-                        $userData['id_role'],
-                        $userData['firstname'],
-                        $userData['lastname'],
-                        $userData['pseudo'],
-                        $userData['email'],
-                        $userData['phone'],
-                        $userData['date'],
-                        $userData['address'],
-                        $userData['zip_code'],
-                        $userData['country'],
-                        $password,
-                        $userData['thumbnail'],
-                        $userData['is_verified'],
-                        $userData['token_hash'],
-                    );
+                
     
-                    $user->save();
-                    echo "Insertion en BDD";
-
+                if($password == $confirmPassword) {
                     $hashedPassword = Security::hashPassword($password);
-                    $user->changePassword($userId, $password);
-                    var_dump($userId);
-                    var_dump($password);
-                    echo"ok";
+                    $user->updatePassword($userId, $hashedPassword);
+                    echo "Mot de passe mis à jour avec succès.";
                 }
                 else {
                     $errors['confirmPassword'] = "Les mots de passe ne correspondent pas";
+                    $view->assign('errors', $errors);
                 }
-
+    
             } else {
                 $view->assign('errors', $errors);
                 echo'error';
@@ -483,7 +451,6 @@ class UserController {
 
     public function displayUserStats()
     {   
-        // dd($_SESSION);
         $userId = $_GET['userId'];
         $user = new User;
         $userData = $user->getUserById($userId);
@@ -498,24 +465,3 @@ class UserController {
         $view->assign('comments', $comments);
     }
 }
-
-// public function displayProductDetails(): void
-// {
-//     if (isset($_GET['productId'])) {
-//         $productId = intval($_GET['productId']);
-//         $product = new Product();
-//         $productData = $product->getProductById($productId);
-//         $userData = $product->getUserById($productData['id_seller']);
-//         $comments = $product->getCommentsByProductId($productId);
-
-//         if ($productData || $comments) {
-//             $view = new View("Product/displayProductDetails", "front");
-//             $view->assign('product', $productData);
-//             $view->assign('comments', $comments);
-//             $view->assign('userData', $userData);
-//         } else {
-//             $message = "Veuillez reessayer !";
-//             header('Location: /?message=' . urlencode($message));
-//         }
-//     }
-// }

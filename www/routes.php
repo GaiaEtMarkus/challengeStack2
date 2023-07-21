@@ -11,16 +11,6 @@ return [
         'action' => 'userCreateProfile'
     ],
 
-    // '/uservalidprofile' => [
-    //     'controller' => 'User',
-    //     'action' => 'userValidProfile'
-    // ],
-
-    // '/userprofile' => [
-    //     'controller' => 'User',
-    //     'action' => 'userProfile'
-    // ],
-
     '/userinterface' => [
         'controller' => 'User',
         'action' => 'userInterface'
@@ -150,4 +140,26 @@ return [
         'controller' => 'Admin',
         'action' => 'validDataSite'
     ],
+
+    '/configsite' => [
+        'controller' => 'Admin',
+        'action' => 'configSite'
+    ],
+
+    '/moderatorcreateprofile' => [
+        'controller' => 'Admin',
+        'action' => 'moderatorCreateProfile'
+    ],
+
+    '/refuseproduct' => [
+        'controller' => 'Moderator',
+        'action' => 'refuseProduct'
+    ],
+
+    '/admincreateprofile' => [
+        'controller' => 'Admin',
+        'action' => 'adminCreateProfile'
+    ],
 ];
+
+

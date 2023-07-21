@@ -51,9 +51,9 @@ abstract class Sql{
             $queryPrepared = $this->pdo->prepare("INSERT INTO \"".$this->table."\" (".implode(",", array_keys($columns)).") 
                             VALUES (:".implode(",:", array_keys($columns)).")");
         }
-        $queryPrepared->execute($columns);
+        var_dump($queryPrepared->execute($columns));
         // dd($queryPrepared);
-        // var_dump($queryPrepared->execute($columns));
+ 
     }
 
     public function login($email, $password)
@@ -273,4 +273,15 @@ abstract class Sql{
         $result = $queryPrepared->fetch(\PDO::FETCH_ASSOC);
         return (int)$result['count'];
     }
+
+    public function updatePassword($userId, $hashedPassword) {
+        $query = 'UPDATE "User" SET pwd = :password WHERE id = :id';
+        $params = [':password' => $hashedPassword,
+                   ':id' => $userId];
+        $queryPrepared = $this->pdo->prepare($query);
+                var_dump(        $queryPrepared = $this->pdo->prepare($query)
+            );
+        $queryPrepared->execute($params);
+    }
+    
 }

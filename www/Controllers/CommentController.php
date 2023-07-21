@@ -7,6 +7,8 @@ class CommentController{
 
     public function createComment(){
 
+        if ($_SESSION['userData']['id_role'] == 3) {
+
         $userId = ['id'];
         $userPseudo = ['pseudo'];
         $userComment = Security::securiser($_POST['commentContent']);
@@ -24,6 +26,9 @@ class CommentController{
         $comment->save();
         $message = "Votre commentaire a bien été ajouté !";
         header('Location: /userinterface?message=' . urlencode($message)); 
+        } else {
+            header('Location: /error404');
+        } 
     }
 
     public function deleteComment(): void
@@ -40,8 +45,7 @@ class CommentController{
             }
 
         } else {
-            $message = "Veuillez vous connecter afin de pouvoir supprimer un produit!";
-            header('Location: /?message=' . urlencode($message));
+            header('Location: /error404');
         }
     }
 }

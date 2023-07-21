@@ -22,7 +22,7 @@
                         <img src="<?= $product['thumbnail'] ?>" class="card-img-top" alt="Product Image">
                         <div class="card-body">
                             <h5 class="card-title"><?= $product['title'] ?></h5>
-                            <!-- <p class="card-text"><?= $product['description'] ?></p> -->
+                          
                             <p class="card-text"><?= $product['trokos'] ?></p>
                             <form method="POST" action="/createTransaction">
                                 <input type="hidden" name="productId" value="<?= $product['id'] ?>">
