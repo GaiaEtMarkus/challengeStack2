@@ -6,29 +6,55 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mr-auto">
+                <?php if (!isset($_SESSION['userData'])):?>
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="/userCreateProfile">Créer un profil</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-danger" href="/userProfile">Profil user</a>
-                </li>
+                <?php endif; ?>
+                <?php if (isset($_SESSION['userData'])):
+                    if ($_SESSION['userData']['id_role'] == 3): ?>
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="/userInterface">Interface user</a>
                 </li>
+                <?php endif; ?>
+                <?php endif; ?>
+                <?php if (isset($_SESSION['userData'])):?>
+                <?php if($_SESSION['userData']['id_role'] !== 1):?>
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="/contact">Contact</a>
                 </li>
+                <?php endif; ?>
+                <?php endif; ?>
+                <?php if (!isset($_SESSION['userData'])):?>
                 <li class="nav-item">
-                    <a class="nav-link text-danger" href="/login">Se connecter</a>
+                    <a class="nav-link text-danger" href="/forgotpassword">Mot de passe oublié</a>
                 </li>
+                <?php endif; ?>
+                <?php if (!isset($_SESSION['userData'])): ?>
                 <li class="nav-item">
-                    <a class="nav-link text-danger" href="/deconnexion">Se deconnecter</a>
+                <a class="nav-link text-danger" href="/login">Se connecter</a>
                 </li>
+                <?php else: ?>
                 <li class="nav-item">
-                    <a class="nav-link text-danger" href="/usermodifyprofile">Modifier ses infos</a>
+                <a class="nav-link text-danger" href="/deconnexion">Se deconnecter</a>
                 </li>
+                <?php endif; ?>              
+                <?php if (isset($_SESSION['userData'])):
+                        if ($_SESSION['userData']['id_role'] == 2): ?>
                 <li class="nav-item">
-                    <a class="nav-link text-danger" href="/userdeleteprofile">Supprimer son profil</a>
+                    <a class="nav-link text-danger" href="/moderatorInterface">Interface moderator</a>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+                <?php if (isset($_SESSION['userData'])):
+                        if ($_SESSION['userData']['id_role'] == 1): ?>
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="/moderatorCreateProfile">Ajouter moderateur</a>
+                </li>
+                <?php endif; ?>
+                <?php endif; ?>
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="/contact">Contact</a>
                 </li>
             </ul>
         </div>

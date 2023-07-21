@@ -1,4 +1,18 @@
+## Au sujet du projet
+
+Ce projet a été réalisé dans le cadre du challenge pour le second semestre mais également pour les partiels de PhP et Javascript
+les matières enseignées par Messieurs Yves.SKRZYPCZYK et Karl MARQUES BERNARDO.
+
+Ce projet sera une plateforme de troc livré clef en main avec un module permettant d'initialiser la configuration du site internet et du compte Admin.
+
+
 # Règles de Contribution pour notre Projet
+
+## Pattern, technologies...
+
+Le site sera codé en PhP Model View Controller from Skratch, et le module d'installation sera fait en JavaScript.
+
+La bibliothèque Boostrap sera utilisé pour le front de l'application. Nous communiquerons à la base de données via Postgres.
 
 ## Commits Git
 
@@ -55,9 +69,7 @@ Pour plus de détails sur le PSR-2, veuillez consulter la documentation officiel
 
 Rappelez-vous : la clarté et la cohérence sont essentielles pour un bon code et un bon travail d'équipe. Bonne programmation !# challengeStack2
 
-## Challenge semestriel 2 - Groupe1 3IW2
-### Allard Alexandre
+## Challenge semestriel - 3IW2
 ### Boukhers Akram
-### Hamcherif Ilyesse
-### Kernoug Lounis
+
 

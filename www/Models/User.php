@@ -7,48 +7,41 @@ class User extends Sql{
 
     protected int $id = 0;
     protected int $id_role = 1;
+    protected bool $is_verified;
     protected string $firstname;
     protected string $lastname;
     protected string $pseudo;
+    protected string $birth_date;
     protected string $email;
     protected string $phone;
-    protected string $birth_date;
-    protected string $thumbnail;
-    protected string $address;
-    protected string $zip_code;
-    protected string $pwd;
     protected string $country;
-    protected bool $is_verified = false;
+    protected string $thumbnail;
+    protected string $zip_code;
+    protected string $address;
+    protected string $pwd;
+    protected string $token_hash;
 
-    public function hydrate($id = null, $id_role, $firstname, $lastname, $pseudo, $email, $phone, $birth_date, $address, $zip_code, $country, $pwd, $thumbnail, $is_verified) 
+    public function hydrate($id = null, $id_role, bool $is_verified, $firstname, $lastname, $pseudo, $birth_date, $email, $phone,  
+    $country, $thumbnail, $zip_code, $address, $pwd,  $token_hash) 
     {
         if ($id !== null) {
             $this->setId($id);
         }
-        $this->setIdRole($id_role);
+        $this->setId_Role($id_role);
+        $this->setIs_verified($is_verified);
         $this->setFirstname($firstname);
         $this->setLastname($lastname);
         $this->setPseudo($pseudo);
+        $this->setdate($birth_date);
         $this->setEmail($email);
         $this->setPhone($phone);
-        $this->setBirthDate($birth_date);
-        $this->setAddress($address);
-        $this->setZipCode($zip_code);
         $this->setCountry($country);
-        $this->setPwd($pwd);
         $this->setThumbnail($thumbnail);
-        $this->setIsVerified($is_verified);
+        $this->setZip_code($zip_code);
+        $this->setAddress($address);
+        $this->setPwd($pwd);
+        $this->setToken_hash($token_hash);
     }
-
-    // public function __sleep()
-    // {
-    //     return array_diff(array_keys(get_object_vars($this)), ['pdo']);
-    // }
-    
-    // public function __wakeup()
-    // {
-    //     $this->__construct(); // Rétablissez la connexion à la base de données après la désérialisation
-    // }
     
 
     public function changePassword() {
@@ -87,122 +80,306 @@ class User extends Sql{
         // To be implemented
     }
 
-    ############################# Getters ################################
-    ######################################################################
-    public function getId(): int {
+    ############################# Getters @ Setters ##########################
+    #########################################################################
+
+    /**
+     * Get the value of id
+     */ 
+    public function getId()
+    {
         return $this->id;
     }
 
-    public function getIdRole(): int {
+    /**
+     * Set the value of id
+     *
+     * @return  self
+     */ 
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of id_role
+     */ 
+    public function getId_role()
+    {
         return $this->id_role;
     }
 
-    public function getCountry(): string {
-        return $this->country;
+    /**
+     * Set the value of id_role
+     *
+     * @return  self
+     */ 
+    public function setId_role($id_role)
+    {
+        $this->id_role = $id_role;
+
+        return $this;
     }
 
-    public function getZipCode(): int {
-        return $this->zip_code;
-    }
-
-    public function getAddress(): string {
-        return $this->address;
-    }
-
-    public function getFirstname(): string {
+    /**
+     * Get the value of firstname
+     */ 
+    public function getFirstname()
+    {
         return $this->firstname;
     }
 
-    public function getLastname(): string {
+    /**
+     * Set the value of firstname
+     *
+     * @return  self
+     */ 
+    public function setFirstname($firstname)
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of lastname
+     */ 
+    public function getLastname()
+    {
         return $this->lastname;
     }
 
-    public function getPseudo(): string {
+    /**
+     * Set the value of lastname
+     *
+     * @return  self
+     */ 
+    public function setLastname($lastname)
+    {
+        $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of pseudo
+     */ 
+    public function getPseudo()
+    {
         return $this->pseudo;
     }
 
-    public function getBirthDate(): string {
-        return $this->birth_date;
+    /**
+     * Set the value of pseudo
+     *
+     * @return  self
+     */ 
+    public function setPseudo($pseudo)
+    {
+        $this->pseudo = $pseudo;
+
+        return $this;
     }
 
-    public function getThumbnail(): string {
-        return $this->thumbnail;
-    }
-
-    public function getPhone(): bool {
-        return $this->phone;
-    }
-
-    public function getEmail(): bool {
+    /**
+     * Get the value of email
+     */ 
+    public function getEmail()
+    {
         return $this->email;
     }
 
-    public function getPwd(): string {
+    /**
+     * Set the value of email
+     *
+     * @return  self
+     */ 
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of date
+     */ 
+    public function getdate()
+    {
+        return $this->birth_date;
+    }
+
+    /**
+     * Set the value of date
+     *
+     * @return  self
+     */ 
+    public function setdate($birth_date)
+    {
+        $this->birth_date = $birth_date;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of thumbnail
+     */ 
+    public function getThumbnail()
+    {
+        return $this->thumbnail;
+    }
+
+    /**
+     * Set the value of thumbnail
+     *
+     * @return  self
+     */ 
+    public function setThumbnail($thumbnail)
+    {
+        $this->thumbnail = $thumbnail;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of address
+     */ 
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * Set the value of address
+     *
+     * @return  self
+     */ 
+    public function setAddress($address)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of zip_code
+     */ 
+    public function getZip_code()
+    {
+        return $this->zip_code;
+    }
+
+    /**
+     * Set the value of zip_code
+     *
+     * @return  self
+     */ 
+    public function setZip_code($zip_code)
+    {
+        $this->zip_code = $zip_code;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of pwd
+     */ 
+    public function getPwd()
+    {
         return $this->pwd;
     }
 
-    public function getIsVerified(): bool {
+    /**
+     * Set the value of pwd
+     *
+     * @return  self
+     */ 
+    public function setPwd($pwd)
+    {
+        $this->pwd = $pwd;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of country
+     */ 
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
+     * Set the value of country
+     *
+     * @return  self
+     */ 
+    public function setCountry($country)
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of token_hash
+     */ 
+    public function getToken_hash()
+    {
+        return $this->token_hash;
+    }
+
+    /**
+     * Set the value of token_hash
+     *
+     * @return  self
+     */ 
+    public function setToken_hash($token_hash)
+    {
+        $this->token_hash = $token_hash;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of phone
+     */ 
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    /**
+     * Set the value of phone
+     *
+     * @return  self
+     */ 
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of is_verified
+     */ 
+    public function getIs_verified()
+    {
         return $this->is_verified;
     }
 
-    ############################# Setters ################################
-    ######################################################################    
-    
-    public function setPhone(int $phone): void {
-        $this->phone = $phone;
-    }
-
-    public function setCountry(string $country): void {
-        $this->country = $country;
-    }
-
-    public function setZipCode(int $zip_code): void {
-        $this->zip_code = $zip_code;
-    }
-
-    public function setAddress(string $address): void {
-        $this->address = $address;
-    }
-
-    public function setId(int $id): void {
-        $this->id = $id;
-    }
-
-    public function setIdRole(int $id_role): void {
-        $this->id_role = $id_role;
-    }
-
-    public function setLastname(string $lastname): void {
-        $this->lastname = $lastname;
-    }
-
-    public function setFirstname(string $firstname): void {
-        $this->firstname = $firstname;
-    }
-
-    public function setPseudo(string $pseudo): void {
-        $this->pseudo = $pseudo;
-    }
-
-    public function setBirthDate(string $birth_date): void {
-        $this->birth_date = $birth_date;
-    }
-
-    public function setThumbnail(string $thumbnail): void {
-        $this->thumbnail = $thumbnail;
-    }
-
-    public function setPwd(string $pwd): void {
-        $this->pwd = $pwd;
-    }
-
-    public function setEmail(string $email): void {
-        $this->email = $email;
-    }
-
-    public function setIsVerified(bool $is_verified): void {
+    /**
+     * Set the value of is_verified
+     *
+     * @return  self
+     */ 
+    public function setIs_verified($is_verified)
+    {
         $this->is_verified = $is_verified;
-    }
 
-    
+        return $this;
+    }
 }

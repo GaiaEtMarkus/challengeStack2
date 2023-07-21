@@ -11,82 +11,94 @@ class AddUser extends AForm {
     public function getConfig(): array
     {
         return [
-            "config"=>[
-                "method"=>$this->getMethod(),
-                "action"=>"",
-                "enctype"=>"",
-                "submit"=>"S'inscrire",
-                "cancel"=>"Annuler"
+            "config" => [
+                "method" => $this->getMethod(),
+                "action" => "",
+                "enctype" => "multipart/form-data",
+                "submit" => "S'inscrire",
+                "cancel" => "Annuler"
             ],
-            "inputs" =>[
-                "firstname"=>[
-                        "type"=>"text",
-                        "placeholder"=>"Votre prénom",
-                        "min"=>2,
-                        "max"=>256,
-                        "error"=>"Votre prénom doit faire entre 2 et 25§ caractères"
-                    ],
-                "lastname"=>[
-                    "type"=>"text",
-                    "placeholder"=>"Votre nom",
-                    "min"=>2,
-                    "max"=>256,
-                    "error"=>"Votre nom doit faire entre 2 et 256 caractères"
+            "inputs" => [
+                "firstname" => [
+                    "type" => "text",
+                    "placeholder" => "Votre prénom",
+                    "min" => 2,
+                    "max" => 256,
+                    "required" => true,
+                    "error" => "Votre prénom doit faire entre 2 et 25§ caractères"
                 ],
-                "pseudo"=>[
-                    "type"=>"text",
-                    "placeholder"=>"Votre pseudo",
-                    "min"=>2,
-                    "max"=>16,
-                    "error"=>"Votre nom doit faire entre 2 et 16 caractères"
+                "lastname" => [
+                    "type" => "text",
+                    "placeholder" => "Votre nom",
+                    "min" => 2,
+                    "max" => 256,
+                    "required" => true,
+                    "error" => "Votre nom doit faire entre 2 et 256 caractères"
                 ],
-                "email"=>[
-                    "type"=>"email",
-                    "placeholder"=>"Votre email",
-                    "error"=>"Le format de votre email est incorrect"
+                "pseudo" => [
+                    "type" => "text",
+                    "placeholder" => "Votre pseudo",
+                    "min" => 2,
+                    "max" => 16,
+                    "required" => true,
+                    "error" => "Votre nom doit faire entre 2 et 16 caractères"
                 ],
-                "phone"=>[
-                    "type"=>"number",
-                    "placeholder"=>"Votre numéro de téléphone",
-                    "error"=>"Le format de votre téléphone est incorrect"
+                "email" => [
+                    "type" => "email",
+                    "placeholder" => "Votre email",
+                    "required" => true,
+                    "error" => "Le format de votre email est incorrect"
                 ],
-                "birth_date"=>[
-                    "type"=>"date",
-                    "placeholder"=>"Votre date de naissance",
-                    "error"=>"Le format de votre date de naissance est incorrect"
+                "phone" => [
+                    "type" => "number",
+                    "placeholder" => "Votre numéro de téléphone",
+                    "required" => true,
+                    "error" => "Le format de votre téléphone est incorrect"
                 ],
-                "pwd"=>[
-                    "type"=>"password",
-                    "placeholder"=>"Votre mot de passe",
-                    "error"=>"Votre mot de passe est incorrect"
+                "birth_date" => [
+                    "type" => "date",
+                    "placeholder" => "Votre date de naissance",
+                    "required" => true,
+                    "error" => "Le format de votre date de naissance est incorrect"
                 ],
-                "pwdConfirm"=>[
-                    "type"=>"password",
-                    "placeholder"=>"Confirmation",
-                    "confirm"=>"pwd",
-                    "error"=>"Les mot de passes ne sont pas identiques"
+                "pwd" => [
+                    "type" => "password",
+                    "placeholder" => "Votre mot de passe",
+                    "required" => true,
+                    "error" => "Votre mot de passe est incorrect"
                 ],
-                "address"=>[
-                    "type"=>"text",
-                    "placeholder"=>"Votre addresse",
-                    "min"=>2,
-                    "max"=>256,
+                "pwdConfirm" => [
+                    "type" => "password",
+                    "placeholder" => "Confirmation",
+                    "confirm" => "pwd",
+                    "required" => true,
+                    "error" => "Les mots de passe ne sont pas identiques"
                 ],
-                "zip_code"=>[
-                    "type"=>"number",
-                    "placeholder"=>"Votre code postale",
-                    "min"=>2,
-                    "max"=>5,
+                "address" => [
+                    "type" => "text",
+                    "placeholder" => "Votre adresse",
+                    "min" => 2,
+                    "max" => 256,
+                    "required" => true,
+                ],
+                "zip_code" => [
+                    "type" => "number",
+                    "placeholder" => "Votre code postal",
+                    "min" => 2,
+                    "max" => 5,
+                    "required" => true,
                 ],
                 "country" => [
                     "type" => "select",
                     "options" => View::buildCountryOptions(),
+                    "required" => true,
                     "error" => "Pays incorrect"
                 ],
                 "thumbnail" => [
-                    "type" => "text",
-                    "error" => "Une erreur est survenue avec la valeur thumnbail",
-                    "placeholder"=>"chemin de la photo de profil"
+                    "type" => "file",
+                    "placeholder" => "Photo du produit",
+                    "required" => true,
+                    "error" => "Une erreur est survenue lors du téléchargement du fichier"
                 ]
             ]
         ];
